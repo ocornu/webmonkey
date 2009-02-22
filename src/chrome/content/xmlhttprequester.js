@@ -75,7 +75,16 @@ GM_xmlhttpRequester.prototype.chromeStartRequest = function(safeUrl, details) {
     }
   }
 
-  req.send((details.data) ? details.data : null);
+  var body = details.data ? details.data : null;
+  if (details.binary) {
+    // no binary support?
+    if (!req.sendAsBinary)
+      throw new Error("Unavailable feature: " +
+              "this version of Firefox does not support sendAsBinary " +
+              "(you should consider upgrading to version 3, or posterior)");
+    req.sendAsBinary(body);
+  } else
+    req.send(body);
   GM_log("< GM_xmlhttpRequest.chromeStartRequest");
 }
 
