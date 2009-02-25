@@ -75,6 +75,14 @@ GM_xmlhttpRequester.prototype.chromeStartRequest = function(safeUrl, details) {
     }
   }
 
+  if (details.nocache)
+    try {
+      req.channel.loadFlags |=
+          Components.interfaces.nsIRequest.LOAD_BYPASS_CACHE;
+    } catch (e) {
+      throw new Error("Could not set 'bypass cache' option");
+    }
+
   var body = details.data ? details.data : null;
   if (details.binary) {
     // no binary support?
