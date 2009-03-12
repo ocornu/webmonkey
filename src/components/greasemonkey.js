@@ -279,7 +279,7 @@ var greasemonkeyService = {
         requires.push(contents);
         offset += lineCount;
         offsets.push(offset);
-      })
+      });
       script.offsets = offsets;
 
       var scriptSrc = "\n" + // error line-number calculations depend on these
@@ -321,48 +321,39 @@ var greasemonkeyService = {
     if (!(Components.utils && Components.utils.Sandbox)) {
       var e = new Error("Could not create sandbox.");
       GM_logError(e, 0, e.fileName, e.lineNumber);
-    } else {
-      try {
-        // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=307984
-        var lineFinder = new Error();
-        Components.utils.evalInSandbox(code, sandbox);
-      } catch (e) {
-        if ("return not in function" == e.message) // pre-0.8 GM compat:
-          return false; // this script depends on the function enclosure
-
-        // try to find the line of the actual error line
-        var line = e.lineNumber;
-        if (4294967295 == line) {
-          // Line number is reported as max int in edge cases.  Sometimes
-          // the right one is in the "location", instead.  Look there.
-          if (e.location && e.location.lineNumber) {
-            line = e.location.lineNumber;
-          } else {
-            // Reporting max int is useless, if we couldn't find it in location
-            // either, forget it.  Value of 0 isn't shown in the console.
-            line = 0;
-          }
-        }
-
-        if (line) {
-          var err = this.findError(script, line - lineFinder.lineNumber - 1);
-          GM_logError(
-            e, // error obj
-            0, // 0 = error (1 = warning)
-            err.uri,
-            err.lineNumber
-          );
-        } else {
-          GM_logError(
-            e, // error obj
-            0, // 0 = error (1 = warning)
-            script.fileURL,
-            0
-          );
-        }
-      }
+      return true;
     }
-    return true; // did not need a (function() {...})() enclosure.
+    try {
+      // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=307984
+      var lineFinder = new Error();
+      Components.utils.evalInSandbox(code, sandbox);
+      return true;
+    } catch (e) {
+      if (!e) return true;
+      if ("return not in function" == e.message) // pre-0.8 GM compat:
+        return false; // this script depends on the function enclosure
+
+      // try to find the line of the actual error line
+      var line = e.lineNumber;
+      if (4294967295 == line) {
+        // Line number is reported as maxint in edge cases.  Sometimes
+        // the right one is in "location" instead. Look there.
+        if (e.location && e.location.lineNumber)
+          line = e.location.lineNumber;
+        else
+          // Reporting maxint is useless, if we couldn't find it in location
+          // either, forget it. A value of 0 isn't shown in the console.
+          line = 0;
+      }
+
+      if (line) {
+        var err = this.findError(script, line - lineFinder.lineNumber - 1);
+        GM_logError(e, 0, err.uri, err.lineNumber);
+      } else {
+        GM_logError(e, 0, script.fileURL, 0);
+      }
+      return true;
+    }
   },
 
   findError: function(script, lineNumber){
