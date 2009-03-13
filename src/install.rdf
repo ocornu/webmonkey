@@ -14,7 +14,7 @@
     <em:iconURL>chrome://webmonkey/content/icon_medium.png</em:iconURL>
 
     <em:name>Webmonkey</em:name>
-    <em:description>Customize Web Sites with User-Scripts.</em:description>
+    <em:description>Customize web sites with user-scripts</em:description>
 
     <em:contributor>Greasemonkey; http://www.greasespot.net</em:contributor>
 
