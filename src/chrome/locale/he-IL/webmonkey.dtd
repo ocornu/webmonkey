@@ -23,7 +23,7 @@
 <!ENTITY statusbar.noscripts "אין סקריפטים מותקנים!">
 <!ENTITY statusbar.enabled "פועל">
 <!ENTITY statusbar.enabled.accesskey "פ">
-<!ENTITY install.title "התקנת Greasemonkey">
+<!ENTITY install.title "התקנת Webmonkey">
 <!ENTITY install.runson "פועל על:">
 <!ENTITY install.butnoton "לא פועל על:">
 <!ENTITY install.warning1 "סקריפטים זדוניים עלולים להפר את פרטיותך ולפעול בשמך ללא ידיעתך.">

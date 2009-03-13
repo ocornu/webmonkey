@@ -21,9 +21,9 @@
 <!ENTITY menu.manage "Управление скриптами...">
 <!ENTITY menu.manage.accesskey "п">
 <!ENTITY statusbar.noscripts "Нет установленных скриптов!">
-<!ENTITY statusbar.enabled "Включить Greasemonkey">
+<!ENTITY statusbar.enabled "Включить Webmonkey">
 <!ENTITY statusbar.enabled.accesskey "к">
-<!ENTITY install.title "Установка скриптов Greasemonkey">
+<!ENTITY install.title "Установка скриптов Webmonkey">
 <!ENTITY install.runson "Охватываемые адреса:">
 <!ENTITY install.butnoton "Исключаемые адреса:">
 <!ENTITY install.warning1 "Злонамеренные скрипты могут нарушить конфиденциальность Вашей информации и использовать её в недобросовестных целях.">

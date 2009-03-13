@@ -23,7 +23,7 @@
 <!ENTITY statusbar.noscripts "Ei asennettuja skriptejä!">
 <!ENTITY statusbar.enabled "Käytössä">
 <!ENTITY statusbar.enabled.accesskey "K">
-<!ENTITY install.title "Greasemonkey-asennus">
+<!ENTITY install.title "Webmonkey-asennus">
 <!ENTITY install.runson "suoritetaan:">
 <!ENTITY install.butnoton "ei suoriteta:">
 <!ENTITY install.warning1 "Haitalliset skriptit voivat loukata yksityisyyttäsi ja toimia puolestasi tietämättäsi.">

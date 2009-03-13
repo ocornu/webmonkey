@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!DOCTYPE overlay SYSTEM "chrome://webmonkey/locale/greasemonkey.dtd">
+<!DOCTYPE overlay SYSTEM "chrome://webmonkey/locale/webmonkey.dtd">
 
 <!-- Note: Contains Firefox-specific overlay -->
 

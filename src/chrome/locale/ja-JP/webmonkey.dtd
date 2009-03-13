@@ -23,7 +23,7 @@
 <!ENTITY statusbar.noscripts "スクリプトはインストールされていません">
 <!ENTITY statusbar.enabled "有効">
 <!ENTITY statusbar.enabled.accesskey "E">
-<!ENTITY install.title "Greasemonkeyのインストール">
+<!ENTITY install.title "Webmonkeyのインストール">
 <!ENTITY install.runson "実行するページ:">
 <!ENTITY install.butnoton "実行しないページ:">
 <!ENTITY install.warning1 "悪意のあるスクリプトはあなたのプライバシーを侵害し、あなたの知らないところであなたになり代わって活動します。">

@@ -23,7 +23,7 @@
 <!ENTITY statusbar.noscripts "Ingen Scripts installeret">
 <!ENTITY statusbar.enabled "Slået til">
 <!ENTITY statusbar.enabled.accesskey "S">
-<!ENTITY install.title "Greasemonkey installation">
+<!ENTITY install.title "Webmonkey installation">
 <!ENTITY install.runson "kører på:">
 <!ENTITY install.butnoton "kører ikke på:">
 <!ENTITY install.warning1 "Ondskabsfulde scripts kan overtræde din privatsfære og kan udføre ulovligheder uden din viden.">

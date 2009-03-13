@@ -3,7 +3,7 @@
 <?xml-stylesheet href="chrome://webmonkey/content/manage.css" type="text/css"?>
 <?xul-overlay href="chrome://webmonkey/content/pages-overlay.xul"?>
 
-<!DOCTYPE dialog SYSTEM "chrome://webmonkey/locale/greasemonkey.dtd">
+<!DOCTYPE dialog SYSTEM "chrome://webmonkey/locale/webmonkey.dtd">
 
 <window id="greasemonkey"
   windowtype="Greasemonkey:Manage"

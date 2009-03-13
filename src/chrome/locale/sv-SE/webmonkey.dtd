@@ -23,7 +23,7 @@
 <!ENTITY statusbar.noscripts "Inga skript installerade!">
 <!ENTITY statusbar.enabled "Aktiverad">
 <!ENTITY statusbar.enabled.accesskey "A">
-<!ENTITY install.title "Greasemonkey-installering">
+<!ENTITY install.title "Webmonkey-installering">
 <!ENTITY install.runson "kör på:">
 <!ENTITY install.butnoton "kör inte på:">
 <!ENTITY install.warning1 "Skadliga skript kan kränka din integritet och agera som dig utan din vetskap.">

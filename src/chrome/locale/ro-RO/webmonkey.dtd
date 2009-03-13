@@ -22,7 +22,7 @@
 <!ENTITY statusbar.noscripts "Niciun script instalat!">
 <!ENTITY statusbar.enabled "Activat">
 <!ENTITY statusbar.enabled.accesskey "A">
-<!ENTITY install.title "Instalarea Greasemonkey">
+<!ENTITY install.title "Instalarea Webmonkey">
 <!ENTITY install.runson "ruleaza pe:">
 <!ENTITY install.butnoton "nu ruleaza pe:">
 <!ENTITY install.warning1 "Script-uri malitioase iti pot incalca confidentialitatea si pot actiona fara ca tu sa stii.">

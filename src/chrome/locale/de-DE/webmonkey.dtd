@@ -21,9 +21,9 @@
 <!ENTITY menu.manage "Benutzerskripte verwalten...">
 <!ENTITY menu.manage.accesskey "v">
 <!ENTITY statusbar.noscripts "Es sind keine Skripte installiert!">
-<!ENTITY statusbar.enabled "Greasemonkey aktivieren">
+<!ENTITY statusbar.enabled "Webmonkey aktivieren">
 <!ENTITY statusbar.enabled.accesskey "A">
-<!ENTITY install.title "Greasemonkey-Installation">
+<!ENTITY install.title "Webmonkey-Installation">
 <!ENTITY install.runson "Wird angewendet auf:">
 <!ENTITY install.butnoton "Wird nicht angewendet auf:">
 <!ENTITY install.warning1 "Bösartige Skripte können Ihre Privatsphäre verletzen und ohne Ihr Wissen eigenmächtige Aktionen ausführen.">

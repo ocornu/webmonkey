@@ -23,7 +23,7 @@
 <!ENTITY statusbar.noscripts "No hi ha scripts instal.lats!">
 <!ENTITY statusbar.enabled "Habilitat">
 <!ENTITY statusbar.enabled.accesskey "H">
-<!ENTITY install.title "Instal.lació de Greasemonkey">
+<!ENTITY install.title "Instal.lació de Webmonkey">
 <!ENTITY install.runson "S&apos;executa a:">
 <!ENTITY install.butnoton "No s&apos;executa a:">
 <!ENTITY install.warning1 "Els scripts maliciosos poden violar la teva privacitat i actuar en nom teu">

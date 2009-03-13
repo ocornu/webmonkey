@@ -23,7 +23,7 @@
 <!ENTITY statusbar.noscripts "Nenhum script instalado!">
 <!ENTITY statusbar.enabled "Ativado">
 <!ENTITY statusbar.enabled.accesskey "A">
-<!ENTITY install.title "Instalação do Greasemonkey">
+<!ENTITY install.title "Instalação do Webmonkey">
 <!ENTITY install.runson "Executa em:">
 <!ENTITY install.butnoton "Não executa em:">
 <!ENTITY install.warning1 "Scripts maliciosos podem violar sua privacidade e fazer coisas sem seu conhecimento.">

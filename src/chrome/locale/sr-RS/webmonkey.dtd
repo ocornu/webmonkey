@@ -22,7 +22,7 @@
 <!ENTITY statusbar.noscripts "Скрипте нису инсталисане !">
 <!ENTITY statusbar.enabled "Укључено">
 <!ENTITY statusbar.enabled.accesskey "Е">
-<!ENTITY install.title "Greasemonkey инсталација">
+<!ENTITY install.title "Webmonkey инсталација">
 <!ENTITY install.runson "покреће на:">
 <!ENTITY install.butnoton "не покреће на:">
 <!ENTITY install.warning1 "Злоћудне скрипте могу нарушити твоју приватност и поступати мимо твог знања.">

@@ -23,7 +23,7 @@
 <!ENTITY statusbar.noscripts "Ez dago scriptik instalaturik!">
 <!ENTITY statusbar.enabled "Gaituta">
 <!ENTITY statusbar.enabled.accesskey "G">
-<!ENTITY install.title "Greasemonkeyren Instalaketa">
+<!ENTITY install.title "Webmonkeyren Instalaketa">
 <!ENTITY install.runson "badabil hemen:">
 <!ENTITY install.butnoton "ez dabil hemen:">
 <!ENTITY install.warning1 "Script maltzurrek zure pribatasuna hauts dezakete eta zuk jakin gabe zure izenean jardun.">

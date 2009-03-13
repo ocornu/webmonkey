@@ -23,7 +23,7 @@
 <!ENTITY statusbar.noscripts "Yüklü script bulunamadı!">
 <!ENTITY statusbar.enabled "Geçerli">
 <!ENTITY statusbar.enabled.accesskey "R">
-<!ENTITY install.title "Greasemonkey Kurulumu">
+<!ENTITY install.title "Webmonkey Kurulumu">
 <!ENTITY install.runson "Üstünde çalıştığı:">
 <!ENTITY install.butnoton "Üstünde çalışmadığı:">
 <!ENTITY install.warning1 "Kötü niyetli script&apos;ler gizliliğinizi ihlal edebilir ve siz bilmeden size karşı çalışabilir.">

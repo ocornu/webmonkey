@@ -1,4 +1,5 @@
 <!ENTITY manage.title "Manage User Scripts">
+<!ENTITY manage.button.close "Close">
 <!ENTITY manage.button.add "Add...">
 <!ENTITY manage.button.edit "Edit...">
 <!ENTITY manage.button.remove "Remove">
@@ -22,7 +23,7 @@
 <!ENTITY statusbar.noscripts "No scripts installed!">
 <!ENTITY statusbar.enabled "Enabled">
 <!ENTITY statusbar.enabled.accesskey "E">
-<!ENTITY install.title "Greasemonkey Installation">
+<!ENTITY install.title "Webmonkey Installation">
 <!ENTITY install.runson "runs on:">
 <!ENTITY install.butnoton "does not run on:">
 <!ENTITY install.warning1 "Malicious scripts can violate your privacy and act on your behalf without your knowledge.">
