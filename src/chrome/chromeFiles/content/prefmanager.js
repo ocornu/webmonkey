@@ -4,16 +4,16 @@ GM_PrefManager.MIN_INT_32 = -0x80000000;
 GM_PrefManager.MAX_INT_32 = 0x7FFFFFFF;
 
 /**
- * Simple API on top of preferences for greasemonkey.
+ * Simple API on top of preferences for webmonkey.
  * Construct an instance by passing the startPoint of a preferences subtree.
- * "greasemonkey." prefix is assumed.
+ * "webmonkey." prefix is assumed.
  */
 function GM_PrefManager(startPoint) {
   if (!startPoint) {
     startPoint = "";
   }
 
-  startPoint = "greasemonkey." + startPoint;
+  startPoint = "webmonkey." + startPoint;
 
   var pref = Components.classes["@mozilla.org/preferences-service;1"]
                        .getService(Components.interfaces.nsIPrefService)
