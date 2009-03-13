@@ -1,22 +1,22 @@
 <?xml version="1.0"?>
 
-<!DOCTYPE overlay SYSTEM "chrome://greasemonkey/locale/greasemonkey.dtd">
+<!DOCTYPE overlay SYSTEM "chrome://webmonkey/locale/greasemonkey.dtd">
 
 <!-- Note: Contains Firefox-specific overlay -->
 
 <overlay id="greasemonkey-browser-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/utils.js" />
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/prefmanager.js" />
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/convert2RegExp.js" />
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/menucommander.js" />
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/xmlhttprequester.js" />
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/miscapis.js" />
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/dochandler.js" />
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/scriptdownloader.js" />
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/browser.js" />
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/accelimation.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/utils.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/prefmanager.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/convert2RegExp.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/menucommander.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/xmlhttprequester.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/miscapis.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/dochandler.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/scriptdownloader.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/browser.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/accelimation.js" />
 
   <popup id="contentAreaContextMenu">
     <menuitem id="view-userscript"
@@ -44,8 +44,8 @@
   NOTE: Unlocalized accesskey & label in menu tags; possibly unaccessible
   -->
   <menu id="gm_general_menu" class="menu-iconic"
-    accesskey="G"
-    label="Greasemonkey"
+    accesskey="W"
+    label="Webmonkey"
   >
     <menupopup
       onpopupshowing="GM_showGeneralPopup(event); event.stopPropagation();"
@@ -82,7 +82,7 @@
 
   <statusbar id="status-bar">
     <!-- NOTE: Local to statusbar tag scope -->
-    <stringbundle id="gm-browser-bundle" src="chrome://greasemonkey/locale/gm-browser.properties" />
+    <stringbundle id="gm-browser-bundle" src="chrome://webmonkey/locale/gm-browser.properties" />
 
     <statusbarpanel id="gm-status"
       insertafter="livemark-button"

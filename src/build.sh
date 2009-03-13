@@ -2,10 +2,10 @@
 
 # Set up variables
 GMMAX=${1-0}
-GMMIN=${2-8}
+GMMIN=${2-1}
 GMREL=${3-0}
 GMBUILD=`date +"%Y%m%d"`
-GMNAME=greasemonkey
+GMNAME=webmonkey
 GMVER="$GMMAX.$GMMIN.$GMBUILD.$GMREL"
 GMXPI="$GMNAME-$GMVER.xpi"
 

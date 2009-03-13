@@ -1,4 +1,4 @@
-const GM_GUID = "{e4a8a97b-f2ed-450b-b12d-ee082ba24781}";
+const GM_GUID = "webmonkey@webmonkey.info";
 
 // TODO: properly scope this constant
 const NAMESPACE = "http://youngpup.net/greasemonkey";
@@ -85,7 +85,7 @@ function GM_openUserScriptManager() {
   } else {
     var parentWindow = (!window.opener || window.opener.closed) ?
       window : window.opener;
-    parentWindow.openDialog("chrome://greasemonkey/content/manage.xul",
+    parentWindow.openDialog("chrome://webmonkey/content/manage.xul",
       "_blank", "resizable,dialog=no,centerscreen");
   }
 }
@@ -98,7 +98,7 @@ function openInEditor(script) {
   var stringBundle = Components
     .classes["@mozilla.org/intl/stringbundle;1"]
     .getService(Components.interfaces.nsIStringBundleService)
-    .createBundle("chrome://greasemonkey/locale/gm-browser.properties");
+    .createBundle("chrome://webmonkey/locale/gm-browser.properties");
   var editor = getEditor(stringBundle);
   if (!editor) {
     // The user did not choose an editor.

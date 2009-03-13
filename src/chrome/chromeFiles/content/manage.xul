@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://greasemonkey/content/manage.css" type="text/css"?>
-<?xul-overlay href="chrome://greasemonkey/content/pages-overlay.xul"?>
+<?xml-stylesheet href="chrome://webmonkey/content/manage.css" type="text/css"?>
+<?xul-overlay href="chrome://webmonkey/content/pages-overlay.xul"?>
 
-<!DOCTYPE dialog SYSTEM "chrome://greasemonkey/locale/greasemonkey.dtd">
+<!DOCTYPE dialog SYSTEM "chrome://webmonkey/locale/greasemonkey.dtd">
 
 <window id="greasemonkey"
   windowtype="Greasemonkey:Manage"
@@ -14,11 +14,11 @@
 
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js" />
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js" />
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/utils.js" />
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/prefmanager.js" />
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/manage.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/utils.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/prefmanager.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/manage.js" />
 
-  <stringbundle id="gm-manage-bundle" src="chrome://greasemonkey/locale/gm-manage.properties" />
+  <stringbundle id="gm-manage-bundle" src="chrome://webmonkey/locale/gm-manage.properties" />
 
   <grid flex="1" orient="vertical">
     <columns>

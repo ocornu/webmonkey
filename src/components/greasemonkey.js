@@ -13,7 +13,7 @@ const gmSvcFilename = Components.stack.filename;
 function alert(msg) {
   Cc["@mozilla.org/embedcomp/prompt-service;1"]
     .getService(Ci.nsIPromptService)
-    .alert(null, "Greasemonkey alert", msg);
+    .alert(null, "Webmonkey alert", msg);
 }
 
 // Examines the stack to determine if an API should be callable.
@@ -30,7 +30,7 @@ function GM_apiLeakCheck(apiName) {
       if (stack.filename != null &&
           stack.filename != gmSvcFilename &&
           stack.filename.substr(0, 6) != "chrome") {
-        GM_logError(new Error("Greasemonkey access violation: unsafeWindow " +
+        GM_logError(new Error("Webmonkey access violation: unsafeWindow " +
                     "cannot call " + apiName + "."));
         return false;
       }
@@ -128,23 +128,23 @@ var greasemonkeyService = {
     var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
       .getService(Ci.mozIJSSubScriptLoader);
     loader.loadSubScript("chrome://global/content/XPCNativeWrapper.js");
-    loader.loadSubScript("chrome://greasemonkey/content/prefmanager.js");
-    loader.loadSubScript("chrome://greasemonkey/content/utils.js");
-    loader.loadSubScript("chrome://greasemonkey/content/config.js");
-    loader.loadSubScript("chrome://greasemonkey/content/convert2RegExp.js");
-    loader.loadSubScript("chrome://greasemonkey/content/miscapis.js");
-    loader.loadSubScript("chrome://greasemonkey/content/xmlhttprequester.js");
-    loader.loadSubScript("chrome://greasemonkey/content/updater.js");
+    loader.loadSubScript("chrome://webmonkey/content/prefmanager.js");
+    loader.loadSubScript("chrome://webmonkey/content/utils.js");
+    loader.loadSubScript("chrome://webmonkey/content/config.js");
+    loader.loadSubScript("chrome://webmonkey/content/convert2RegExp.js");
+    loader.loadSubScript("chrome://webmonkey/content/miscapis.js");
+    loader.loadSubScript("chrome://webmonkey/content/xmlhttprequester.js");
+    loader.loadSubScript("chrome://webmonkey/content/updater.js");
     //loggify(this, "GM_GreasemonkeyService");
   },
 
   shouldLoad: function(ct, cl, org, ctx, mt, ext) {
     var ret = Ci.nsIContentPolicy.ACCEPT;
 
-    // block content detection of greasemonkey by denying GM
+    // block content detection of webmonkey by denying GM
     // chrome content, unless loaded from chrome
     if (org && org.scheme != "chrome" && cl.scheme == "chrome" &&
-        cl.host == "greasemonkey") {
+        cl.host == "webmonkey") {
       return Ci.nsIContentPolicy.REJECT_SERVER;
     }
 
@@ -426,7 +426,7 @@ var greasemonkeyService = {
         return findActiveContext();
       }
     } catch (e) {
-      dump('Greasemonkey getFirebugConsole() error:\n'+uneval(e)+'\n');
+      dump('Webmonkey getFirebugConsole() error:\n'+uneval(e)+'\n');
     }
 
 	  return null;

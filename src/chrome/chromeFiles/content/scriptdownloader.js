@@ -225,7 +225,7 @@ ScriptDownloader.prototype.showInstallDialog = function(timer) {
     this.win_.setTimeout(GM_hitch(this, "showInstallDialog", true), 0);
     return;
   }
-  this.win_.openDialog("chrome://greasemonkey/content/install.xul", "",
+  this.win_.openDialog("chrome://webmonkey/content/install.xul", "",
                        "chrome,centerscreen,modal,dialog,titlebar,resizable",
                        this);
 };

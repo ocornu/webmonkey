@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 
-<!DOCTYPE dialog SYSTEM "chrome://greasemonkey/locale/greasemonkey.dtd">
+<!DOCTYPE dialog SYSTEM "chrome://webmonkey/locale/greasemonkey.dtd">
 
 <overlay id="pages-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <stringbundle id="gm-manage-bundle" src="chrome://greasemonkey/locale/gm-manage.properties" />
+  <stringbundle id="gm-manage-bundle" src="chrome://webmonkey/locale/gm-manage.properties" />
 
-  <script type="application/x-javascript" src="chrome://greasemonkey/content/pages-overlay.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/pages-overlay.js" />
 
   <vbox id="pages-control">
     <groupbox id="grpIncluded"
