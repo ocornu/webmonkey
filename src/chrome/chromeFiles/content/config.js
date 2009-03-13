@@ -307,7 +307,7 @@ Config.prototype = {
     this._scripts.splice(idx, 1);
     this._changed(script, "uninstall", null);
 
-    // watch out for cases like basedir="." and basedir="../gm_scripts"
+    // watch out for cases like basedir="." and basedir="../scripts"
     if (!script._basedirFile.equals(this._scriptDir)) {
       // if script has its own dir, remove the dir + contents
       script._basedirFile.remove(true);
@@ -356,7 +356,7 @@ Config.prototype = {
     var file = Components.classes["@mozilla.org/file/directory_service;1"]
                          .getService(Components.interfaces.nsIProperties)
                          .get("ProfD", Components.interfaces.nsILocalFile);
-    file.append("gm_scripts");
+    file.append("scripts");
     return file;
   },
 
@@ -403,7 +403,7 @@ Config.prototype = {
   },
 
   /**
-   * In Greasemonkey 0.8 there was a format change to the gm_scripts folder and
+   * In Greasemonkey 0.8 there was a format change to the scripts folder and
    * testing found several bugs where the entire folder would get nuked. So we
    * are paranoid and backup the folder the first time 0.8 runs.
    */
