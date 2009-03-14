@@ -12,7 +12,7 @@ function GM_isDef(thing) {
 
 function GM_getConfig() {
   return Components
-    .classes["@greasemonkey.mozdev.org/greasemonkey-service;1"]
+    .classes["@webmonkey.info/webmonkey-service;1"]
     .getService(Components.interfaces.gmIGreasemonkeyService)
     .wrappedJSObject.config;
 }

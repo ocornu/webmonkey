@@ -1,6 +1,6 @@
-const CLASSNAME = "GM_GreasemonkeyService";
-const CONTRACTID = "@greasemonkey.mozdev.org/greasemonkey-service;1";
-const CID = Components.ID("{77bf3650-1cd6-11da-8cd6-0800200c9a66}");
+const CLASSNAME = "WebmonkeyService";
+const CONTRACTID = "@webmonkey.info/webmonkey-service;1";
+const CID = Components.ID("{8d26f120-10b8-11de-8c30-0800200c9a66}");
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -42,7 +42,7 @@ function GM_apiLeakCheck(apiName) {
   return true;
 }
 
-var greasemonkeyService = {
+var webmonkeyService = {
   _config: null,
   get config() {
     if (!this._config)
@@ -433,9 +433,9 @@ var greasemonkeyService = {
   }
 };
 
-greasemonkeyService.wrappedJSObject = greasemonkeyService;
+webmonkeyService.wrappedJSObject = webmonkeyService;
 
-//loggify(greasemonkeyService, "greasemonkeyService");
+//loggify(webmonkeyService, "webmonkeyService");
 
 
 
@@ -493,7 +493,7 @@ Factory.createInstance = function(outer, iid) {
     throw Components.results.NS_ERROR_NO_AGGREGATION;
   }
 
-  return greasemonkeyService;
+  return webmonkeyService;
 };
 
 
@@ -501,5 +501,5 @@ function NSGetModule(compMgr, fileSpec) {
   return Module;
 }
 
-//loggify(Module, "greasemonkeyService:Module");
-//loggify(Factory, "greasemonkeyService:Factory");
+//loggify(Module, "webmonkeyService:Module");
+//loggify(Factory, "webmonkeyService:Factory");

@@ -27,7 +27,7 @@ ScriptDownloader.prototype.startDownload = function() {
 
   this.win_.GM_BrowserUI.showStatus("Fetching user script", false);
 
-  Components.classes["@greasemonkey.mozdev.org/greasemonkey-service;1"]
+  Components.classes["@webmonkey.info/webmonkey-service;1"]
     .getService().wrappedJSObject
     .ignoreNextScript();
 
