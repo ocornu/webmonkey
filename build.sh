@@ -13,10 +13,11 @@ GMXPI="$GMNAME-$GMVER.xpi"
 echo "Creating working directory ..."
 rm -rf build
 mkdir build
+cd src
 cp -r chrome.manifest install.rdf license.txt \
 	defaults components chrome \
-	build/
-cd build
+	../build/
+cd ../build
 
 echo "Gathering all locales into chrome.manifest ..."
 GMLOC=\"en-US\"
