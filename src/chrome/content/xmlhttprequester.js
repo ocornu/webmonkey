@@ -95,11 +95,12 @@ function(unsafeContentWin, req, event, details) {
         // let the browser call properties on it
         responseText:req.responseText,
         readyState:req.readyState,
-        responseHeaders:(req.readyState == 4 ?
+        responseHeaders:(req.readyState == 4 && event != "onerror" ?
                          req.getAllResponseHeaders() :
                          ""),
         status:(req.readyState == 4 ? req.status : 0),
-        statusText:(req.readyState == 4 ? req.statusText : ""),
+        statusText:(req.readyState == 4 && event != "onerror" ?
+                    req.statusText : ""),
         finalUrl:(req.readyState == 4 ? req.channel.URI.spec : "")
       }
 
