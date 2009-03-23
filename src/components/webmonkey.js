@@ -349,11 +349,8 @@ var webmonkeyService = {
                          "\n" +
                          contents +
                          "\n";
-      if (this.evalInSandbox(prepareSrc(scriptSrc, script.unwrap),
-                             url, sandbox, script)) continue;
-      // wrap anyway on early return of unwrapped script
-      if (script.unwrap)
-        this.evalInSandbox(prepareSrc(scriptSrc, false), url, sandbox, script);
+      this.evalInSandbox(prepareSrc(scriptSrc, script.unwrap),
+                         url, sandbox, script);
     }
   },
 
