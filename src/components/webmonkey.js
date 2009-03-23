@@ -92,6 +92,14 @@ function prepareSrc(src, unwrap) {
   var pre = "for (var i in GM) eval('var GM_'+i+' = GM[i]');";
   if (unwrap)
     return pre+src;
+  // move API inside script wrapper
+  pre = "const GM = this.GM; delete this.GM; "+pre+"\
+        var window = this.window; delete this.window;\
+        var unsafeWindow = this.unsafeWindow; delete this.unsafeWindow;\
+        var document = this.document; delete this.document;\
+        var XPathResult = this.XPathResult; delete this.XPathResult;\
+        var console = this.console; delete this.console;\
+        ";
   // wrap script into an anonymous function
   return "(function(){"+pre+src+"})()";
 }
