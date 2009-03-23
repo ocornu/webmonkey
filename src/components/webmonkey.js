@@ -163,7 +163,7 @@ var webmonkeyService = {
     if (!this.updater) {
       // Note: the param to this has to match the extension ID in install.rdf
       this.updater = new ExtensionUpdater(
-          "{e4a8a97b-f2ed-450b-b12d-ee082ba24781}");
+          "webmonkey@webmonkey.info");
       this.updater.updatePeriodically();
     }
   },
