@@ -87,6 +87,15 @@ function getFirebugConsole(safeWin, unsafeWin, chromeWin) {
   return null;
 }
 
+function prepareSrc(src, unwrap) {
+  // unfold legacy API
+  var pre = "for (var i in GM) eval('var GM_'+i+' = GM[i]');";
+  if (unwrap)
+    return pre+src;
+  // wrap script into an anonymous function
+  return "(function(){"+pre+src+"})()";
+}
+
 var webmonkeyService = {
   _config: null,
   get config() {
@@ -289,24 +298,24 @@ var webmonkeyService = {
       sandbox.window = safeWin;
       sandbox.document = sandbox.window.document;
       sandbox.unsafeWindow = unsafeContentWin;
-
+      sandbox.console = console;
       // hack XPathResult since that is so commonly used
       sandbox.XPathResult = Ci.nsIDOMXPathResult;
 
       // add our own APIs
-      sandbox.GM_addStyle = function(css) { GM_addStyle(safeDoc, css) };
-      sandbox.GM_log = GM_hitch(logger, "log");
-      sandbox.console = console;
-      sandbox.GM_setValue = GM_hitch(storage, "setValue");
-      sandbox.GM_getValue = GM_hitch(storage, "getValue");
-      sandbox.GM_deleteValue = GM_hitch(storage, "deleteValue");
-      sandbox.GM_listValues = GM_hitch(storage, "listValues");
-      sandbox.GM_getResourceURL = GM_hitch(resources, "getResourceURL");
-      sandbox.GM_getResourceText = GM_hitch(resources, "getResourceText");
-      sandbox.GM_openInTab = GM_hitch(this, "openInTab", unsafeContentWin);
-      sandbox.GM_xmlhttpRequest = GM_hitch(xmlhttpRequester,
+      var GM = sandbox.GM = {};
+      GM.addStyle = function(css) { GM_addStyle(safeDoc, css) };
+      GM.log = GM_hitch(logger, "log");
+      GM.setValue = GM_hitch(storage, "setValue");
+      GM.getValue = GM_hitch(storage, "getValue");
+      GM.deleteValue = GM_hitch(storage, "deleteValue");
+      GM.listValues = GM_hitch(storage, "listValues");
+      GM.getResourceURL = GM_hitch(resources, "getResourceURL");
+      GM.getResourceText = GM_hitch(resources, "getResourceText");
+      GM.openInTab = GM_hitch(this, "openInTab", unsafeContentWin);
+      GM.xmlhttpRequest = GM_hitch(xmlhttpRequester,
                                            "contentStartRequest");
-      sandbox.GM_registerMenuCommand = GM_hitch(this,
+      GM.registerMenuCommand = GM_hitch(this,
                                                 "registerMenuCommand",
                                                 unsafeContentWin);
 
@@ -332,11 +341,11 @@ var webmonkeyService = {
                          "\n" +
                          contents +
                          "\n";
-      if (!script.unwrap)
-        scriptSrc = "(function(){"+ scriptSrc +"})()";
-      if (!this.evalInSandbox(scriptSrc, url, sandbox, script) && script.unwrap)
-        this.evalInSandbox("(function(){"+ scriptSrc +"})()",
-                           url, sandbox, script); // wrap anyway on early return
+      if (this.evalInSandbox(prepareSrc(scriptSrc, script.unwrap),
+                             url, sandbox, script)) continue;
+      // wrap anyway on early return of unwrapped script
+      if (script.unwrap)
+        this.evalInSandbox(prepareSrc(scriptSrc, false), url, sandbox, script);
     }
   },
 
