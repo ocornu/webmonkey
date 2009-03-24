@@ -54,13 +54,13 @@ WebmonkeyService.prototype = {
     var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
                  .getService(Ci.mozIJSSubScriptLoader);
     loader.loadSubScript("chrome://global/content/XPCNativeWrapper.js");
-    loader.loadSubScript("chrome://webmonkey/content/prefmanager.js");
-    loader.loadSubScript("chrome://webmonkey/content/utils.js");
-    loader.loadSubScript("chrome://webmonkey/content/config.js");
-    loader.loadSubScript("chrome://webmonkey/content/convert2RegExp.js");
-    loader.loadSubScript("chrome://webmonkey/content/miscapis.js");
-    loader.loadSubScript("chrome://webmonkey/content/xmlhttprequester.js");
-    loader.loadSubScript("chrome://webmonkey/content/updater.js");
+    loader.loadSubScript("chrome://webmonkey/content/utils/prefmanager.js");
+    loader.loadSubScript("chrome://webmonkey/content/utils/utils.js");
+    loader.loadSubScript("chrome://webmonkey/content/utils/config.js");
+    loader.loadSubScript("chrome://webmonkey/content/utils/convert2RegExp.js");
+    loader.loadSubScript("chrome://webmonkey/content/utils/miscapis.js");
+    loader.loadSubScript("chrome://webmonkey/content/utils/xmlhttprequester.js");
+    loader.loadSubScript("chrome://webmonkey/content/utils/updater.js");
   },
 
 

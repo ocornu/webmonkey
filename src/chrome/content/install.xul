@@ -24,9 +24,9 @@
 
   <stringbundle id="gm-browser-bundle" src="chrome://webmonkey/locale/gm-browser.properties" />
 
-  <script type="application/x-javascript" src="chrome://webmonkey/content/utils.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/scriptdownloader.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/prefmanager.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/utils.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/scriptdownloader.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/prefmanager.js" />
   <script type="application/x-javascript" src="chrome://webmonkey/content/install.js" />
 
   <vbox id="dialogContentBox"

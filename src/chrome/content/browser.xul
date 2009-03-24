@@ -7,16 +7,15 @@
 <overlay id="greasemonkey-browser-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script type="application/x-javascript" src="chrome://webmonkey/content/utils.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/prefmanager.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/convert2RegExp.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/menucommander.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/xmlhttprequester.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/miscapis.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/dochandler.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/scriptdownloader.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/utils.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/prefmanager.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/convert2RegExp.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/menucommander.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/xmlhttprequester.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/miscapis.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/scriptdownloader.js" />
   <script type="application/x-javascript" src="chrome://webmonkey/content/browser.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/accelimation.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/accelimation.js" />
 
   <popup id="contentAreaContextMenu">
     <menuitem id="view-userscript"
