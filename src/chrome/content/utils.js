@@ -1,10 +1,35 @@
 const GM_GUID = "webmonkey@webmonkey.info";
 
-// TODO: properly scope this constant
-const NAMESPACE = "http://youngpup.net/greasemonkey";
-
 var GM_consoleService = Components.classes["@mozilla.org/consoleservice;1"]
                         .getService(Components.interfaces.nsIConsoleService);
+
+/**
+ * Examines the stack to determine if an API should be callable.
+ */
+function GM_apiLeakCheck(apiName) {
+  var stack = Components.stack;
+
+  do {
+    // Valid stack frames for GM api calls are: native and js when coming from
+    // chrome:// URLs and the greasemonkey.js component's file:// URL.
+    if (2 == stack.language) {
+      // NOTE: In FF 2.0.0.0, I saw that stack.filename can be null for JS/XPCOM
+      // services. This didn't happen in FF 2.0.0.11; I'm not sure when it
+      // changed.
+      if (stack.filename != null &&
+          stack.filename != gmSvcFilename &&
+          stack.filename.substr(0, 6) != "chrome") {
+        GM_logError(new Error("Webmonkey access violation: unsafeWindow " +
+                    "cannot call " + apiName + "."));
+        return false;
+      }
+    }
+
+    stack = stack.caller;
+  } while (stack);
+
+  return true;
+}
 
 function GM_isDef(thing) {
   return typeof(thing) != "undefined";
@@ -302,6 +327,12 @@ function GM_compareVersions(aV1, aV2) {
 
   // v2 was never higher or lower than v1
   return 0;
+}
+
+function alert(msg) {
+  Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+    .getService(Components.interfaces.nsIPromptService)
+    .alert(null, "Webmonkey alert", msg);
 }
 
 /**

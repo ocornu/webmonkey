@@ -12,100 +12,6 @@ const gmSvcFilename = Components.stack.filename;
 
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
-function alert(msg) {
-  Cc["@mozilla.org/embedcomp/prompt-service;1"]
-    .getService(Ci.nsIPromptService)
-    .alert(null, "Webmonkey alert", msg);
-}
-
-// Examines the stack to determine if an API should be callable.
-function GM_apiLeakCheck(apiName) {
-  var stack = Components.stack;
-
-  do {
-    // Valid stack frames for GM api calls are: native and js when coming from
-    // chrome:// URLs and the greasemonkey.js component's file:// URL.
-    if (2 == stack.language) {
-      // NOTE: In FF 2.0.0.0, I saw that stack.filename can be null for JS/XPCOM
-      // services. This didn't happen in FF 2.0.0.11; I'm not sure when it
-      // changed.
-      if (stack.filename != null &&
-          stack.filename != gmSvcFilename &&
-          stack.filename.substr(0, 6) != "chrome") {
-        GM_logError(new Error("Webmonkey access violation: unsafeWindow " +
-                    "cannot call " + apiName + "."));
-        return false;
-      }
-    }
-
-    stack = stack.caller;
-  } while (stack);
-
-  return true;
-}
-
-/**
- * FireBug 1.2+ console support
- */
-function getFirebugConsole(safeWin, unsafeWin, chromeWin) {
-  try {
-    chromeWin = chromeWin.top;
-    // assert FB is installed
-    if (!chromeWin.Firebug)
-      return null;
-    var fbVersion = parseFloat(chromeWin.Firebug.version);
-    var fbConsole = chromeWin.Firebug.Console;
-    var fbContext = chromeWin.TabWatcher &&
-                    chromeWin.TabWatcher.getContextByWindow(unsafeWin);
-    // assert FB is enabled
-    if (!fbConsole.isEnabled(fbContext))
-      return null;
-
-    if (fbVersion == 1.2) {
-      // search console handler
-      if (fbContext.consoleHandler)
-        for (var i = 0; i < fbContext.consoleHandler.length; i++)
-          if (fbContext.consoleHandler[i].window == safeWin)
-            return fbContext.consoleHandler[i].handler;
-      var dummyElm = safeWin.document.createElement("div");
-      dummyElm.setAttribute("id", "_firebugConsole");
-      safeWin.document.documentElement.appendChild(dummyElm);
-      chromeWin.Firebug.Console.injector.addConsoleListener(fbContext, safeWin);
-      dummyElm.parentNode.removeChild(dummyElm);
-      return fbContext.consoleHandler.pop().handler;
-    }
-
-    if (fbVersion == 1.3 || fbVersion == 1.4) {
-      fbConsole.injector.attachIfNeeded(fbContext, unsafeWin);
-      // find active context
-      for (var i=0; i<fbContext.activeConsoleHandlers.length; i++)
-        if (fbContext.activeConsoleHandlers[i].window == unsafeWin)
-          return fbContext.activeConsoleHandlers[i];
-      return null;
-    }
-  } catch (e) {
-    dump('Webmonkey getFirebugConsole() error:\n'+uneval(e)+'\n');
-  }
-  return null;
-}
-
-function prepareSrc(src, unwrap) {
-  // unfold legacy API
-  var pre = "for (var i in GM) eval('var GM_'+i+' = GM[i]');";
-  if (unwrap)
-    return pre+src;
-  // move API inside script wrapper
-  pre = "const GM = this.GM; delete this.GM; "+pre+"\
-        var window = this.window; delete this.window;\
-        var unsafeWindow = this.unsafeWindow; delete this.unsafeWindow;\
-        var document = this.document; delete this.document;\
-        var XPathResult = this.XPathResult; delete this.XPathResult;\
-        var console = this.console; delete this.console;\
-        ";
-  // wrap script into an anonymous function
-  return "(function(){"+pre+src+"})()";
-}
-
 
 //class constructor
 function WebmonkeyService() {
@@ -126,6 +32,11 @@ WebmonkeyService.prototype = {
                        entry: CONTRACTID,
                        value: CONTRACTID,
                        service: true}],
+
+
+/***********************************************************
+  nsISupports
+***********************************************************/
   QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver,
                                          Ci.nsISupports,
                                          Ci.nsISupportsWeakReference,
@@ -133,27 +44,29 @@ WebmonkeyService.prototype = {
                                          Ci.nsIWindowMediatorListener,
                                          Ci.nsIContentPolicy]),
 
-  // ...component implementation...
-  // define the function we want to expose in our interface
-  _config: null,
-  get config() {
-    if (!this._config)
-      this._config = new Config();
-    return this._config;
-  },
-  browserWindows: [],
-  updater: null,
 
-
-  // nsIObserver
+/***********************************************************
+  nsIObserver
+***********************************************************/
   observe: function(aSubject, aTopic, aData) {
-    if (aTopic == "app-startup") {
-      this.startup();
-    }
+    if (aTopic != "app-startup")
+      return;
+    var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
+                 .getService(Ci.mozIJSSubScriptLoader);
+    loader.loadSubScript("chrome://global/content/XPCNativeWrapper.js");
+    loader.loadSubScript("chrome://webmonkey/content/prefmanager.js");
+    loader.loadSubScript("chrome://webmonkey/content/utils.js");
+    loader.loadSubScript("chrome://webmonkey/content/config.js");
+    loader.loadSubScript("chrome://webmonkey/content/convert2RegExp.js");
+    loader.loadSubScript("chrome://webmonkey/content/miscapis.js");
+    loader.loadSubScript("chrome://webmonkey/content/xmlhttprequester.js");
+    loader.loadSubScript("chrome://webmonkey/content/updater.js");
   },
 
 
-  // gmIGreasemonkeyService
+/***********************************************************
+  gmIGreasemonkeyService
+***********************************************************/
   registerBrowser: function(browserWin) {
     var existing;
 
@@ -201,20 +114,9 @@ WebmonkeyService.prototype = {
   },
 
 
-  startup: function() {
-    var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
-      .getService(Ci.mozIJSSubScriptLoader);
-    loader.loadSubScript("chrome://global/content/XPCNativeWrapper.js");
-    loader.loadSubScript("chrome://webmonkey/content/prefmanager.js");
-    loader.loadSubScript("chrome://webmonkey/content/utils.js");
-    loader.loadSubScript("chrome://webmonkey/content/config.js");
-    loader.loadSubScript("chrome://webmonkey/content/convert2RegExp.js");
-    loader.loadSubScript("chrome://webmonkey/content/miscapis.js");
-    loader.loadSubScript("chrome://webmonkey/content/xmlhttprequester.js");
-    loader.loadSubScript("chrome://webmonkey/content/updater.js");
-    //loggify(this, "GM_GreasemonkeyService");
-  },
-
+/***********************************************************
+  nsIContentPolicy
+***********************************************************/
   shouldLoad: function(ct, cl, org, ctx, mt, ext) {
     var ret = Ci.nsIContentPolicy.ACCEPT;
 
@@ -262,6 +164,19 @@ WebmonkeyService.prototype = {
   shouldProcess: function(ct, cl, org, ctx, mt, ext) {
     return Ci.nsIContentPolicy.ACCEPT;
   },
+
+
+/***********************************************************
+  Other
+***********************************************************/
+  _config: null,
+  get config() {
+    if (!this._config)
+      this._config = new Config();
+    return this._config;
+  },
+  browserWindows: [],
+  updater: null,
 
   ignoreNextScript: function() {
     dump("ignoring next script...\n");
@@ -367,6 +282,68 @@ WebmonkeyService.prototype = {
       this.evalInSandbox(prepareSrc(scriptSrc, script.unwrap),
                          url, sandbox, script);
     }
+
+    // FireBug 1.2+ console support
+    function getFirebugConsole(safeWin, unsafeWin, chromeWin) {
+      try {
+        chromeWin = chromeWin.top;
+        // assert FB is installed
+        if (!chromeWin.Firebug)
+          return null;
+        var fbVersion = parseFloat(chromeWin.Firebug.version);
+        var fbConsole = chromeWin.Firebug.Console;
+        var fbContext = chromeWin.TabWatcher &&
+                        chromeWin.TabWatcher.getContextByWindow(unsafeWin);
+        // assert FB is enabled
+        if (!fbConsole.isEnabled(fbContext))
+          return null;
+
+        if (fbVersion == 1.2) {
+          // search console handler
+          if (fbContext.consoleHandler)
+            for (var i = 0; i < fbContext.consoleHandler.length; i++)
+              if (fbContext.consoleHandler[i].window == safeWin)
+                return fbContext.consoleHandler[i].handler;
+          var dummyElm = safeWin.document.createElement("div");
+          dummyElm.setAttribute("id", "_firebugConsole");
+          safeWin.document.documentElement.appendChild(dummyElm);
+          chromeWin.Firebug.Console.injector.addConsoleListener(fbContext, safeWin);
+          dummyElm.parentNode.removeChild(dummyElm);
+          return fbContext.consoleHandler.pop().handler;
+        }
+
+        if (fbVersion == 1.3 || fbVersion == 1.4) {
+          fbConsole.injector.attachIfNeeded(fbContext, unsafeWin);
+          // find active context
+          for (var i=0; i<fbContext.activeConsoleHandlers.length; i++)
+            if (fbContext.activeConsoleHandlers[i].window == unsafeWin)
+              return fbContext.activeConsoleHandlers[i];
+          return null;
+        }
+      } catch (e) {
+        dump('Webmonkey getFirebugConsole() error:\n'+uneval(e)+'\n');
+      }
+      return null;
+    }
+
+    
+    // Prepare script source for injection 
+    function prepareSrc(src, unwrap) {
+      // unfold legacy API
+      var pre = "for (var i in GM) eval('var GM_'+i+' = GM[i]');";
+      if (unwrap)
+        return pre+src;
+      // move API inside script wrapper
+      pre = "const GM = this.GM; delete this.GM; "+pre+"\
+            var window = this.window; delete this.window;\
+            var unsafeWindow = this.unsafeWindow; delete this.unsafeWindow;\
+            var document = this.document; delete this.document;\
+            var XPathResult = this.XPathResult; delete this.XPathResult;\
+            var console = this.console; delete this.console;\
+            ";
+      // wrap script into an anonymous function
+      return "(function(){"+pre+src+"})()";
+    }
   },
 
   registerMenuCommand: function(unsafeContentWin, commandName, commandFunc,
@@ -421,37 +398,38 @@ WebmonkeyService.prototype = {
       }
 
       if (line) {
-        var err = this.findError(script, line - lineFinder.lineNumber - 1);
+        var err = findError(script, line - lineFinder.lineNumber - 1);
         GM_logError(e, 0, err.uri, err.lineNumber);
       } else {
         GM_logError(e, 0, script.fileURL, 0);
       }
       return true;
     }
-  },
 
-  findError: function(script, lineNumber){
-    var start = 0;
-    var end = 1;
+    function findError(script, lineNumber){
+      var start = 0;
+      var end = 1;
 
-    for (var i = 0; i < script.offsets.length; i++) {
-      end = script.offsets[i];
-      if (lineNumber < end) {
-        return {
-          uri: script.requires[i].fileURL,
-          lineNumber: (lineNumber - start)
-        };
+      for (var i = 0; i < script.offsets.length; i++) {
+        end = script.offsets[i];
+        if (lineNumber < end) {
+          return {
+            uri: script.requires[i].fileURL,
+            lineNumber: (lineNumber - start)
+          };
+        }
+        start = end;
       }
-      start = end;
-    }
 
-    return {
-      uri: script.fileURL,
-      lineNumber: (lineNumber - end)
-    };
+      return {
+        uri: script.fileURL,
+        lineNumber: (lineNumber - end)
+      };
+    }
   }
 
 };
+
 
 var components = [WebmonkeyService];
 function NSGetModule(compMgr, fileSpec) {
