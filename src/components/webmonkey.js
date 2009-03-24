@@ -10,6 +10,8 @@ const appSvc = Cc["@mozilla.org/appshell/appShellService;1"]
 
 const gmSvcFilename = Components.stack.filename;
 
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+
 function alert(msg) {
   Cc["@mozilla.org/embedcomp/prompt-service;1"]
     .getService(Ci.nsIPromptService)
@@ -104,7 +106,35 @@ function prepareSrc(src, unwrap) {
   return "(function(){"+pre+src+"})()";
 }
 
-var webmonkeyService = {
+
+//class constructor
+function WebmonkeyService() {
+  this.wrappedJSObject = this;
+}
+
+// class definition
+WebmonkeyService.prototype = {
+  // properties required for XPCOM registration:
+  classDescription: CLASSNAME,
+  classID:          CID,
+  contractID:       CONTRACTID,
+  _xpcom_categories: [{category: "app-startup",
+                       entry: CLASSNAME,
+                       value: CONTRACTID,
+                       service: true},
+                      {category: "content-policy",
+                       entry: CONTRACTID,
+                       value: CONTRACTID,
+                       service: true}],
+  QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver,
+                                         Ci.nsISupports,
+                                         Ci.nsISupportsWeakReference,
+                                         Ci.gmIGreasemonkeyService,
+                                         Ci.nsIWindowMediatorListener,
+                                         Ci.nsIContentPolicy]),
+
+  // ...component implementation...
+  // define the function we want to expose in our interface
   _config: null,
   get config() {
     if (!this._config)
@@ -113,21 +143,6 @@ var webmonkeyService = {
   },
   browserWindows: [],
   updater: null,
-
-
-  // nsISupports
-  QueryInterface: function(aIID) {
-    if (!aIID.equals(Ci.nsIObserver) &&
-        !aIID.equals(Ci.nsISupports) &&
-        !aIID.equals(Ci.nsISupportsWeakReference) &&
-        !aIID.equals(Ci.gmIGreasemonkeyService) &&
-        !aIID.equals(Ci.nsIWindowMediatorListener) &&
-        !aIID.equals(Ci.nsIContentPolicy)) {
-      throw Components.results.NS_ERROR_NO_INTERFACE;
-    }
-
-    return this;
-  },
 
 
   // nsIObserver
@@ -438,73 +453,8 @@ var webmonkeyService = {
 
 };
 
-webmonkeyService.wrappedJSObject = webmonkeyService;
-
-//loggify(webmonkeyService, "webmonkeyService");
-
-
-
-/**
- * XPCOM Registration goop
- */
-var Module = new Object();
-
-Module.registerSelf = function(compMgr, fileSpec, location, type) {
-  compMgr = compMgr.QueryInterface(Ci.nsIComponentRegistrar);
-  compMgr.registerFactoryLocation(CID,
-                                  CLASSNAME,
-                                  CONTRACTID,
-                                  fileSpec,
-                                  location,
-                                  type);
-
-  var catMgr = Cc["@mozilla.org/categorymanager;1"]
-                 .getService(Ci.nsICategoryManager);
-
-  catMgr.addCategoryEntry("app-startup",
-                          CLASSNAME,
-                          CONTRACTID,
-                          true,
-                          true);
-
-  catMgr.addCategoryEntry("content-policy",
-                          CONTRACTID,
-                          CONTRACTID,
-                          true,
-                          true);
-};
-
-Module.getClassObject = function(compMgr, cid, iid) {
-  if (!cid.equals(CID)) {
-    throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
-  }
-
-  if (!iid.equals(Ci.nsIFactory)) {
-    throw Components.results.NS_ERROR_NO_INTERFACE;
-  }
-
-  return Factory;
-};
-
-Module.canUnload = function(compMgr) {
-  return true;
-};
-
-
-var Factory = new Object();
-
-Factory.createInstance = function(outer, iid) {
-  if (outer != null) {
-    throw Components.results.NS_ERROR_NO_AGGREGATION;
-  }
-
-  return webmonkeyService;
-};
-
-
+var components = [WebmonkeyService];
 function NSGetModule(compMgr, fileSpec) {
-  return Module;
+  return XPCOMUtils.generateModule(components);
 }
 
-//loggify(Module, "webmonkeyService:Module");
-//loggify(Factory, "webmonkeyService:Factory");
