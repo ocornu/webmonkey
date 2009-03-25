@@ -11,7 +11,7 @@
     <em:creator>Olivier Cornu</em:creator>
     <em:homepageURL>http://webmonkey.info</em:homepageURL>
     <em:optionsURL>chrome://webmonkey/content/manage.xul</em:optionsURL>
-    <em:iconURL>chrome://webmonkey/content/icon_medium.png</em:iconURL>
+    <em:iconURL>chrome://webmonkey/content/icons/icon_medium.png</em:iconURL>
 
     <em:name>Webmonkey</em:name>
     <em:description>Customize web sites with user-scripts</em:description>
