@@ -41,7 +41,6 @@ WebmonkeyService.prototype = {
                                          Ci.nsISupports,
                                          Ci.nsISupportsWeakReference,
                                          Ci.gmIGreasemonkeyService,
-                                         Ci.nsIWindowMediatorListener,
                                          Ci.nsIContentPolicy]),
 
 
@@ -82,10 +81,9 @@ WebmonkeyService.prototype = {
   },
 
   unregisterBrowser: function(browserWin) {
-    for each (var existing in this.browserWindows)
-      if (existing == browserWin)
-        return this.browserWindows.splice(i, 1);
-    throw new Error("Browser window is not registered.");
+    var i = this.browserWindows.indexOf(browserWin);
+    if (i<0) throw new Error("Browser window is not registered.");
+    this.browserWindows.splice(i, 1);
   },
 
   domContentLoaded: function(wrappedContentWin, chromeWin) {
