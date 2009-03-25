@@ -40,7 +40,6 @@ WebmonkeyService.prototype = {
   QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver,
                                          Ci.nsISupports,
                                          Ci.nsISupportsWeakReference,
-                                         Ci.gmIGreasemonkeyService,
                                          Ci.nsIContentPolicy]),
 
 
@@ -63,8 +62,73 @@ WebmonkeyService.prototype = {
 
 
 /***********************************************************
-  gmIGreasemonkeyService
+  nsIContentPolicy
 ***********************************************************/
+  shouldLoad: function(ct, cl, org, ctx, mt, ext) {
+    var ret = Ci.nsIContentPolicy.ACCEPT;
+
+    // block content detection of webmonkey by denying GM
+    // chrome content, unless loaded from chrome
+    if (org && org.scheme != "chrome" && cl.scheme == "chrome" &&
+        cl.host == "webmonkey")
+      return Ci.nsIContentPolicy.REJECT_SERVER;
+
+    // don't intercept anything when GM is not enabled
+    if (!GM_getEnabled()) return ret;
+
+    // don't interrupt the view-source: scheme
+    // (triggered if the link in the error console is clicked)
+    if (cl.scheme == "view-source") return ret;
+
+    if (ct == Ci.nsIContentPolicy.TYPE_DOCUMENT && cl.spec.match(/\.user\.js$/)
+        && !this._ignoreNextScript && !this.isTempScript(cl)) {
+      var winWat = Cc["@mozilla.org/embedcomp/window-watcher;1"]
+                   .getService(Ci.nsIWindowWatcher);
+      if (winWat.activeWindow && winWat.activeWindow.GM_BrowserUI) {
+        winWat.activeWindow.GM_BrowserUI.startInstallScript(cl);
+        ret = Ci.nsIContentPolicy.REJECT_REQUEST;
+      }
+    }
+
+    this._ignoreNextScript = false;
+    return ret;
+
+    function isTempScript(uri) {
+      if (uri.scheme != "file") return false;
+      var file   = Cc["@mozilla.org/network/protocol;1?name=file"]
+                   .getService(Ci.nsIFileProtocolHandler)
+                   .getFileFromURLSpec(uri.spec);
+      var tmpDir = Cc["@mozilla.org/file/directory_service;1"]
+                   .getService(Ci.nsIProperties)
+                   .get("TmpD", Ci.nsILocalFile);
+      return file.parent.equals(tmpDir) && file.leafName != "newscript.user.js";
+    }
+  },
+
+  shouldProcess: function(ct, cl, org, ctx, mt, ext) {
+    return Ci.nsIContentPolicy.ACCEPT;
+  },
+
+
+/***********************************************************
+  Other
+***********************************************************/
+  _config: null,
+  get config() {
+    if (!this._config)
+      this._config = new Config();
+    return this._config;
+  },
+
+  _ignoreNextScript: false,
+  ignoreNextScript: function() {
+    dump("ignoring next script...\n");
+    this._ignoreNextScript = true;
+  },
+
+  browserWindows: [],
+  updater: null,
+
   registerBrowser: function(browserWin) {
     for each (var existing in this.browserWindows)
       if (existing == browserWin)
@@ -143,75 +207,6 @@ WebmonkeyService.prototype = {
       return null;
     }
   },
-
-
-/***********************************************************
-  nsIContentPolicy
-***********************************************************/
-  shouldLoad: function(ct, cl, org, ctx, mt, ext) {
-    var ret = Ci.nsIContentPolicy.ACCEPT;
-
-    // block content detection of webmonkey by denying GM
-    // chrome content, unless loaded from chrome
-    if (org && org.scheme != "chrome" && cl.scheme == "chrome" &&
-        cl.host == "webmonkey")
-      return Ci.nsIContentPolicy.REJECT_SERVER;
-
-    // don't intercept anything when GM is not enabled
-    if (!GM_getEnabled()) return ret;
-
-    // don't interrupt the view-source: scheme
-    // (triggered if the link in the error console is clicked)
-    if (cl.scheme == "view-source") return ret;
-
-    if (ct == Ci.nsIContentPolicy.TYPE_DOCUMENT && cl.spec.match(/\.user\.js$/)
-        && !this._ignoreNextScript && !this.isTempScript(cl)) {
-      var winWat = Cc["@mozilla.org/embedcomp/window-watcher;1"]
-                   .getService(Ci.nsIWindowWatcher);
-      if (winWat.activeWindow && winWat.activeWindow.GM_BrowserUI) {
-        winWat.activeWindow.GM_BrowserUI.startInstallScript(cl);
-        ret = Ci.nsIContentPolicy.REJECT_REQUEST;
-      }
-    }
-
-    this._ignoreNextScript = false;
-    return ret;
-
-    function isTempScript(uri) {
-      if (uri.scheme != "file") return false;
-      var file   = Cc["@mozilla.org/network/protocol;1?name=file"]
-                   .getService(Ci.nsIFileProtocolHandler)
-                   .getFileFromURLSpec(uri.spec);
-      var tmpDir = Cc["@mozilla.org/file/directory_service;1"]
-                   .getService(Ci.nsIProperties)
-                   .get("TmpD", Ci.nsILocalFile);
-      return file.parent.equals(tmpDir) && file.leafName != "newscript.user.js";
-    }
-  },
-
-  shouldProcess: function(ct, cl, org, ctx, mt, ext) {
-    return Ci.nsIContentPolicy.ACCEPT;
-  },
-
-
-/***********************************************************
-  Other
-***********************************************************/
-  _config: null,
-  get config() {
-    if (!this._config)
-      this._config = new Config();
-    return this._config;
-  },
-
-  _ignoreNextScript: false,
-  ignoreNextScript: function() {
-    dump("ignoring next script...\n");
-    this._ignoreNextScript = true;
-  },
-
-  browserWindows: [],
-  updater: null,
 
   inject: function(script, safeWin, chromeWin, fbConsole) {
     var sandbox   = new Components.utils.Sandbox(safeWin);

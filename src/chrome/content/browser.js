@@ -86,7 +86,7 @@ GM_BrowserUI.chromeLoad = function(e) {
 
   // register for notifications from greasemonkey-service about ui type things
   this.gmSvc = Components.classes["@webmonkey.info/webmonkey-service;1"]
-                         .getService(Components.interfaces.gmIGreasemonkeyService);
+               .getService().wrappedJSObject;
 
   this.gmSvc.registerBrowser(this);
 };
