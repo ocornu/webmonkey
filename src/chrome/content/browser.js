@@ -10,7 +10,6 @@ var GM_BrowserUI = new Object();
  */
 GM_BrowserUI.QueryInterface = function(aIID) {
   if (!aIID.equals(Components.interfaces.nsISupports) &&
-      !aIID.equals(Components.interfaces.gmIBrowserWindow) &&
       !aIID.equals(Components.interfaces.nsISupportsWeakReference) &&
       !aIID.equals(Components.interfaces.nsIWebProgressListener))
     throw Components.results.NS_ERROR_NO_INTERFACE;
@@ -92,7 +91,7 @@ GM_BrowserUI.chromeLoad = function(e) {
 };
 
 /**
- * gmIBrowserWindow.registerMenuCommand
+ * registerMenuCommand
  */
 GM_BrowserUI.registerMenuCommand = function(menuCommand) {
   if (this.isMyWindow(menuCommand.window)) {
@@ -107,7 +106,7 @@ GM_BrowserUI.registerMenuCommand = function(menuCommand) {
 };
 
 /**
- * gmIBrowserWindow.openInTab
+ * openInTab
  */
 GM_BrowserUI.openInTab = function(domWindow, url) {
   if (this.isMyWindow(domWindow)) {
