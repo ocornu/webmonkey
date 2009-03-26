@@ -160,9 +160,9 @@ WebmonkeyService.prototype = {
     // assert there are scripts to inject
     if (!scripts.length) return;
 
-    var firebug   = getFirebugConsole(safeWin, unsafeWin, chromeWin);
+    var firebug = getFirebugConsole(safeWin, unsafeWin, chromeWin);
     for each (var script in scripts)
-      this.inject(script, safeWin, chromeWin, firebug);
+      this.inject(script, safeWin, firebug);
 
     // FireBug 1.2+ console support
     function getFirebugConsole(safeWin, unsafeWin, chromeWin) {
@@ -208,7 +208,7 @@ WebmonkeyService.prototype = {
     }
   },
 
-  inject: function(script, safeWin, chromeWin, fbConsole) {
+  inject: function(script, safeWin, fbConsole) {
     var sandbox   = new Components.utils.Sandbox(safeWin);
     var logger    = new GM_ScriptLogger(script);
     var console   = fbConsole ? fbConsole : new GM_console(script);
@@ -236,7 +236,7 @@ WebmonkeyService.prototype = {
     GM.openInTab           = GM_hitch(this, "openInTab", unsafeWin);
     GM.xmlhttpRequest      = GM_hitch(xhr, "contentStartRequest");
     GM.registerMenuCommand = GM_hitch(this, "registerMenuCommand", unsafeWin);
-    sandbox.__proto__    = safeWin;
+    sandbox.__proto__ = safeWin;
 
     // compile @requires
     var requires = [];
