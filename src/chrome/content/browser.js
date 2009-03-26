@@ -86,32 +86,24 @@ GM_BrowserUI.chromeLoad = function(e) {
   // register for notifications from greasemonkey-service about ui type things
   this.gmSvc = Components.classes["@webmonkey.info/webmonkey-service;1"]
                .getService().wrappedJSObject;
-
-  this.gmSvc.registerBrowser(this);
 };
 
 /**
  * registerMenuCommand
  */
-GM_BrowserUI.registerMenuCommand = function(menuCommand) {
-  if (this.isMyWindow(menuCommand.window)) {
-    var commander = this.getCommander(menuCommand.window);
-
-    commander.registerMenuCommand(menuCommand.name,
-                                  menuCommand.doCommand,
-                                  menuCommand.accelKey,
-                                  menuCommand.accelModifiers,
-                                  menuCommand.accessKey);
-  }
+GM_BrowserUI.registerMenuCommand = function(unsafeWin, commandName, callback,
+                                            accelKey, accelModifiers,
+                                            accessKey) {
+  var commander = this.getCommander(unsafeWinw);
+  commander.registerMenuCommand(commandName, callback, accelKey,
+                                accelModifiers, accessKey);
 };
 
 /**
  * openInTab
  */
-GM_BrowserUI.openInTab = function(domWindow, url) {
-  if (this.isMyWindow(domWindow)) {
-    this.tabBrowser.addTab(url);
-  }
+GM_BrowserUI.openInTab = function(url) {
+  this.tabBrowser.addTab(url);
 };
 
 /**
@@ -142,7 +134,7 @@ GM_BrowserUI.contentLoad = function(e) {
       this.currentMenuCommander.attach();
     }
 
-    this.gmSvc.domContentLoaded({ wrappedJSObject: unsafeWin }, window);
+    this.gmSvc.domContentLoaded(unsafeWin, window, this);
 
     GM_listen(unsafeWin, "pagehide", GM_hitch(this, "contentUnload"));
   }
@@ -321,7 +313,6 @@ GM_BrowserUI.contentUnload = function(e) {
 GM_BrowserUI.chromeUnload = function() {
   GM_prefRoot.unwatch("enabled", this.enabledWatcher);
   this.tabBrowser.removeProgressListener(this);
-  this.gmSvc.unregisterBrowser(this);
   delete this.menuCommanders;
 };
 

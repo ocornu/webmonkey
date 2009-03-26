@@ -126,32 +126,7 @@ WebmonkeyService.prototype = {
     this._ignoreNextScript = true;
   },
 
-  browserWindows: [],
-  updater: null,
-
-  registerBrowser: function(browserWin) {
-    for each (var existing in this.browserWindows)
-      if (existing == browserWin)
-        throw new Error("Browser window has already been registered.");
-    this.browserWindows.push(browserWin);
-
-    // Need to wait until well after startup for prefs store and extension
-    // manager to be initialized
-    if (!this.updater) {
-      // Note: the param to this has to match the extension ID in install.rdf
-      this.updater = new ExtensionUpdater("webmonkey@webmonkey.info");
-      this.updater.updatePeriodically();
-    }
-  },
-
-  unregisterBrowser: function(browserWin) {
-    var i = this.browserWindows.indexOf(browserWin);
-    if (i<0) throw new Error("Browser window is not registered.");
-    this.browserWindows.splice(i, 1);
-  },
-
-  domContentLoaded: function(wrappedContentWin, chromeWin) {
-    var unsafeWin = wrappedContentWin.wrappedJSObject;
+  domContentLoaded: function(unsafeWin, chromeWin, gmBrowser) {
     var safeWin   = new XPCNativeWrapper(unsafeWin);
     var href      = safeWin.location.href;
     var scripts   = this.config.getMatchingScripts(
@@ -162,7 +137,7 @@ WebmonkeyService.prototype = {
 
     var firebug = getFirebugConsole(safeWin, unsafeWin, chromeWin);
     for each (var script in scripts)
-      this.inject(script, safeWin, firebug);
+      inject(script, safeWin, gmBrowser, firebug);
 
     // FireBug 1.2+ console support
     function getFirebugConsole(safeWin, unsafeWin, chromeWin) {
@@ -206,124 +181,6 @@ WebmonkeyService.prototype = {
       }
       return null;
     }
-  },
-
-  inject: function(script, safeWin, fbConsole) {
-    var sandbox   = new Components.utils.Sandbox(safeWin);
-    var logger    = new GM_ScriptLogger(script);
-    var console   = fbConsole ? fbConsole : new GM_console(script);
-    var storage   = new GM_ScriptStorage(script);
-    var unsafeWin = safeWin.wrappedJSObject;
-    var xhr       = new GM_xmlhttpRequester(unsafeWin, appSvc.hiddenDOMWindow);
-    var resources = new GM_Resources(script);
-
-    // populate sandbox
-    sandbox.window       = safeWin;
-    sandbox.document     = safeWin.document;
-    sandbox.unsafeWindow = unsafeWin;
-    sandbox.console      = console;
-    sandbox.XPathResult  = Ci.nsIDOMXPathResult;
-    // add our own APIs
-    var GM = sandbox.GM = {};
-    GM.addStyle            = function(css) { GM_addStyle(safeDoc, css) };
-    GM.log                 = GM_hitch(logger, "log");
-    GM.setValue            = GM_hitch(storage, "setValue");
-    GM.getValue            = GM_hitch(storage, "getValue");
-    GM.deleteValue         = GM_hitch(storage, "deleteValue");
-    GM.listValues          = GM_hitch(storage, "listValues");
-    GM.getResourceURL      = GM_hitch(resources, "getResourceURL");
-    GM.getResourceText     = GM_hitch(resources, "getResourceText");
-    GM.openInTab           = GM_hitch(this, "openInTab", unsafeWin);
-    GM.xmlhttpRequest      = GM_hitch(xhr, "contentStartRequest");
-    GM.registerMenuCommand = GM_hitch(this, "registerMenuCommand", unsafeWin);
-    sandbox.__proto__ = safeWin;
-
-    // compile @requires
-    var requires = [];
-    var offsets = [];
-    var offset = 0;
-    for each(var req in script.requires) {
-      var contents = req.textContent;
-      var lineCount = contents.split("\n").length;
-      requires.push(contents);
-      offset += lineCount;
-      offsets.push(offset);
-    }
-    script.offsets = offsets;
-
-    // script source (error line-number calculations depend on these \n)
-    var source = "\n" + requires.join("\n") + "\n" +
-                 script.textContent + "\n";
-    var api    = "for (var i in GM) eval('var GM_'+i+' = GM[i]');";
-    if (script.unwrap)
-      source = api+source;
-    else {
-      // move API inside script wrapper
-      api = "const GM = this.GM; delete this.GM; "+ api +"\
-             var window = this.window; delete this.window;\
-             var unsafeWindow = this.unsafeWindow; delete this.unsafeWindow;\
-             var document = this.document; delete this.document;\
-             var XPathResult = this.XPathResult; delete this.XPathResult;\
-             var console = this.console; delete this.console;";
-      // wrap script into an anonymous function
-      source = "(function(){"+ api+source +"})()";
-    }
-
-    // eval in sandbox
-    try {
-      // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=307984
-      var lineRef = new Error().lineNumber + 1;
-      Components.utils.evalInSandbox(source, sandbox);
-      return true;
-    } catch (e) {
-      // try to find the line of the actual error line
-      if (!e) return false;   // thrown null
-      var line = e.lineNumber;
-      if (!line || line == 4294967295) { // lineNumber==maxint in edge cases
-        if (!e.location || !e.location.lineNumber) {
-          GM_logError(e, 0, script.fileURL, 0);
-          return false;
-        }
-        // Sometimes the right one is in "location"
-        line = e.location.lineNumber;
-      }
-      // find problematic file
-      line -= lineRef;
-      var end, start = 1;
-      var uri   = null;
-      for (var i in script.offsets) {
-        end = script.offsets[i];
-        if (line < end) {
-          uri = script.requires[i].fileURL;
-          break;
-        }
-        start = end;
-      }
-      line -= start;
-      if (!uri)
-        uri = script.fileURL;
-      // log error
-      GM_logError(e, 0, uri, line);
-      return false;
-    }
-  },
-
-  registerMenuCommand: function(unsafeWin, commandName, commandFunc,
-                                accelKey, accelModifiers, accessKey) {
-    var command = {name: commandName,
-                   accelKey: accelKey,
-                   accelModifiers: accelModifiers,
-                   accessKey: accessKey,
-                   doCommand: commandFunc,
-                   window: unsafeWin };
-    for (var win in this.browserWindows)
-      win.registerMenuCommand(command);
-  },
-
-  openInTab: function(unsafeWin, url) {
-    var unsafeTop = new XPCNativeWrapper(unsafeWin, "top").top;
-    for (var win in this.browserWindows)
-      win.openInTab(unsafeTop, url);
   }
 
 };
@@ -332,4 +189,106 @@ WebmonkeyService.prototype = {
 var components = [WebmonkeyService];
 function NSGetModule(compMgr, fileSpec) {
   return XPCOMUtils.generateModule(components);
+}
+
+
+function inject(script, safeWin, gmBrowser, fbConsole) {
+  var sandbox   = new Components.utils.Sandbox(safeWin);
+  var logger    = new GM_ScriptLogger(script);
+  var console   = fbConsole ? fbConsole : new GM_console(script);
+  var storage   = new GM_ScriptStorage(script);
+  var unsafeWin = safeWin.wrappedJSObject;
+  var xhr       = new GM_xmlhttpRequester(unsafeWin, appSvc.hiddenDOMWindow);
+  var resources = new GM_Resources(script);
+
+  // populate sandbox
+  sandbox.window       = safeWin;
+  sandbox.document     = safeWin.document;
+  sandbox.unsafeWindow = unsafeWin;
+  sandbox.console      = console;
+  sandbox.XPathResult  = Ci.nsIDOMXPathResult;
+  // add our own APIs
+  var GM = sandbox.GM = {};
+  GM.addStyle            = function(css) { GM_addStyle(safeDoc, css) };
+  GM.log                 = GM_hitch(logger, "log");
+  GM.setValue            = GM_hitch(storage, "setValue");
+  GM.getValue            = GM_hitch(storage, "getValue");
+  GM.deleteValue         = GM_hitch(storage, "deleteValue");
+  GM.listValues          = GM_hitch(storage, "listValues");
+  GM.getResourceURL      = GM_hitch(resources, "getResourceURL");
+  GM.getResourceText     = GM_hitch(resources, "getResourceText");
+  GM.xmlhttpRequest      = GM_hitch(xhr, "contentStartRequest");
+  GM.openInTab           = GM_hitch(gmBrowser, "openInTab");
+  GM.registerMenuCommand = GM_hitch(gmBrowser, "registerMenuCommand",
+                                    unsafeWin);
+  sandbox.__proto__ = safeWin;
+
+  // compile @requires
+  var requires = [];
+  var offsets = [];
+  var offset = 0;
+  for each(var req in script.requires) {
+    var contents = req.textContent;
+    var lineCount = contents.split("\n").length;
+    requires.push(contents);
+    offset += lineCount;
+    offsets.push(offset);
+  }
+  script.offsets = offsets;
+
+  // script source (error line-number calculations depend on these \n)
+  var source = "\n" + requires.join("\n") + "\n" +
+               script.textContent + "\n";
+  var api    = "for (var i in GM) eval('var GM_'+i+' = GM[i]');";
+  if (script.unwrap)
+    source = api+source;
+  else {
+    // move API inside script wrapper
+    api = "const GM = this.GM; delete this.GM; "+ api +"\
+           var window = this.window; delete this.window;\
+           var unsafeWindow = this.unsafeWindow; delete this.unsafeWindow;\
+           var document = this.document; delete this.document;\
+           var XPathResult = this.XPathResult; delete this.XPathResult;\
+           var console = this.console; delete this.console;";
+    // wrap script into an anonymous function
+    source = "(function(){"+ api+source +"})()";
+  }
+
+  // eval in sandbox
+  try {
+    // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=307984
+    var lineRef = new Error().lineNumber + 1;
+    Components.utils.evalInSandbox(source, sandbox);
+    return true;
+  } catch (e) {
+    // try to find the line of the actual error line
+    if (!e) return false;   // thrown null
+    var line = e.lineNumber;
+    if (!line || line == 4294967295) { // lineNumber==maxint in edge cases
+      if (!e.location || !e.location.lineNumber) {
+        GM_logError(e, 0, script.fileURL, 0);
+        return false;
+      }
+      // Sometimes the right one is in "location"
+      line = e.location.lineNumber;
+    }
+    // find problematic file
+    line -= lineRef;
+    var end, start = 1;
+    var uri   = null;
+    for (var i in script.offsets) {
+      end = script.offsets[i];
+      if (line < end) {
+        uri = script.requires[i].fileURL;
+        break;
+      }
+      start = end;
+    }
+    line -= start;
+    if (!uri)
+      uri = script.fileURL;
+    // log error
+    GM_logError(e, 0, uri, line);
+    return false;
+  }
 }
