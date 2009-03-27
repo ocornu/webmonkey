@@ -6,9 +6,17 @@
  *          tree.
  * @throws  <code>Error</code> if <code>origin</code> is not a string.
  *
- * @class   Allow storage and retrieval of <code>(key, value)</code> pairs
- *          across tabs, windows and sessions.
- *          This simple API sits on top of <code>nsIPrefService</code>.
+ * @class   Allow storage and retrieval of (key, value) pairs across tabs,
+ *          windows and sessions.
+ *          <ul><li>Keys must be of type <code>String</code>. They are organized
+ *          in a tree fashion, the leaf/branch separator being a dot (see
+ *          <code>about:config</code> for an example).</li>
+ *          <li>Values must be of type <code>String</code>, <code>Boolean</code>
+ *          or integer (<i>i.e.</i> a <code>Number</code> without decimal part,
+ *          between {@link #MIN_INT_32} and {@link #MAX_INT_32}).</li></ul>
+ *          This simple API sits on top of
+ *          <a href="https://developer.mozilla.org/En/NsIPrefBranch">
+ *          nsIPrefService</a>.
  */
 function GM_PrefManager(origin) {
   if (!origin) origin = "";
@@ -79,20 +87,19 @@ GM_PrefManager.prototype = {
   },
 
   /**
-   * Whether a preference exists.
-   * @param {String} prefName
-   *        Target preference name.
-   * @return    <code>true</code> if preference exists, <code>false</code>
-   *            otherwise.
+   * Whether a key exists.
+   * @param {String} key
+   *        Key which existence is tested.
+   * @return    <code>true</code> if key exists, <code>false</code> otherwise.
    * @type      Boolean
    */
-  exists: function(prefName) {
-    return this._branch.getPrefType(prefName) != 0;
+  exists: function(key) {
+    return this._branch.getPrefType(key) != 0;
   },
 
   /**
-   * Enumerate preferences.
-   * @return    The names of all stored preferences
+   * Enumerate keys.
+   * @return    The list of all stored keys.
    * @type      Array
    */
   listValues: function() {
@@ -100,133 +107,131 @@ GM_PrefManager.prototype = {
   },
 
   /**
-   * Retrieve a stored preference.
-   * @param {String} prefName
-   *        Name of the preference to retrieve.
-   * @param defaultValue
-   *        The default value for this preference (optional)
-   * @return    The named preference value if it exists, else
-   *            <code>defaultValue</code> when specified, otherwise
+   * Retrieve a stored value.
+   * @param {String} key
+   *        Key whose value must be retrieved.
+   * @param defaultValue (optional)
+   *        The default value for this key.
+   * @return    The associated value if it exists, else
+   *            <code>defaultValue</code> when it has been specified, otherwise
    *            <code>null</code>.
    */
-  getValue: function(prefName, defaultValue) {
+  getValue: function(key, defaultValue) {
     if (defaultValue == undefined) defaultValue = null;
-    var prefType = this._branch.getPrefType(prefName);
-    if (prefType == this._branch.PREF_INVALID) return defaultValue;
+    var type = this._branch.getPrefType(key);
+    if (type == this._branch.PREF_INVALID) return defaultValue;
 
     try {
-      switch (prefType) {
-        case this._branch.PREF_STRING:
-          return this._branch.getComplexValue(prefName,
-                 Components.interfaces.nsISupportsString).data;
-        case this._branch.PREF_BOOL:
-          return this._branch.getBoolPref(prefName);
-        case this._branch.PREF_INT:
-          return this._branch.getIntPref(prefName);
+      switch (type) {
+      case this._branch.PREF_STRING:
+        return this._branch.getComplexValue(key,
+               Components.interfaces.nsISupportsString).data;
+      case this._branch.PREF_BOOL:
+        return this._branch.getBoolPref(key);
+      case this._branch.PREF_INT:
+        return this._branch.getIntPref(key);
       }
-    } catch(ex) {}
-
+    } catch(e) {}
     return defaultValue;
   },
 
   /**
-   * Set the named preference to the specified value.
-   * @param {String} prefName
-   *        Name of the preference to set.
+   * Set a key to the specified value.
+   * @param {String} key
+   *        Key whose value must be set.
    * @param value
-   *        Value for this preference. Must be of type <code>String</code>,
-   *        <code>Boolean</code> or integer (a <code>Number</code> without
+   *        Value for this key. Must be of type <code>String</code>,
+   *        <code>Boolean</code> or integer (i.e. a <code>Number</code> without
    *        decimal part, between {@link #MIN_INT_32} and {@link #MAX_INT_32}).
+   * @throws    <code>Error</code> if <code>value</code> has an invalid type.
    */
-  setValue: function(prefName, value) {
+  setValue: function(key, value) {
     // assert value has a valid type
-    var prefType = typeof(value);
-    var goodType = false;
-    switch (prefType) {
-      case "string":
-      case "boolean":
-        goodType = true;
-        break;
-      case "number":
-        if (value % 1 == 0 && value >= this.MIN_INT_32 &&
-            value <= this.MAX_INT_32)
-          goodType = true;
-        break;
+    var type = typeof(value);
+    var ok = false;
+    switch (type) {
+    case "string":
+    case "boolean":
+      ok = true;
+      break;
+    case "number":
+      if (value % 1 == 0 && value >= this.MIN_INT_32 &&
+          value <= this.MAX_INT_32)
+        ok = true;
+      break;
     }
-    if (!goodType)
-      throw new Error("Unsupported type for GM_setValue. Supported types " +
-                      "are: string, bool, and 32 bit integers.");
+    if (!ok)
+      throw new Error("Unsupported value type. Supported types are: " +
+                      "string, bool, and 32 bit integers.");
 
     // underlying preferences object throws an exception if new pref has a
-    // different type than old one. i think we should not do this, so delete
-    // old pref first if this is the case.
-    if (this.exists(prefName) && prefType != typeof(this.getValue(prefName)))
-      this.remove(prefName);
+    // different type than old one, so delete old pref first if it is the case.
+    if (this.exists(key) && type != typeof(this.getValue(key)))
+      this.remove(key);
 
     // set new value using correct method
-    switch (prefType) {
-      case "string":
-        var str = Components.classes["@mozilla.org/supports-string;1"]
-                  .createInstance(Components.interfaces.nsISupportsString);
-        str.data = value;
-        this._branch.setComplexValue(prefName,
-                     Components.interfaces.nsISupportsString, str);
-        break;
-      case "boolean":
-        this._branch.setBoolPref(prefName, value);
-        break;
-      case "number":
-        this._branch.setIntPref(prefName, Math.floor(value));
-        break;
+    switch (type) {
+    case "string":
+      var str = Components.classes["@mozilla.org/supports-string;1"]
+                .createInstance(Components.interfaces.nsISupportsString);
+      str.data = value;
+      this._branch.setComplexValue(key, Components.interfaces.nsISupportsString,
+                                   str);
+      break;
+    case "boolean":
+      this._branch.setBoolPref(key, value);
+      break;
+    case "number":
+      this._branch.setIntPref(key, Math.floor(value));
+      break;
     }
   },
 
   /**
-   * Delete the named preference or subtree.
-   * @param {String} prefName
-   *        The name of the preference or subtree to delete.
+   * Delete a key or subtree.
+   * @param {String} key
+   *        The key or subtree to delete.
    */
-  remove: function(prefName) {
-    this._branch.deleteBranch(prefName);
+  remove: function(key) {
+    this._branch.deleteBranch(key);
   },
 
   /**
-   * Register a handler that will be notified whenever the named preference or
-   * subtree changes.
-   * @param {String} prefName
-   *        The name of the preference or subtree to watch.
-   * @param {Function} watcher
+   * Register a handler that will be notified when changes occur in a subtree.
+   * @param {String} origin
+   *        The origin of the subtree to watch for (may be a single key).
+   * @param {Function} handler
    *        The handler to notify for changes. It will be called with one
-   *        argument, the name of the preference or subtree that has changed. 
+   *        argument, the name of the key which has changed.
    */
-  watch: function(prefName, watcher) {
-    if (!watcher || typeof watcher != "function")
-      throw new Error("Watcher must be a function");
+  watch: function(origin, handler) {
+    if (typeof handler != "function")
+      throw new Error("Handler must be a function");
 
     // construct an observer
     var observer = {
-      observe:function(subject, topic, prefName) {
-        watcher(prefName);
+      observe: function(aSubject, aTopic, aPrefName) {
+        handler(aPrefName);
       }
     };
     // store the observer in case we need to remove it later
-    this._observers[watcher] = observer;
+    this._observers[handler] = observer;
 
     this._branch.QueryInterface(Components.interfaces.nsIPrefBranch2)
-                .addObserver(prefName, observer, false);
+                .addObserver(origin, observer, false);
   },
 
   /**
-   * Unregister a preference changes handler.
-   * @param {String} prefName
-   *        The name of the preference or subtree to stop watching.
-   * @param {Function} watcher
+   * Unregister a subtree changes handler.
+   * @param {String} origin
+   *        The subtree to stop watching.
+   * @param {Function} handler
    *        The handler to remove.
    */
-  unwatch: function(prefName, watcher) {
-    if (!this._observers[watcher]) return;
+  unwatch: function(origin, handler) {
+    if (!this._observers[handler]) return;
     this._branch.QueryInterface(Components.interfaces.nsIPrefBranch2)
-                .removeObserver(prefName, this._observers[watcher]);
+                .removeObserver(origin, this._observers[handler]);
   }
 
 };
