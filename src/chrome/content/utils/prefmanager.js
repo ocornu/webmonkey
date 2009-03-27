@@ -134,7 +134,7 @@ function GM_PrefManager(startPoint) {
     // store the observer in case we need to remove it later
     observers[watcher] = observer;
 
-    pref.QueryInterface(Components.interfaces.nsIPrefBranchInternal).
+    pref.QueryInterface(Components.interfaces.nsIPrefBranch2).
       addObserver(prefName, observer, false);
   };
 
@@ -143,7 +143,7 @@ function GM_PrefManager(startPoint) {
    */
   this.unwatch = function(prefName, watcher) {
     if (observers[watcher]) {
-      pref.QueryInterface(Components.interfaces.nsIPrefBranchInternal).
+      pref.QueryInterface(Components.interfaces.nsIPrefBranch2).
         removeObserver(prefName, observers[watcher]);
     }
   };
