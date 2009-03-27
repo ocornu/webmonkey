@@ -4,9 +4,13 @@ GM_PrefManager.MIN_INT_32 = -0x80000000;
 GM_PrefManager.MAX_INT_32 = 0x7FFFFFFF;
 
 /**
- * Simple API on top of preferences for webmonkey.
- * Construct an instance by passing the startPoint of a preferences subtree.
- * "webmonkey." prefix is assumed.
+ * Construct a new preference manager.
+ * <code>"webmonkey."</code> prefix is assumed.
+ * @constructor
+ * @param   {String} startPoint
+ *          The starting point in the preferences tree for this manager subtree.
+ *
+ * @class   Simple API on top of <code>nsIPrefService</code> for Webmonkey.
  */
 function GM_PrefManager(startPoint) {
   if (!startPoint) {
@@ -23,21 +27,35 @@ function GM_PrefManager(startPoint) {
   const nsISupportsString = Components.interfaces.nsISupportsString;
 
   /**
-   * whether a preference exists
+   * Whether a preference exists.
+   * @param {String} prefName
+   *        Target preference name.
+   * @return    <code>true</code> if preference exists, <code>false</code>
+   *            otherwise.
+   * @type      Boolean
    */
   this.exists = function(prefName) {
     return pref.getPrefType(prefName) != 0;
   };
 
   /**
-   * enumerate preferences
+   * Enumerate preferences.
+   * @return    The names of all stored preferences
+   * @type      Array
    */
   this.listValues = function() {
     return pref.getChildList("", {});
   }
 
   /**
-   * returns the named preference, or defaultValue if it does not exist
+   * Retrieve a stored preference.
+   * @param {String} prefName
+   *        Name of the preference to retrieve.
+   * @param defaultValue
+   *        The default value for this preference (optional)
+   * @return    The named preference value if it exists, otherwise
+   *            <code>defaultValue</code> when specified, else
+   *            <code>undefined</code>.
    */
   this.getValue = function(prefName, defaultValue) {
     var prefType = pref.getPrefType(prefName);
@@ -63,8 +81,13 @@ function GM_PrefManager(startPoint) {
   };
 
   /**
-   * sets the named preference to the specified value. values must be strings,
-   * booleans, or integers.
+   * Set the named preference to the specified value.
+   * @param {String} prefName
+   *        Name of the preference to set.
+   * @param value
+   *        Value for this preference. Must be of type <code>String</code>,
+   *        <code>Boolean</code> or integer (a <code>Number</code> without
+   *        decimal part, between {@link #MIN_INT_32} and {@link #MAX_INT_32}).
    */
   this.setValue = function(prefName, value) {
     var prefType = typeof(value);
@@ -114,14 +137,22 @@ function GM_PrefManager(startPoint) {
   };
 
   /**
-   * deletes the named preference or subtree
+   * Delete the named preference or subtree.
+   * @param {String} prefName
+   *        The name of the preference or subtree to delete.
    */
   this.remove = function(prefName) {
     pref.deleteBranch(prefName);
   };
 
   /**
-   * call a function whenever the named preference subtree changes
+   * Register a handler that will be notified whenever the named preference or
+   * subtree changes.
+   * @param {String} prefName
+   *        The name of the preference or subtree to watch.
+   * @param {Function} watcher
+   *        The handler to notify for changes. It will be called with one
+   *        argument, the name of the preference or subtree that has changed. 
    */
   this.watch = function(prefName, watcher) {
     // construct an observer
@@ -139,7 +170,11 @@ function GM_PrefManager(startPoint) {
   };
 
   /**
-   * stop watching
+   * Unregister a preference changes handler.
+   * @param {String} prefName
+   *        The name of the preference or subtree to stop watching.
+   * @param {Function} watcher
+   *        The handler to remove.
    */
   this.unwatch = function(prefName, watcher) {
     if (observers[watcher]) {
