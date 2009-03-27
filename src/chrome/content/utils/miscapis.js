@@ -1,9 +1,6 @@
 function GM_ScriptStorage(script) {
-  this.prefMan = new GM_PrefManager(["scriptvals.",
-                                     script.namespace,
-                                     "/",
-                                     script.name,
-                                     "."].join(""));
+  this.prefMan = GM_prefRoot.subManager(
+                 "scriptvals." + script.namespace + "/" + script.name);
 }
 
 GM_ScriptStorage.prototype.setValue = function(name, val) {

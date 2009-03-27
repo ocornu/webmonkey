@@ -1,30 +1,82 @@
-var GM_prefRoot = new GM_PrefManager();
-
-GM_PrefManager.MIN_INT_32 = -0x80000000;
-GM_PrefManager.MAX_INT_32 = 0x7FFFFFFF;
-
 /**
  * Construct a new preference manager.
- * <code>"webmonkey."</code> prefix is assumed.
  * @constructor
- * @param   {String} startPoint
- *          The starting point in the preferences tree for this manager subtree.
+ * @param   {String} origin (optional)
+ *          The origin of this manager's branch in the main preferences
+ *          tree.
+ * @throws  <code>Error</code> if <code>origin</code> is not a string.
  *
- * @class   Simple API on top of <code>nsIPrefService</code> for Webmonkey.
+ * @class   Allow storage and retrieval of <code>(key, value)</code> pairs
+ *          across tabs, windows and sessions.
+ *          This simple API sits on top of <code>nsIPrefService</code>.
  */
-function GM_PrefManager(startPoint) {
-  if (!startPoint) {
-    startPoint = "";
-  }
+function GM_PrefManager(origin) {
+  if (!origin) origin = "";
+  else if (typeof origin != "string")
+    throw new Error("Origin must be of type 'string'");
 
-  startPoint = "webmonkey." + startPoint;
+  /**
+   * The origin of this manager's branch in the preferences tree.
+   * @type  String
+   * @private
+   * @final
+   */
+  this._origin = origin + (origin.length ? "." : "");
 
-  var pref = Components.classes["@mozilla.org/preferences-service;1"]
-                       .getService(Components.interfaces.nsIPrefService)
-                       .getBranch(startPoint);
+  /**
+   * The preferences branch for this manager.
+   * @type nsIPrefBranch
+   * @private
+   * @final
+   */
+  this._branch = Components.classes["@mozilla.org/preferences-service;1"]
+                           .getService(Components.interfaces.nsIPrefService)
+                           .getBranch(this._origin);
 
-  var observers = {};
-  const nsISupportsString = Components.interfaces.nsISupportsString;
+  /**
+   * A dictionary of registered observers for this manager's preferences.
+   * @private
+   * @final
+   */
+  this._observers = {};
+}
+
+
+/*
+ * Prototype
+ */
+GM_PrefManager.prototype = {
+
+  /**
+   * Minimum integer value (32 bits).
+   * @type Number
+   * @final
+   */
+  MIN_INT_32: -0x80000000,
+  /**
+   * Maximum integer value (32 bits).
+   * @type Number
+   * @final
+   */
+  MAX_INT_32: 0x7FFFFFFF,
+
+  /**
+   * Create a new <code>GM_PrefManager</code> instance responsible for a subtree
+   * of this manager's branch.
+   * Will clone the current manager if <code>origin</code> is
+   * <code>null/undefined</code>.
+   * @param {String} origin (optional)
+   *        The origin of the subtree, relatively to this manager's branch.
+   * @return    A new preference manager.
+   * @type      GM_PrefManager
+   * @throws    <code>Error</code> if <code>origin</code> is not a string.
+   */
+  subManager: function(origin) {
+    if (!origin) origin = "";
+    else if (typeof origin != "string")
+      throw new Error("origin must be of type 'string'");
+    return new GM_PrefManager(this._origin + origin);
+  },
 
   /**
    * Whether a preference exists.
@@ -34,18 +86,18 @@ function GM_PrefManager(startPoint) {
    *            otherwise.
    * @type      Boolean
    */
-  this.exists = function(prefName) {
-    return pref.getPrefType(prefName) != 0;
-  };
+  exists: function(prefName) {
+    return this._branch.getPrefType(prefName) != 0;
+  },
 
   /**
    * Enumerate preferences.
    * @return    The names of all stored preferences
    * @type      Array
    */
-  this.listValues = function() {
-    return pref.getChildList("", {});
-  }
+  listValues: function() {
+    return this._branch.getChildList("", {});
+  },
 
   /**
    * Retrieve a stored preference.
@@ -53,32 +105,29 @@ function GM_PrefManager(startPoint) {
    *        Name of the preference to retrieve.
    * @param defaultValue
    *        The default value for this preference (optional)
-   * @return    The named preference value if it exists, otherwise
-   *            <code>defaultValue</code> when specified, else
-   *            <code>undefined</code>.
+   * @return    The named preference value if it exists, else
+   *            <code>defaultValue</code> when specified, otherwise
+   *            <code>null</code>.
    */
-  this.getValue = function(prefName, defaultValue) {
-    var prefType = pref.getPrefType(prefName);
-
-    // underlying preferences object throws an exception if pref doesn't exist
-    if (prefType == pref.PREF_INVALID) {
-      return defaultValue;
-    }
+  getValue: function(prefName, defaultValue) {
+    if (defaultValue == undefined) defaultValue = null;
+    var prefType = this._branch.getPrefType(prefName);
+    if (prefType == this._branch.PREF_INVALID) return defaultValue;
 
     try {
       switch (prefType) {
-        case pref.PREF_STRING:
-          return pref.getComplexValue(prefName, nsISupportsString).data;
-        case pref.PREF_BOOL:
-          return pref.getBoolPref(prefName);
-        case pref.PREF_INT:
-          return pref.getIntPref(prefName);
+        case this._branch.PREF_STRING:
+          return this._branch.getComplexValue(prefName,
+                 Components.interfaces.nsISupportsString).data;
+        case this._branch.PREF_BOOL:
+          return this._branch.getBoolPref(prefName);
+        case this._branch.PREF_INT:
+          return this._branch.getIntPref(prefName);
       }
-    } catch(ex) {
-      return defaultValue != undefined ? defaultValue : null;
-    }
-    return null;
-  };
+    } catch(ex) {}
+
+    return defaultValue;
+  },
 
   /**
    * Set the named preference to the specified value.
@@ -89,61 +138,57 @@ function GM_PrefManager(startPoint) {
    *        <code>Boolean</code> or integer (a <code>Number</code> without
    *        decimal part, between {@link #MIN_INT_32} and {@link #MAX_INT_32}).
    */
-  this.setValue = function(prefName, value) {
+  setValue: function(prefName, value) {
+    // assert value has a valid type
     var prefType = typeof(value);
     var goodType = false;
-
     switch (prefType) {
       case "string":
       case "boolean":
         goodType = true;
         break;
       case "number":
-        if (value % 1 == 0 &&
-            value >= GM_PrefManager.MIN_INT_32 &&
-            value <= GM_PrefManager.MAX_INT_32) {
+        if (value % 1 == 0 && value >= this.MIN_INT_32 &&
+            value <= this.MAX_INT_32)
           goodType = true;
-        }
         break;
     }
-
-    if (!goodType) {
+    if (!goodType)
       throw new Error("Unsupported type for GM_setValue. Supported types " +
                       "are: string, bool, and 32 bit integers.");
-    }
 
     // underlying preferences object throws an exception if new pref has a
     // different type than old one. i think we should not do this, so delete
     // old pref first if this is the case.
-    if (this.exists(prefName) && prefType != typeof(this.getValue(prefName))) {
+    if (this.exists(prefName) && prefType != typeof(this.getValue(prefName)))
       this.remove(prefName);
-    }
 
     // set new value using correct method
     switch (prefType) {
       case "string":
         var str = Components.classes["@mozilla.org/supports-string;1"]
-                            .createInstance(nsISupportsString);
+                  .createInstance(Components.interfaces.nsISupportsString);
         str.data = value;
-        pref.setComplexValue(prefName, nsISupportsString, str);
+        this._branch.setComplexValue(prefName,
+                     Components.interfaces.nsISupportsString, str);
         break;
       case "boolean":
-        pref.setBoolPref(prefName, value);
+        this._branch.setBoolPref(prefName, value);
         break;
       case "number":
-        pref.setIntPref(prefName, Math.floor(value));
+        this._branch.setIntPref(prefName, Math.floor(value));
         break;
     }
-  };
+  },
 
   /**
    * Delete the named preference or subtree.
    * @param {String} prefName
    *        The name of the preference or subtree to delete.
    */
-  this.remove = function(prefName) {
-    pref.deleteBranch(prefName);
-  };
+  remove: function(prefName) {
+    this._branch.deleteBranch(prefName);
+  },
 
   /**
    * Register a handler that will be notified whenever the named preference or
@@ -154,20 +199,22 @@ function GM_PrefManager(startPoint) {
    *        The handler to notify for changes. It will be called with one
    *        argument, the name of the preference or subtree that has changed. 
    */
-  this.watch = function(prefName, watcher) {
+  watch: function(prefName, watcher) {
+    if (!watcher || typeof watcher != "function")
+      throw new Error("Watcher must be a function");
+
     // construct an observer
     var observer = {
       observe:function(subject, topic, prefName) {
         watcher(prefName);
       }
     };
-
     // store the observer in case we need to remove it later
-    observers[watcher] = observer;
+    this._observers[watcher] = observer;
 
-    pref.QueryInterface(Components.interfaces.nsIPrefBranch2).
-      addObserver(prefName, observer, false);
-  };
+    this._branch.QueryInterface(Components.interfaces.nsIPrefBranch2)
+                .addObserver(prefName, observer, false);
+  },
 
   /**
    * Unregister a preference changes handler.
@@ -176,10 +223,13 @@ function GM_PrefManager(startPoint) {
    * @param {Function} watcher
    *        The handler to remove.
    */
-  this.unwatch = function(prefName, watcher) {
-    if (observers[watcher]) {
-      pref.QueryInterface(Components.interfaces.nsIPrefBranch2).
-        removeObserver(prefName, observers[watcher]);
-    }
-  };
-}
+  unwatch: function(prefName, watcher) {
+    if (!this._observers[watcher]) return;
+    this._branch.QueryInterface(Components.interfaces.nsIPrefBranch2)
+                .removeObserver(prefName, this._observers[watcher]);
+  }
+
+};
+
+
+var GM_prefRoot = new GM_PrefManager("webmonkey");
