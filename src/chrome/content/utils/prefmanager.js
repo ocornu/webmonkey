@@ -115,6 +115,7 @@ GM_PrefManager.prototype = {
    * @return    The associated value if it exists, else
    *            <code>defaultValue</code> when it has been specified, otherwise
    *            <code>null</code>.
+   * @throws    <code>Error</code> if an existing value cannot be parsed.
    */
   getValue: function(key, defaultValue) {
     if (defaultValue == undefined) defaultValue = null;
@@ -132,7 +133,7 @@ GM_PrefManager.prototype = {
         return this._branch.getIntPref(key);
       }
     } catch(e) {}
-    return defaultValue;
+    throw new Error("Value could not be parsed");
   },
 
   /**
