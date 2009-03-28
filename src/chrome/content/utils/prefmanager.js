@@ -144,6 +144,7 @@ GM_PrefManager.prototype = {
    *        Value for this key. Must be of type <code>String</code>,
    *        <code>Boolean</code> or integer (i.e. a <code>Number</code> without
    *        decimal part, between {@link #MIN_INT_32} and {@link #MAX_INT_32}).
+   * @return    The stored <code>value</code>.
    * @throws    <code>Error</code> if <code>value</code> has an invalid type.
    */
   setValue: function(key, value) {
@@ -186,6 +187,8 @@ GM_PrefManager.prototype = {
       this._branch.setIntPref(key, Math.floor(value));
       break;
     }
+
+    return value;
   },
 
   /**
