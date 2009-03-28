@@ -125,8 +125,7 @@ GM_PrefManager.prototype = {
     try {
       switch (type) {
       case this._branch.PREF_STRING:
-        return this._branch.getComplexValue(key,
-               Components.interfaces.nsISupportsString).data;
+        return this._branch.getCharPref(key);
       case this._branch.PREF_BOOL:
         return this._branch.getBoolPref(key);
       case this._branch.PREF_INT:
@@ -174,11 +173,7 @@ GM_PrefManager.prototype = {
     // set new value using correct method
     switch (type) {
     case "string":
-      var str = Components.classes["@mozilla.org/supports-string;1"]
-                .createInstance(Components.interfaces.nsISupportsString);
-      str.data = value;
-      this._branch.setComplexValue(key, Components.interfaces.nsISupportsString,
-                                   str);
+      this._branch.setCharPref(key, value);
       break;
     case "boolean":
       this._branch.setBoolPref(key, value);
