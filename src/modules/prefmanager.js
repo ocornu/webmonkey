@@ -25,7 +25,7 @@ var EXPORTED_SYMBOLS = ["GM_prefRoot"];
  *          <a href="https://developer.mozilla.org/En/NsIPrefBranch">
  *          nsIPrefService</a>.
  */
-function GM_PrefManager(origin) {
+function PreferenceManager(origin) {
   if (!origin) origin = "";
   else if (typeof origin != "string")
     throw new Error("Origin must be of type 'string'");
@@ -60,7 +60,7 @@ function GM_PrefManager(origin) {
 /*
  * Prototype
  */
-GM_PrefManager.prototype = {
+PreferenceManager.prototype = {
 
   /**
    * Minimum integer value (32 bits).
@@ -76,21 +76,21 @@ GM_PrefManager.prototype = {
   MAX_INT_32: 0x7FFFFFFF,
 
   /**
-   * Create a new <code>GM_PrefManager</code> instance responsible for a subtree
-   * of this manager's branch.
+   * Create a new <code>PreferenceManager</code> instance responsible for a
+   * subtree of this manager's branch.
    * Will clone the current manager if <code>origin</code> is
    * <code>null/undefined</code>.
    * @param {String} origin (optional)
    *        The origin of the subtree, relatively to this manager's branch.
    * @return    A new preference manager.
-   * @type      GM_PrefManager
+   * @type      PreferenceManager
    * @throws    <code>Error</code> if <code>origin</code> is not a string.
    */
   subManager: function(origin) {
     if (!origin) origin = "";
     else if (typeof origin != "string")
       throw new Error("origin must be of type 'string'");
-    return new GM_PrefManager(this._origin + origin);
+    return new PreferenceManager(this._origin + origin);
   },
 
   /**
@@ -249,4 +249,8 @@ GM_PrefManager.prototype = {
 };
 
 
-var GM_prefRoot = new GM_PrefManager("webmonkey");
+/**
+ * Webmonkey root preference manager.
+ * @type PreferenceManager
+ */
+var GM_prefRoot = new PreferenceManager("webmonkey");
