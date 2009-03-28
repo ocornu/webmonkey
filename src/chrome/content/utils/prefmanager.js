@@ -188,11 +188,13 @@ GM_PrefManager.prototype = {
 
   /**
    * Delete a key or subtree.
-   * @param {String} key
-   *        The key or subtree to delete.
+   * @param {String} origin (optional)
+   *        The key or subtree to delete. If not set, deletes all keys of this
+   *        manager's branch.
    */
-  remove: function(key) {
-    this._branch.deleteBranch(key);
+  remove: function(origin) {
+    if (!origin) origin = "";
+    this._branch.deleteBranch(origin);
   },
 
   /**
