@@ -87,26 +87,6 @@ GM_PrefManager.prototype = {
   },
 
   /**
-   * Whether a key exists.
-   * @param {String} key
-   *        Key which existence is tested.
-   * @return    <code>true</code> if key exists, <code>false</code> otherwise.
-   * @type      Boolean
-   */
-  exists: function(key) {
-    return this._branch.getPrefType(key) != 0;
-  },
-
-  /**
-   * Enumerate keys.
-   * @return    The list of all stored keys.
-   * @type      Array
-   */
-  list: function() {
-    return this._branch.getChildList("", {});
-  },
-
-  /**
    * Retrieve a stored value.
    * @param {String} key
    *        Key whose value must be retrieved.
@@ -184,6 +164,26 @@ GM_PrefManager.prototype = {
     }
 
     return value;
+  },
+
+  /**
+   * Whether a key exists.
+   * @param {String} key
+   *        Key which existence is tested.
+   * @return    <code>true</code> if key exists, <code>false</code> otherwise.
+   * @type      Boolean
+   */
+  exists: function(key) {
+    return this._branch.getPrefType(key) != 0;
+  },
+
+  /**
+   * Enumerate keys.
+   * @return    The list of all stored keys.
+   * @type      Array
+   */
+  list: function() {
+    return this._branch.getChildList("", {});
   },
 
   /**
