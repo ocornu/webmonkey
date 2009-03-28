@@ -7,7 +7,7 @@ window.addEventListener("load", function() {
 
   // load default namespace from pref
   document.getElementById("namespace").value =
-      GM_prefRoot.getValue("newscript_namespace", "");
+      GM_prefRoot.get("newscript_namespace", "");
 
   // default the includes with the current page's url
   document.getElementById("includes").value =

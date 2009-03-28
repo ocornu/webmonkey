@@ -117,7 +117,7 @@ GM_PrefManager.prototype = {
    *            <code>null</code>.
    * @throws    <code>Error</code> if an existing value cannot be parsed.
    */
-  getValue: function(key, defaultValue) {
+  get: function(key, defaultValue) {
     if (defaultValue == undefined) defaultValue = null;
     var type = this._branch.getPrefType(key);
     if (type == this._branch.PREF_INVALID) return defaultValue;
@@ -167,7 +167,7 @@ GM_PrefManager.prototype = {
 
     // underlying preferences object throws an exception if new pref has a
     // different type than old one, so delete old pref first if it is the case.
-    if (this.exists(key) && type != typeof(this.getValue(key)))
+    if (this.exists(key) && type != typeof(this.get(key)))
       this.remove(key);
 
     // set new value using correct method

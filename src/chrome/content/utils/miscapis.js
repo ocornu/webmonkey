@@ -16,7 +16,7 @@ GM_ScriptStorage.prototype.getValue = function(name, defVal) {
     return;
   }
 
-  return this.prefMan.getValue(name, defVal);
+  return this.prefMan.get(name, defVal);
 };
 
 function GM_Resources(script){

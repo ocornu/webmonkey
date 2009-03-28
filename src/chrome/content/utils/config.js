@@ -387,7 +387,7 @@ Config.prototype = {
     log("> GM_updateVersion");
 
     // this is the last version which has been run at least once
-    var initialized = GM_prefRoot.getValue("version", "0.0");
+    var initialized = GM_prefRoot.get("version", "0.0");
 
     if (GM_compareVersions(initialized, "0.8") == -1)
       this._pointEightBackup();

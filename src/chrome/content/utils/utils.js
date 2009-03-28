@@ -94,7 +94,7 @@ function GM_logError(e, opt_warn, fileName, lineNumber) {
 }
 
 function GM_log(message, force) {
-  if (force || GM_prefRoot.getValue("logChrome", false)) {
+  if (force || GM_prefRoot.get("logChrome", false)) {
     GM_consoleService.logStringMessage(message);
   }
 }
@@ -140,7 +140,7 @@ function openInEditor(script) {
 }
 
 function getEditor(stringBundle) {
-  var editorPath = GM_prefRoot.getValue("editor");
+  var editorPath = GM_prefRoot.get("editor");
 
   if (editorPath) {
     GM_log("Found saved editor preference: " + editorPath);
@@ -398,7 +398,7 @@ function GM_isFileScheme(url) {
 }
 
 function GM_getEnabled() {
-  return GM_prefRoot.getValue("enabled", true);
+  return GM_prefRoot.get("enabled", true);
 }
 
 function GM_setEnabled(enabled) {
@@ -411,7 +411,7 @@ function GM_setEnabled(enabled) {
  * thingers which will be interpolated with additional parameters passed.
  */
 function log(message) {
-  if (GM_prefRoot.getValue("logChrome", false)) {
+  if (GM_prefRoot.get("logChrome", false)) {
     logf.apply(null, arguments);
   }
 }

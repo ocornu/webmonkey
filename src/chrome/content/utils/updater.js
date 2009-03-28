@@ -75,7 +75,7 @@ ExtensionUpdater.prototype.update = function() {
  * @param {Boolean} if false, do not create the timer
  */
 ExtensionUpdater.prototype.updatePeriodically = function() {
-  var lastUpdate = GM_prefRoot.getValue("lastUpdate", 0);
+  var lastUpdate = GM_prefRoot.get("lastUpdate", 0);
   var timeBetweenUpdates = 24 * 60 * 60 * 1000;
   // Hopefully people don't screw with the value
   var nextUpdate = Number(lastUpdate) + timeBetweenUpdates;
@@ -265,7 +265,7 @@ ExtensionUpdater.prototype.installUpdate = function() {
     var items = [this.updateLink];
 
     // Figure out if extension should be updated (default to "yes")
-    var autoupdate = GM_prefRoot.getValue("enableUpdate",
+    var autoupdate = GM_prefRoot.get("enableUpdate",
                                           AUTOUPDATE_DEFAULT_VALUE);
     if (autoupdate == false) {
       this.success("Would have updated, except update is disabled");
