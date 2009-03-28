@@ -1,4 +1,11 @@
 /**
+ * @fileoverview JS Module implementation of the preference manager.
+ */
+// JSM exported symbols
+var EXPORTED_SYMBOLS = ["GM_prefRoot"];
+
+
+/**
  * Construct a new preference manager.
  * @constructor
  * @param   {String} origin (optional)

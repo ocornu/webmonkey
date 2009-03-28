@@ -76,7 +76,6 @@ WebmonkeyService.prototype = {
     var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
                  .getService(Ci.mozIJSSubScriptLoader);
     loader.loadSubScript("chrome://global/content/XPCNativeWrapper.js");
-    loader.loadSubScript("chrome://webmonkey/content/utils/prefmanager.js");
     loader.loadSubScript("chrome://webmonkey/content/utils/utils.js");
     loader.loadSubScript("chrome://webmonkey/content/utils/config.js");
     loader.loadSubScript("chrome://webmonkey/content/utils/convert2RegExp.js");

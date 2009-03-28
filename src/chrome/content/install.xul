@@ -26,7 +26,6 @@
 
   <script type="application/x-javascript" src="chrome://webmonkey/content/utils/utils.js" />
   <script type="application/x-javascript" src="chrome://webmonkey/content/utils/scriptdownloader.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/prefmanager.js" />
   <script type="application/x-javascript" src="chrome://webmonkey/content/install.js" />
 
   <vbox id="dialogContentBox"

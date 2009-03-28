@@ -3,6 +3,8 @@ const GM_GUID = "webmonkey@webmonkey.info";
 var GM_consoleService = Components.classes["@mozilla.org/consoleservice;1"]
                         .getService(Components.interfaces.nsIConsoleService);
 
+Components.utils.import("resource://webmonkey/prefmanager.js");
+
 /**
  * Examines the stack to determine if an API should be callable.
  */

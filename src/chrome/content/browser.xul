@@ -8,7 +8,6 @@
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/x-javascript" src="chrome://webmonkey/content/utils/utils.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/prefmanager.js" />
   <script type="application/x-javascript" src="chrome://webmonkey/content/utils/convert2RegExp.js" />
   <script type="application/x-javascript" src="chrome://webmonkey/content/utils/menucommander.js" />
   <script type="application/x-javascript" src="chrome://webmonkey/content/utils/xmlhttprequester.js" />
