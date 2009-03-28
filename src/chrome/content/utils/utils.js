@@ -182,7 +182,7 @@ function getEditor(stringBundle) {
     GM_log("User selected: " + filePicker.file.path);
 
     if (filePicker.file.exists() && filePicker.file.isExecutable()) {
-      GM_prefRoot.setValue("editor", filePicker.file.path);
+      GM_prefRoot.set("editor", filePicker.file.path);
       return filePicker.file;
     } else {
       alert(stringBundle.GetStringFromName("editor.please_pick_executable"));
@@ -402,7 +402,7 @@ function GM_getEnabled() {
 }
 
 function GM_setEnabled(enabled) {
-  GM_prefRoot.setValue("enabled", enabled);
+  GM_prefRoot.set("enabled", enabled);
 }
 
 

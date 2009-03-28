@@ -8,7 +8,7 @@ GM_ScriptStorage.prototype.setValue = function(name, val) {
     return;
   }
 
-  this.prefMan.setValue(name, val);
+  this.prefMan.set(name, val);
 };
 
 GM_ScriptStorage.prototype.getValue = function(name, defVal) {

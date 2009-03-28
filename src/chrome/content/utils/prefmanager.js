@@ -146,7 +146,7 @@ GM_PrefManager.prototype = {
    * @return    The stored <code>value</code>.
    * @throws    <code>Error</code> if <code>value</code> has an invalid type.
    */
-  setValue: function(key, value) {
+  set: function(key, value) {
     // assert value has a valid type
     var type = typeof(value);
     var ok = false;

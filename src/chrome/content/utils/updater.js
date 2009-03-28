@@ -83,7 +83,7 @@ ExtensionUpdater.prototype.updatePeriodically = function() {
   GM_log("ExtensionUpdater: Last update: " + lastUpdate + ", " +
          "next: " + nextUpdate);
   if (now > nextUpdate) {
-    GM_prefRoot.setValue("lastUpdate", String(now));
+    GM_prefRoot.set("lastUpdate", String(now));
     this.update();
     nextUpdate = now + timeBetweenUpdates;
   }

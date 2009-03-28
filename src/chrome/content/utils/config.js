@@ -397,7 +397,7 @@ Config.prototype = {
       .getService(Components.interfaces.nsIExtensionManager);
 
     var item = extMan.getItemForID(GM_GUID);
-    GM_prefRoot.setValue("version", item.version);
+    GM_prefRoot.set("version", item.version);
 
     log("< GM_updateVersion");
   },

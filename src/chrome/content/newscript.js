@@ -48,7 +48,7 @@ function doInstall() {
   openInEditor(script);
 
   // persist namespace value
-  GM_prefRoot.setValue("newscript_namespace", script.namespace);
+  GM_prefRoot.set("newscript_namespace", script.namespace);
 
   return true;
 }
