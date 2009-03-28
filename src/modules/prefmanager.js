@@ -4,6 +4,10 @@
 // JSM exported symbols
 var EXPORTED_SYMBOLS = ["GM_prefRoot"];
 
+// shortcuts
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+
 
 /**
  * Construct a new preference manager.
@@ -44,9 +48,8 @@ function PreferenceManager(origin) {
    * @private
    * @final
    */
-  this._branch = Components.classes["@mozilla.org/preferences-service;1"]
-                           .getService(Components.interfaces.nsIPrefService)
-                           .getBranch(this._origin);
+  this._branch = Cc["@mozilla.org/preferences-service;1"]
+                 .getService(Ci.nsIPrefService).getBranch(this._origin);
 
   /**
    * A dictionary of registered observers for this manager's preferences.
@@ -229,7 +232,7 @@ PreferenceManager.prototype = {
     // store the observer in case we need to remove it later
     this._observers[handler] = observer;
 
-    this._branch.QueryInterface(Components.interfaces.nsIPrefBranch2)
+    this._branch.QueryInterface(Ci.nsIPrefBranch2)
                 .addObserver(origin, observer, false);
   },
 
@@ -242,7 +245,7 @@ PreferenceManager.prototype = {
    */
   unwatch: function(origin, handler) {
     if (!this._observers[handler]) return;
-    this._branch.QueryInterface(Components.interfaces.nsIPrefBranch2)
+    this._branch.QueryInterface(Ci.nsIPrefBranch2)
                 .removeObserver(origin, this._observers[handler]);
   }
 
