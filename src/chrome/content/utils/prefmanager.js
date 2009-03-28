@@ -102,7 +102,7 @@ GM_PrefManager.prototype = {
    * @return    The list of all stored keys.
    * @type      Array
    */
-  listValues: function() {
+  list: function() {
     return this._branch.getChildList("", {});
   },
 

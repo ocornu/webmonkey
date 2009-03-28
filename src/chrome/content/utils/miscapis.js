@@ -66,7 +66,7 @@ GM_ScriptStorage.prototype.deleteValue = function(name) {
 }
 
 GM_ScriptStorage.prototype.listValues = function() {
-  return this.prefMan.listValues();
+  return this.prefMan.list();
 }
 
 // Based on Mark Pilgrim's GM_addGlobalStyle from
