@@ -178,12 +178,16 @@ GM_PrefManager.prototype = {
   },
 
   /**
-   * Enumerate keys.
-   * @return    The list of all stored keys.
+   * Enumerate keys in a subtree.
+   * @param {String} origin (optional)
+   *        The subtree whose keys must be enumerated. If not set, enumerates
+   *        all keys in this manager's branch.
+   * @return    The list of keys in the specified subtree.
    * @type      Array
    */
-  list: function() {
-    return this._branch.getChildList("", {});
+  list: function(origin) {
+    if (!origin) origin = "";
+    return this._branch.getChildList(origin, {});
   },
 
   /**
