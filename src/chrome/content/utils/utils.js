@@ -281,6 +281,7 @@ function GM_isGreasemonkeyable(url) {
           !/hiddenWindow\.html$/.test(url);
 }
 
+/*
 function GM_isFileScheme(url) {
   var scheme = Components.classes["@mozilla.org/network/io-service;1"]
                .getService(Components.interfaces.nsIIOService)
@@ -288,6 +289,7 @@ function GM_isFileScheme(url) {
 
   return scheme == "file";
 }
+*/
 
 function GM_getEnabled() {
   return GM_prefRoot.get("enabled", true);
