@@ -416,27 +416,124 @@ Config.prototype = {
   }
 };
 
+
+/**
+ * Construct a new script object.
+ * @constructor
+ * @param {Config} config
+ *        Associated Webmonkey configuration.
+ *
+ * @class   Implementation of a script.<br>
+ *          Provides place-holders for its configuration and status, as well as
+ *          facilities to manage its presence in the filesystem.
+ */
 function Script(config) {
+  /**
+   * Associated Webmonkey configuration manager.
+   * @type Config
+   * @private
+   */
   this._config = config;
+  /**
+   * Registered handlers for events originating from this script.
+   * @type Array
+   * @private
+   */
   this._observers = [];
 
+  /**
+   * URL to download this script from.
+   * @type String
+   * @private
+   */
   this._downloadURL = null; // Only for scripts not installed
+  /**
+   * Temporary file used during the installation process.
+   * @type nsIFile
+   * @private
+   */
   this._tempFile = null; // Only for scripts not installed
+  /**
+   * Name of the directory holding this script file(s).
+   * @type String
+   * @private
+   */
   this._basedir = null;
+  /**
+   * Script file name in {@link #_basedir}.
+   * @type String
+   * @private
+   */
   this._filename = null;
 
+  /**
+   * Script <code>&#64;name</code>.
+   * @type String
+   * @private
+   */
   this._name = null;
+  /**
+   * Script <code>&#64;namespace</code>.
+   * @type String
+   * @private
+   */
   this._namespace = null;
+  /**
+   * Script <code>&#64;description</code>.
+   * @type String
+   * @private
+   */
   this._description = null;
+
+  /**
+   * Enabled/disabled state.
+   * @type Boolean
+   * @private
+   */
   this._enabled = true;
+  /**
+   * List of included URL masks.
+   * @type Array
+   * @private
+   */
   this._includes = [];
+  /**
+   * List of excluded URL masks.
+   * @type Array
+   * @private
+   */
   this._excludes = [];
+  /**
+   * List of <code>&#64;require</code> items.
+   * @type Array
+   * @private
+   */
   this._requires = [];
+  /**
+   * List of <code>&#64;resource</code> items.
+   * @type Array
+   */
   this._resources = [];
+  /**
+   * Should this script be wrapped into a function before being injected.
+   * @type Boolean
+   * @private
+   */
   this._unwrap = false;
 }
 
+
 Script.prototype = {
+  /**
+   * Whether this script can run at a specified universal location.
+   * <code>url</code> is checked against its sets of {@link #_includes} and
+   * {@link #_excludes}.
+   * @param {String} url
+   *        The URL to test.
+   * @return    <code>true</code> if this script can run, <code>false</code>
+   *            otherwise.
+   * @type      Boolean
+   */
   matchesURL: function(url) {
     function test(page) {
       return convert2RegExp(page).test(url);
@@ -445,20 +542,64 @@ Script.prototype = {
     return this._includes.some(test) && !this._excludes.some(test);
   },
 
+  /**
+   * Notify observers of a change in this script's configuration.
+   * @param {String} event
+   *        A label defining what has changed.
+   * @param {Object} data
+   *        An associated payload.
+   * @private
+   */
   _changed: function(event, data) { this._config._changed(this, event, data); },
 
   get name() { return this._name; },
   get namespace() { return this._namespace; },
   get description() { return this._description; },
   get enabled() { return this._enabled; },
-  set enabled(enabled) { this._enabled = enabled; this._changed("edit-enabled", enabled); },
+  set enabled(enabled) {
+    this._enabled = enabled;
+    this._changed("edit-enabled", enabled);
+  },
 
   get includes() { return this._includes.concat(); },
+  /**
+   * Add an include mask.
+   * @param {String} url
+   *        The URL include mask to add.
+   */
+  addInclude: function(url) {
+    this._includes.push(url);
+    this._changed("edit-include-add", url);
+  },
+  /**
+   * Remove an include mask.
+   * @param {Number} index
+   *        The index of the include mask to remove.
+   */
+  removeIncludeAt: function(index) {
+    this._includes.splice(index, 1);
+    this._changed("edit-include-remove", index);
+  },
+
   get excludes() { return this._excludes.concat(); },
-  addInclude: function(url) { this._includes.push(url); this._changed("edit-include-add", url); },
-  removeIncludeAt: function(index) { this._includes.splice(index, 1); this._changed("edit-include-remove", index); },
-  addExclude: function(url) { this._excludes.push(url); this._changed("edit-exclude-add", url); },
-  removeExcludeAt: function(index) { this._excludes.splice(index, 1); this._changed("edit-exclude-remove", index); },
+  /**
+  * Add an exclude mask.
+  * @param {String} url
+  *        The URL exclude mask to add.
+  */
+  addExclude: function(url) {
+    this._excludes.push(url);
+    this._changed("edit-exclude-add", url);
+  },
+  /**
+  * Remove an exclude mask.
+  * @param {Number} index
+  *        The index of the exclude mask to remove.
+  */
+  removeExcludeAt: function(index) {
+    this._excludes.splice(index, 1);
+    this._changed("edit-exclude-remove", index);
+  },
 
   get requires() { return this._requires.concat(); },
   get resources() { return this._resources.concat(); },
@@ -482,6 +623,19 @@ Script.prototype = {
   get fileURL() { return GM_getUriFromFile(this._file).spec; },
   get textContent() { return getContents(this._file); },
 
+  /**
+   * Craft a proper directory/file name.
+   * Spaces are replaced by an underscore, non-Latin chars are removed (if a
+   * name only contains non-Latin chars, <code>gm_script</code> is used as a
+   * default name). Names longer than 24 chars are truncated.
+   * @param {String} name
+   *        The script name to process.
+   * @param {Boolean} useExt
+   *        Whether <code>name</code> includes a file extension.
+   * @return    The corresponding directory/file name.
+   * @type      String
+   * @private
+   */
   _initFileName: function(name, useExt) {
     var ext = "";
     name = name.toLowerCase();
@@ -506,6 +660,13 @@ Script.prototype = {
     return name;
   },
 
+  /**
+   * Move a temporary script file to its final location.
+   * Used during the script install process.
+   * @param {nsIFile} tempFile
+   *        The temporary file to install.
+   * @private
+   */
   _initFile: function(tempFile) {
     var file = this._config._scriptDir;
     var name = this._initFileName(this._name, false);
@@ -525,6 +686,11 @@ Script.prototype = {
   },
 
   get urlToDownload() { return this._downloadURL; },
+  /**
+   * Set this script's temporary file.
+   * @param {nsIFile} file
+   *        Target temporary file.
+   */
   setDownloadedFile: function(file) { this._tempFile = file; },
 
   get previewURL() {
@@ -533,6 +699,7 @@ Script.prototype = {
                      .newFileURI(this._tempFile).spec;
   }
 };
+
 
 function ScriptRequire(script) {
   this._script = script;
@@ -574,6 +741,7 @@ ScriptRequire.prototype = {
   get urlToDownload() { return this._downloadURL; },
   setDownloadedFile: function(file) { this._tempFile = file; }
 };
+
 
 function ScriptResource(script) {
   this._script = script;
