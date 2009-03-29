@@ -1,3 +1,15 @@
+// JSM exported symbols
+var EXPORTED_SYMBOLS = ["Config"];
+
+
+const GM_GUID = "webmonkey@webmonkey.info";
+
+Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+          .getService(Components.interfaces.mozIJSSubScriptLoader)
+          .loadSubScript("resource://webmonkey/utils/convert2RegExp.js");
+Components.utils.import("resource://webmonkey/prefmanager.js");
+
+
 function Config() {
   this._scripts = null;
   this._configFile = this._scriptDir;
@@ -278,7 +290,7 @@ Config.prototype = {
   },
 
   install: function(script) {
-    GM_log("> Config.install");
+//    GM_log("> Config.install");
 
     var existingIndex = this._find(script);
     if (existingIndex > -1) {
@@ -299,7 +311,7 @@ Config.prototype = {
     this._scripts.push(script);
     this._changed(script, "install", null);
 
-    GM_log("< Config.install");
+//    GM_log("< Config.install");
   },
 
   uninstall: function(script, uninstallPrefs) {
@@ -384,7 +396,7 @@ Config.prototype = {
    * any necessary upgrades.
    */
   _updateVersion: function() {
-    log("> GM_updateVersion");
+//    log("> GM_updateVersion");
 
     // this is the last version which has been run at least once
     var initialized = GM_prefRoot.get("version", "0.0");
@@ -399,7 +411,7 @@ Config.prototype = {
     var item = extMan.getItemForID(GM_GUID);
     GM_prefRoot.set("version", item.version);
 
-    log("< GM_updateVersion");
+//    log("< GM_updateVersion");
   },
 
   /**
@@ -679,7 +691,7 @@ Script.prototype = {
     file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0644);
     this._filename = file.leafName;
 
-    GM_log("Moving script file from " + tempFile.path + " to " + file.path);
+//    GM_log("Moving script file from " + tempFile.path + " to " + file.path);
 
     file.remove(true);
     tempFile.moveTo(file.parent, file.leafName);
@@ -731,7 +743,7 @@ ScriptRequire.prototype = {
     file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0644);
     this._filename = file.leafName;
 
-    GM_log("Moving dependency file from " + this._tempFile.path + " to " + file.path);
+//    GM_log("Moving dependency file from " + this._tempFile.path + " to " + file.path);
 
     file.remove(true);
     this._tempFile.moveTo(file.parent, file.leafName);
@@ -791,3 +803,91 @@ ScriptResource.prototype = {
     this._charset = charset;
   }
 };
+
+
+/**
+ * Compares two version numbers
+ * @param {String} aV1
+ *        Version of first item in 1.2.3.4..9. format
+ * @param {String} aV2
+ *        Version of second item in 1.2.3.4..9. format
+ * @returns {Int}  1 if first argument is higher
+ *                 0 if arguments are equal
+ *                 -1 if second argument is higher
+ */
+function GM_compareVersions(aV1, aV2) {
+  var v1 = aV1.split(".");
+  var v2 = aV2.split(".");
+  var numSubversions = (v1.length > v2.length) ? v1.length : v2.length;
+
+  for (var i = 0; i < numSubversions; i++) {
+    if (typeof v2[i] == "undefined") {
+      return 1;
+    }
+
+    if (typeof v1[i] == "undefined") {
+      return -1;
+    }
+
+    if (parseInt(v2[i], 10) > parseInt(v1[i], 10)) {
+      return -1;
+    } else if (parseInt(v2[i], 10) < parseInt(v1[i], 10)) {
+      return 1;
+    }
+  }
+
+  // v2 was never higher or lower than v1
+  return 0;
+}
+
+function getContents(file, charset) {
+  if( !charset ) {
+    charset = "UTF-8"
+  }
+  var ioService=Components.classes["@mozilla.org/network/io-service;1"]
+    .getService(Components.interfaces.nsIIOService);
+  var scriptableStream=Components
+    .classes["@mozilla.org/scriptableinputstream;1"]
+    .getService(Components.interfaces.nsIScriptableInputStream);
+  // http://lxr.mozilla.org/mozilla/source/intl/uconv/idl/nsIScriptableUConv.idl
+  var unicodeConverter = Components
+    .classes["@mozilla.org/intl/scriptableunicodeconverter"]
+    .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+  unicodeConverter.charset = charset;
+
+  var channel = ioService.newChannelFromURI(GM_getUriFromFile(file));
+  var input=channel.open();
+  scriptableStream.init(input);
+  var str=scriptableStream.read(input.available());
+  scriptableStream.close();
+  input.close();
+
+  try {
+    return unicodeConverter.ConvertToUnicode(str);
+  } catch( e ) {
+    return str;
+  }
+}
+
+function getBinaryContents(file) {
+    var ioService = Components.classes["@mozilla.org/network/io-service;1"]
+                              .getService(Components.interfaces.nsIIOService);
+
+    var channel = ioService.newChannelFromURI(GM_getUriFromFile(file));
+    var input = channel.open();
+
+    var bstream = Components.classes["@mozilla.org/binaryinputstream;1"]
+                            .createInstance(Components.interfaces.nsIBinaryInputStream);
+    bstream.setInputStream(input);
+
+    var bytes = bstream.readBytes(bstream.available());
+
+    return bytes;
+}
+
+function GM_getUriFromFile(file) {
+  return Components.classes["@mozilla.org/network/io-service;1"]
+                   .getService(Components.interfaces.nsIIOService)
+                   .newFileURI(file);
+}
+

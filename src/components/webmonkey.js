@@ -11,6 +11,7 @@ const appSvc = Cc["@mozilla.org/appshell/appShellService;1"]
 const gmSvcFilename = Components.stack.filename;
 
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+Components.utils.import("resource://webmonkey/config.js");
 
 
 /**
@@ -77,11 +78,8 @@ WebmonkeyService.prototype = {
                  .getService(Ci.mozIJSSubScriptLoader);
     loader.loadSubScript("chrome://global/content/XPCNativeWrapper.js");
     loader.loadSubScript("chrome://webmonkey/content/utils/utils.js");
-    loader.loadSubScript("chrome://webmonkey/content/utils/config.js");
-    loader.loadSubScript("chrome://webmonkey/content/utils/convert2RegExp.js");
     loader.loadSubScript("chrome://webmonkey/content/utils/miscapis.js");
     loader.loadSubScript("chrome://webmonkey/content/utils/xmlhttprequester.js");
-    loader.loadSubScript("chrome://webmonkey/content/utils/updater.js");
   },
 
   /**

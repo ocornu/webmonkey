@@ -1,5 +1,6 @@
 // Converts a pattern in this programs simple notation to a regular expression.
 // thanks AdBlock! http://www.mozdev.org/source/browse/adblock/adblock/
+
 function convert2RegExp( pattern ) {
   var s = new String(pattern);
   var res = new String("^");
