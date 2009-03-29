@@ -8,6 +8,7 @@ Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
           .getService(Components.interfaces.mozIJSSubScriptLoader)
           .loadSubScript("resource://webmonkey/utils/convert2RegExp.js");
 Components.utils.import("resource://webmonkey/prefmanager.js");
+Components.utils.import("resource://webmonkey/utils/file.js");
 
 
 function Config() {
@@ -839,55 +840,3 @@ function GM_compareVersions(aV1, aV2) {
   // v2 was never higher or lower than v1
   return 0;
 }
-
-function getContents(file, charset) {
-  if( !charset ) {
-    charset = "UTF-8"
-  }
-  var ioService=Components.classes["@mozilla.org/network/io-service;1"]
-    .getService(Components.interfaces.nsIIOService);
-  var scriptableStream=Components
-    .classes["@mozilla.org/scriptableinputstream;1"]
-    .getService(Components.interfaces.nsIScriptableInputStream);
-  // http://lxr.mozilla.org/mozilla/source/intl/uconv/idl/nsIScriptableUConv.idl
-  var unicodeConverter = Components
-    .classes["@mozilla.org/intl/scriptableunicodeconverter"]
-    .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-  unicodeConverter.charset = charset;
-
-  var channel = ioService.newChannelFromURI(GM_getUriFromFile(file));
-  var input=channel.open();
-  scriptableStream.init(input);
-  var str=scriptableStream.read(input.available());
-  scriptableStream.close();
-  input.close();
-
-  try {
-    return unicodeConverter.ConvertToUnicode(str);
-  } catch( e ) {
-    return str;
-  }
-}
-
-function getBinaryContents(file) {
-    var ioService = Components.classes["@mozilla.org/network/io-service;1"]
-                              .getService(Components.interfaces.nsIIOService);
-
-    var channel = ioService.newChannelFromURI(GM_getUriFromFile(file));
-    var input = channel.open();
-
-    var bstream = Components.classes["@mozilla.org/binaryinputstream;1"]
-                            .createInstance(Components.interfaces.nsIBinaryInputStream);
-    bstream.setInputStream(input);
-
-    var bytes = bstream.readBytes(bstream.available());
-
-    return bytes;
-}
-
-function GM_getUriFromFile(file) {
-  return Components.classes["@mozilla.org/network/io-service;1"]
-                   .getService(Components.interfaces.nsIIOService)
-                   .newFileURI(file);
-}
-

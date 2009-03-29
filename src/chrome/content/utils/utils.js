@@ -2,6 +2,7 @@ var GM_consoleService = Components.classes["@mozilla.org/consoleservice;1"]
                         .getService(Components.interfaces.nsIConsoleService);
 
 Components.utils.import("resource://webmonkey/prefmanager.js");
+Components.utils.import("resource://webmonkey/utils/file.js");
 
 /**
  * Examines the stack to determine if an API should be callable.
@@ -216,29 +217,6 @@ function parseScriptName(sourceUri) {
   name = name.substring(0, name.indexOf(".user.js"));
   name = name.substring(name.lastIndexOf("/") + 1);
   return name;
-}
-
-function getTempFile() {
-  var file = Components.classes["@mozilla.org/file/directory_service;1"]
-        .getService(Components.interfaces.nsIProperties)
-        .get("TmpD", Components.interfaces.nsILocalFile);
-
-  file.append("gm-temp");
-  file.createUnique(
-    Components.interfaces.nsILocalFile.NORMAL_FILE_TYPE,
-    0640
-  );
-
-  return file;
-}
-
-function getWriteStream(file) {
-  var stream = Components.classes["@mozilla.org/network/file-output-stream;1"]
-                         .createInstance(Components.interfaces.nsIFileOutputStream);
-
-  stream.init(file, 0x02 | 0x08 | 0x20, 420, -1);
-
-  return stream;
 }
 
 function alert(msg) {
