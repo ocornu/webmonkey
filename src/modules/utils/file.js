@@ -21,6 +21,13 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 
+/**
+ * Get a file's URI.
+ * @param {nsIFile} file
+ *        The target file.
+ * @return {nsIURI}
+ *         This <code>file</code>'s URI.
+ */
 function getUriFromFile(file) {
   return Cc["@mozilla.org/network/io-service;1"]
          .getService(Ci.nsIIOService)
@@ -28,6 +35,10 @@ function getUriFromFile(file) {
 }
 
 
+/**
+ * Get a temporary file.
+ * @return {nsILocalFile}   A temporary local file.
+ */
 function getTempFile() {
   var file = Cc["@mozilla.org/file/directory_service;1"]
              .getService(Ci.nsIProperties)
@@ -38,6 +49,11 @@ function getTempFile() {
 }
 
 
+/**
+* Get binary file content.
+* @param {nsIFile} file    The file to read from.
+* @return {String}         The binary content of <code>file</code>.
+*/
 function getBinaryContent(file) {
     var input  = Cc["@mozilla.org/network/io-service;1"]
                  .getService(Ci.nsIIOService)
@@ -51,6 +67,12 @@ function getBinaryContent(file) {
 }
 
 
+/**
+ * Get text file content.
+ * @param {nsIFile} file    The file to read from.
+ * @param {String} charset  The charset to use.
+ * @return {String}         The text content of <code>file</code>.
+ */
 function getTextContent(file, charset) {
   // read content from file
   var input  = Cc["@mozilla.org/network/io-service;1"]
@@ -79,6 +101,11 @@ function getTextContent(file, charset) {
 }
 
 
+/**
+ * Get an output stream to a file.
+ * @param {nsIFile} file            The target file.
+ * @return {nsIFileOutputStream}    An output stream to <code>file</code>.
+ */
 function getWriteStream(file) {
   var stream = Cc["@mozilla.org/network/file-output-stream;1"]
                .createInstance(Ci.nsIFileOutputStream);
