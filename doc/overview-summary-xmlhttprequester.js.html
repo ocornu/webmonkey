@@ -1,0 +1,307 @@
+<!doctype html public "-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset.dtd">
+<html>
+<head>
+<title>
+Webmonkey Overview
+</title>
+<link rel ="stylesheet" type="text/css" href="stylesheet.css" title="Style">
+<script>
+function asd() {
+	
+		parent.document.title="xmlhttprequester.js Overview";
+	
+}
+</script>
+</head>
+<body bgcolor="white" onload="asd();">
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> 	<font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top">
+<em>
+<b>Webmonkey</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<center>
+	
+	   <h2>xmlhttprequester.js</h2>
+	
+</center>
+
+	
+
+
+<h4>Summary</h4>
+<p>
+	
+		No overview generated for 'xmlhttprequester.js'<BR/><BR/>
+	
+</p>
+
+<hr>
+
+
+    <table border="1" cellpadding="3" cellspacing="0" width="100%">
+    <tr bgcolor="#CCCCFF" class="TableHeadingColor">
+    <td colspan=2><font size="+2">
+    
+        <b>Class Summary</b>
+    
+    </font></td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="GM_xmlhttpRequester.html">GM_xmlhttpRequester</a></b></td>
+    <td>&nbsp;</td>
+    </tr>
+    
+    </table>
+    <hr/> 
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<!-- ========== END METHOD SUMMARY =========== -->
+
+
+        <pre class="sourceview"><span class="reserved">function</span> GM_xmlhttpRequester(unsafeContentWin, chromeWindow) {
+  <span class="reserved">this</span>.unsafeContentWin = unsafeContentWin;
+  <span class="reserved">this</span>.chromeWindow = chromeWindow;
+}
+
+<span class="comment">// this function gets called by user scripts in content security scope to</span>
+<span class="comment">// start a cross-domain xmlhttp request.</span>
+<span class="comment">//</span>
+<span class="comment">// details should look like:</span>
+<span class="comment">// {method,url,onload,onerror,onreadystatechange,headers,data}</span>
+<span class="comment">// headers should be in the form {name:value,name:value,etc}</span>
+<span class="comment">// can't support mimetype because i think it's only used for forcing</span>
+<span class="comment">// text/xml and we can't support that</span>
+GM_xmlhttpRequester.<span class="reserved">prototype</span>.contentStartRequest = <span class="reserved">function</span>(details) {
+  <span class="reserved">if</span> (!GM_apiLeakCheck(<span class="literal">"GM_xmlhttpRequest"</span>)) {
+    <span class="reserved">return</span>;
+  }
+
+  <span class="comment">// don't actually need the timer functionality, but this pops it</span>
+  <span class="comment">// out into chromeWindow's thread so that we get that security</span>
+  <span class="comment">// context.</span>
+  GM_log(<span class="literal">"&gt; GM_xmlhttpRequest.contentStartRequest"</span>);
+
+  <span class="comment">// important to store this locally so that content cannot trick us up with</span>
+  <span class="comment">// a fancy getter that checks the number of times it has been accessed,</span>
+  <span class="comment">// returning a dangerous URL the time that we actually use it.</span>
+  var url = details.url;
+
+  <span class="comment">// make sure that we have an actual string so that we can't be fooled with</span>
+  <span class="comment">// tricky toString() implementations.</span>
+  <span class="reserved">if</span> (typeof url != <span class="literal">"string"</span>) {
+    throw new Error(<span class="literal">"Invalid url: url must be of type string"</span>);
+  }
+
+  var ioService = Components.classes[<span class="literal">"@mozilla.org/network/io-service;1"</span>]
+                  .getService(Components.interfaces.nsIIOService);
+  var scheme = ioService.extractScheme(url);
+
+  <span class="comment">// This is important - without it, GM_xmlhttpRequest can be used to get</span>
+  <span class="comment">// access to things like files and chrome. Careful.</span>
+  switch (scheme) {
+    case <span class="literal">"http"</span>:
+    case <span class="literal">"https"</span>:
+    case <span class="literal">"ftp"</span>:
+      <span class="reserved">this</span>.chromeWindow.setTimeout(
+        GM_hitch(<span class="reserved">this</span>, <span class="literal">"chromeStartRequest"</span>, url, details), 0);
+      break;
+    default:
+      throw new Error(<span class="literal">"Invalid url: "</span> + url);
+  }
+
+  GM_log(<span class="literal">"&lt; GM_xmlhttpRequest.contentStartRequest"</span>);
+};
+
+<span class="comment">// this function is intended to be called in chrome's security context, so</span>
+<span class="comment">// that it can access other domains without security warning</span>
+GM_xmlhttpRequester.<span class="reserved">prototype</span>.chromeStartRequest = <span class="reserved">function</span>(safeUrl, details) {
+  GM_log(<span class="literal">"&gt; GM_xmlhttpRequest.chromeStartRequest"</span>);
+  var req = new <span class="reserved">this</span>.chromeWindow.XMLHttpRequest();
+
+  <span class="reserved">this</span>.setupRequestEvent(<span class="reserved">this</span>.unsafeContentWin, req, <span class="literal">"onload"</span>, details);
+  <span class="reserved">this</span>.setupRequestEvent(<span class="reserved">this</span>.unsafeContentWin, req, <span class="literal">"onerror"</span>, details);
+  <span class="reserved">this</span>.setupRequestEvent(<span class="reserved">this</span>.unsafeContentWin, req, <span class="literal">"onreadystatechange"</span>,
+                         details);
+
+  req.open(details.method, safeUrl);
+
+  <span class="reserved">if</span> (details.overrideMimeType) {
+    req.overrideMimeType(details.overrideMimeType);
+  }
+
+  <span class="reserved">if</span> (details.headers) {
+    <span class="reserved">for</span> (var prop in details.headers) {
+      req.setRequestHeader(prop, details.headers[prop]);
+    }
+  }
+
+  <span class="reserved">if</span> (details.nocache)
+    try {
+      req.channel.loadFlags |=
+          Components.interfaces.nsIRequest.LOAD_BYPASS_CACHE;
+    } catch (e) {
+      throw new Error(<span class="literal">"Could not set 'bypass cache' option"</span>);
+    }
+
+  var body = details.data ? details.data : null;
+  <span class="reserved">if</span> (details.binary) {
+    <span class="comment">// no binary support?</span>
+    <span class="reserved">if</span> (!req.sendAsBinary)
+      throw new Error(<span class="literal">"Unavailable feature: "</span> +
+              <span class="literal">"this version of Firefox does not support sendAsBinary "</span> +
+              <span class="literal">"(you should consider upgrading to version 3, or posterior)"</span>);
+    req.sendAsBinary(body);
+  } <span class="reserved">else</span>
+    req.send(body);
+  GM_log(<span class="literal">"&lt; GM_xmlhttpRequest.chromeStartRequest"</span>);
+}
+
+<span class="comment">// arranges for the specified 'event' on xmlhttprequest 'req' to call the</span>
+<span class="comment">// method by the same name which is a property of 'details' in the content</span>
+<span class="comment">// window's security context.</span>
+GM_xmlhttpRequester.<span class="reserved">prototype</span>.setupRequestEvent =
+<span class="reserved">function</span>(unsafeContentWin, req, event, details) {
+  GM_log(<span class="literal">"&gt; GM_xmlhttpRequester.setupRequestEvent"</span>);
+
+  <span class="reserved">if</span> (details[event]) {
+    req[event] = <span class="reserved">function</span>() {
+      GM_log(<span class="literal">"&gt; GM_xmlhttpRequester -- callback for "</span> + event);
+
+      var responseState = {
+        <span class="comment">// can't support responseXML because security won't</span>
+        <span class="comment">// let the browser call properties on it</span>
+        responseText:req.responseText,
+        readyState:req.readyState,
+        responseHeaders:(req.readyState == 4 &amp;&amp; event != <span class="literal">"onerror"</span> ?
+                         req.getAllResponseHeaders() :
+                         <span class="literal">""</span>),
+        status:(req.readyState == 4 ? req.status : 0),
+        statusText:(req.readyState == 4 &amp;&amp; event != <span class="literal">"onerror"</span> ?
+                    req.statusText : <span class="literal">""</span>),
+        finalUrl:(req.readyState == 4 ? req.channel.URI.spec : <span class="literal">""</span>)
+      }
+
+      <span class="comment">// Pop back onto browser thread and call event handler.</span>
+      <span class="comment">// Have to use nested function here instead of GM_hitch because</span>
+      <span class="comment">// otherwise details[event].apply can point to window.setTimeout, which</span>
+      <span class="comment">// can be abused to get increased priveledges.</span>
+      new XPCNativeWrapper(unsafeContentWin, <span class="literal">"setTimeout()"</span>)
+        .setTimeout(<span class="reserved">function</span>(){details[event](responseState);}, 0);
+
+      GM_log(<span class="literal">"&lt; GM_xmlhttpRequester -- callback for "</span> + event);
+    }
+  }
+
+  GM_log(<span class="literal">"&lt; GM_xmlhttpRequester.setupRequestEvent"</span>);
+};
+</pre>
+	<hr>
+
+
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> <font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top"><em>
+<b>Webmonkey</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<font size="-1">
+
+</font>
+<div class="jsdoc_ctime">Documentation generated by <a href="http://jsdoc.sourceforge.net/" target="_parent">JSDoc</a> on Mon Mar 30 00:30:19 2009</div>
+</body>
+</html>

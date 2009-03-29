@@ -1,0 +1,583 @@
+<!doctype html public "-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset.dtd">
+<html>
+<head>
+<title>
+Webmonkey Overview
+</title>
+<link rel ="stylesheet" type="text/css" href="stylesheet.css" title="Style">
+<script>
+function asd() {
+	
+		parent.document.title="webmonkey.js Overview";
+	
+}
+</script>
+</head>
+<body bgcolor="white" onload="asd();">
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> 	<font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top">
+<em>
+<b>Webmonkey</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<center>
+	
+	   <h2>webmonkey.js</h2>
+	
+</center>
+
+	
+
+
+<h4>Summary</h4>
+<p>
+	
+		Implementation of the <code>WebmonkeyService</code> XPCOM
+ service component.<BR/><BR/>
+	
+</p>
+
+<hr>
+
+
+    <table border="1" cellpadding="3" cellspacing="0" width="100%">
+    <tr bgcolor="#CCCCFF" class="TableHeadingColor">
+    <td colspan=2><font size="+2">
+    
+        <b>Class Summary</b>
+    
+    </font></td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="WebmonkeyService.html">WebmonkeyService</a></b></td>
+    <td>Webmonkey service XPCOM component.</td>
+    </tr>
+    
+    </table>
+    <hr/> 
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+	<a name="method_summary"><!-- --></a>
+	<table border="1" cellpadding="3" cellspacing="0" width="100%">
+		<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+			<td colspan=2>
+				<font size="+2">
+					<b>Method Summary</b>
+				</font>
+			</td>
+		</tr>
+	
+		
+		   <tr bgcolor="white" class="TableRowColor">
+		      <td align="right" valign="top" width="1%">
+			 <font size="-1">
+			    <code>static&nbsp;Boolean</code>
+			 </font>
+		      </td>
+		      <td>
+			 <code>
+			    <b>
+			       <a href="GLOBALS.html#!s!inject">inject</a></b>(&lt;<a href="Script.html">Script</a>&gt; script, &lt;XPCNativeWrapper&gt; safeWin, &lt;GM_BrowserUI&gt; gmBrowser, fbConsole)
+			 </code>
+			 <br>
+			 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			 Inject a script into a DOM window.
+		      </td>
+		   </tr>
+		
+		   <tr bgcolor="white" class="TableRowColor">
+		      <td align="right" valign="top" width="1%">
+			 <font size="-1">
+			    <code>static&nbsp;Object</code>
+			 </font>
+		      </td>
+		      <td>
+			 <code>
+			    <b>
+			       <a href="GLOBALS.html#!s!NSGetModule">NSGetModule</a></b>(compMgr, fileSpec)
+			 </code>
+			 <br>
+			 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			 Standard XPCOM module registration.
+		      </td>
+		   </tr>
+		
+	
+	</table>
+    <p>
+
+<!-- ========== END METHOD SUMMARY =========== -->
+
+
+        <pre class="sourceview"><span class="comment">/**
+ * <span class="attrib">@fileoverview</span> Implementation of the &lt;code&gt;WebmonkeyService&lt;/code&gt; XPCOM
+ * service component.
+ */</span>
+
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+
+const appSvc = Cc[<span class="literal">"@mozilla.org/appshell/appShellService;1"</span>]
+               .getService(Ci.nsIAppShellService);
+const gmSvcFilename = Components.stack.filename;
+
+Components.utils.import(<span class="literal">"resource://gre/modules/XPCOMUtils.jsm"</span>);
+Components.utils.import(<span class="literal">"resource://webmonkey/config.js"</span>);
+
+
+<span class="comment">/**
+ * Construct a new Webmonkey service.
+ * <span class="attrib">@class</span> Webmonkey service XPCOM component.
+ * Usable from JavaScript only.
+ * <span class="attrib">@constructor</span>
+ */</span>
+<span class="reserved">function</span> WebmonkeyService() {
+  <span class="reserved">this</span>.wrappedJSObject = <span class="reserved">this</span>;
+}
+
+WebmonkeyService.<span class="reserved">prototype</span> = {
+  <span class="comment">/**
+   * Standard XPCOM class name.
+   * <span class="attrib">@type</span>  String
+   * <span class="attrib">@final</span>
+   */</span>
+  classDescription:  <span class="literal">"WebmonkeyService"</span>,
+  <span class="comment">/**
+   * Standard XPCOM class ID.
+   * <span class="attrib">@final</span>
+   */</span>
+  classID:           Components.ID(<span class="literal">"{8d26f120-10b8-11de-8c30-0800200c9a66}"</span>),
+  <span class="comment">/**
+   * Standard XPCOM contract ID.
+   * <span class="attrib">@type</span>  String
+   * <span class="attrib">@final</span>
+   */</span>
+  contractID:        <span class="literal">"@webmonkey.info/webmonkey-service;1"</span>,
+  <span class="comment">/**
+   * Standard XPCOM categories.
+   * <span class="attrib">@type</span>  Array
+   * <span class="attrib">@private</span>
+   * <span class="attrib">@final</span>
+   */</span>
+  _xpcom_categories: [{category: <span class="literal">"app-startup"</span>,
+                       entry: <span class="reserved">this</span>.classDescription,
+                       value: <span class="reserved">this</span>.contractID,
+                       service: true},
+                      {category: <span class="literal">"content-policy"</span>,
+                       entry: <span class="reserved">this</span>.contractID,
+                       value: <span class="reserved">this</span>.contractID,
+                       service: true}],
+
+  <span class="comment">/**
+   * Standard &lt;code&gt;nsISupports&lt;/code&gt; dynamic interface loader.
+   * Implementation is automatically generated by &lt;code&gt;XPCOMUtils&lt;/code&gt;.
+   * <span class="attrib">@type</span>  Function
+   * <span class="attrib">@final</span>
+   */</span>
+  QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver,
+                                         Ci.nsISupports,
+                                         Ci.nsISupportsWeakReference,
+                                         Ci.nsIContentPolicy]),
+
+  <span class="comment">/**
+   * &lt;code&gt;nsIObserver&lt;/code&gt; event handler.
+   * Is called once on application startup to load subscripts.
+   */</span>
+  observe: <span class="reserved">function</span>(aSubject, aTopic, aData) {
+    <span class="reserved">if</span> (aTopic != <span class="literal">"app-startup"</span>) <span class="reserved">return</span>;
+    var loader = Cc[<span class="literal">"@mozilla.org/moz/jssubscript-loader;1"</span>]
+                 .getService(Ci.mozIJSSubScriptLoader);
+    loader.loadSubScript(<span class="literal">"chrome://global/content/XPCNativeWrapper.js"</span>);
+    loader.loadSubScript(<span class="literal">"chrome://webmonkey/content/lib/utils.js"</span>);
+    loader.loadSubScript(<span class="literal">"chrome://webmonkey/content/lib/miscapis.js"</span>);
+    loader.loadSubScript(<span class="literal">"chrome://webmonkey/content/lib/xmlhttprequester.js"</span>);
+  },
+
+  <span class="comment">/**
+   * &lt;code&gt;nsIContentPolicy&lt;/code&gt; resource loader hook.
+   * Allow all resources to be loaded except userscripts, which are redirected
+   * to the script installer.
+   * <span class="attrib">@type</span>  int
+   */</span>
+  shouldLoad: <span class="reserved">function</span>(contentType, contentLocation, requestOrigin, context,
+                       mimeTypeGuess, extra) {
+    var ret = Ci.nsIContentPolicy.ACCEPT;
+
+    <span class="comment">// block content detection of webmonkey by denying GM</span>
+    <span class="comment">// chrome content, unless loaded from chrome</span>
+    <span class="reserved">if</span> (requestOrigin &amp;&amp; requestOrigin.scheme != <span class="literal">"chrome"</span>
+        &amp;&amp; contentLocation.scheme == <span class="literal">"chrome"</span>
+        &amp;&amp; contentLocation.host == <span class="literal">"webmonkey"</span>)
+      <span class="reserved">return</span> Ci.nsIContentPolicy.REJECT_SERVER;
+
+    <span class="comment">// don't intercept anything when GM is not enabled</span>
+    <span class="reserved">if</span> (!GM_getEnabled()) <span class="reserved">return</span> ret;
+
+    <span class="comment">// don't interrupt the view-source: scheme</span>
+    <span class="comment">// (triggered if the link in the error console is clicked)</span>
+    <span class="reserved">if</span> (contentLocation.scheme == <span class="literal">"view-source"</span>) <span class="reserved">return</span> ret;
+
+    <span class="reserved">if</span> (contentType == Ci.nsIContentPolicy.TYPE_DOCUMENT
+        &amp;&amp; contentLocation.spec.match(/\.user\.js$/)
+        &amp;&amp; !<span class="reserved">this</span>._ignoreNextScript &amp;&amp; !<span class="reserved">this</span>.isTempScript(cl)) {
+      var winWat = Cc[<span class="literal">"@mozilla.org/embedcomp/window-watcher;1"</span>]
+                   .getService(Ci.nsIWindowWatcher);
+      <span class="reserved">if</span> (winWat.activeWindow &amp;&amp; winWat.activeWindow.GM_BrowserUI) {
+        winWat.activeWindow.GM_BrowserUI.startInstallScript(contentLocation);
+        ret = Ci.nsIContentPolicy.REJECT_REQUEST;
+      }
+    }
+
+    <span class="reserved">this</span>._ignoreNextScript = false;
+    <span class="reserved">return</span> ret;
+
+    <span class="comment">/* is URI a temporary script file? */</span>
+    <span class="reserved">function</span> isTempScript(uri) {
+      <span class="reserved">if</span> (uri.scheme != <span class="literal">"file"</span>) <span class="reserved">return</span> false;
+      var file   = Cc[<span class="literal">"@mozilla.org/network/protocol;1?name=file"</span>]
+                   .getService(Ci.nsIFileProtocolHandler)
+                   .getFileFromURLSpec(uri.spec);
+      var tmpDir = Cc[<span class="literal">"@mozilla.org/file/directory_service;1"</span>]
+                   .getService(Ci.nsIProperties)
+                   .get(<span class="literal">"TmpD"</span>, Ci.nsILocalFile);
+      <span class="reserved">return</span> file.parent.equals(tmpDir) &amp;&amp; file.leafName != <span class="literal">"newscript.user.js"</span>;
+    }
+  },
+
+  <span class="comment">/**
+  * &lt;code&gt;nsIContentPolicy&lt;/code&gt; resource processor hook.
+  * All resources are allowed to be processed.
+  * <span class="attrib">@type</span>   int
+  */</span>
+  shouldProcess: <span class="reserved">function</span>(contentType, contentLocation, requestOrigin, context,
+                          mimeTypeGuess, extra) {
+    <span class="reserved">return</span> Ci.nsIContentPolicy.ACCEPT;
+  },
+
+  <span class="comment">/**
+   * Webmonkey configuration.
+   * <span class="attrib">@private</span>
+   */</span>
+  _config: null,
+  get config() {
+    <span class="reserved">if</span> (!<span class="reserved">this</span>._config)
+      <span class="reserved">this</span>._config = new Config();
+    <span class="reserved">return</span> <span class="reserved">this</span>._config;
+  },
+
+  <span class="comment">/**
+   * Do not install next script.
+   * <span class="attrib">@type</span>  Boolean
+   * <span class="attrib">@private</span>
+   */</span>
+  _ignoreNextScript: false,
+  <span class="comment">/**
+   * Allow next script encountered to be ignored during the install process.
+   * <span class="attrib">@see</span> ScriptDownloader#startDownload
+   */</span>
+  ignoreNextScript: <span class="reserved">function</span>() {
+    dump(<span class="literal">"ignoring next script...\n"</span>);
+    <span class="reserved">this</span>._ignoreNextScript = true;
+  },
+
+  <span class="comment">/**
+   * &lt;code&gt;DOMContentLoaded&lt;/code&gt; event handler.
+   * Inject relevant scripts once DOM is fully loaded.
+   * <span class="attrib">@param</span> {Window} unsafeWin
+   *        Target DOM window.
+   * <span class="attrib">@param</span> {ChromeWindow} chromeWin
+   *        Target chrome window.
+   * <span class="attrib">@param</span> {GM_BrowserUI} gmBrowser
+   *        &lt;code&gt;GM_BrowserUI&lt;/code&gt; responsible for this chrome window.
+   */</span>
+  domContentLoaded: <span class="reserved">function</span>(unsafeWin, chromeWin, gmBrowser) {
+    var safeWin   = new XPCNativeWrapper(unsafeWin);
+    var href      = safeWin.location.href;
+    var scripts   = <span class="reserved">this</span>.config.getMatchingScripts(
+      <span class="reserved">function</span>(script) { <span class="reserved">return</span> script.enabled &amp;&amp; script.matchesURL(href); }
+    );
+    <span class="comment">// assert there are scripts to inject</span>
+    <span class="reserved">if</span> (!scripts.length) <span class="reserved">return</span>;
+
+    var firebug = getFirebugConsole(safeWin, unsafeWin, chromeWin);
+    <span class="reserved">for</span> each (var script in scripts)
+      inject(script, safeWin, gmBrowser, firebug);
+
+    <span class="comment">/* FireBug 1.2+ console support */</span>
+    <span class="reserved">function</span> getFirebugConsole(safeWin, unsafeWin, chromeWin) {
+      try {
+        chromeWin = chromeWin.top;
+        <span class="comment">// assert FB is installed</span>
+        <span class="reserved">if</span> (!chromeWin.Firebug)
+          <span class="reserved">return</span> null;
+        var fbVersion = parseFloat(chromeWin.Firebug.version);
+        var fbConsole = chromeWin.Firebug.Console;
+        var fbContext = chromeWin.TabWatcher &amp;&amp;
+                        chromeWin.TabWatcher.getContextByWindow(unsafeWin);
+        <span class="comment">// assert FB is enabled</span>
+        <span class="reserved">if</span> (!fbConsole.isEnabled(fbContext))
+          <span class="reserved">return</span> null;
+
+        <span class="reserved">if</span> (fbVersion == 1.2) {
+          <span class="comment">// search console handler</span>
+          <span class="reserved">if</span> (fbContext.consoleHandler)
+            <span class="reserved">for</span> (var i = 0; i &lt; fbContext.consoleHandler.length; i++)
+              <span class="reserved">if</span> (fbContext.consoleHandler[i].window == safeWin)
+                <span class="reserved">return</span> fbContext.consoleHandler[i].handler;
+          var dummyElm = safeWin.document.createElement(<span class="literal">"div"</span>);
+          dummyElm.setAttribute(<span class="literal">"id"</span>, <span class="literal">"_firebugConsole"</span>);
+          safeWin.document.documentElement.appendChild(dummyElm);
+          chromeWin.Firebug.Console.injector.addConsoleListener(fbContext, safeWin);
+          dummyElm.parentNode.removeChild(dummyElm);
+          <span class="reserved">return</span> fbContext.consoleHandler.pop().handler;
+        }
+
+        <span class="reserved">if</span> (fbVersion == 1.3 || fbVersion == 1.4) {
+          fbConsole.injector.attachIfNeeded(fbContext, unsafeWin);
+          <span class="comment">// find active context</span>
+          <span class="reserved">for</span> (var i=0; i&lt;fbContext.activeConsoleHandlers.length; i++)
+            <span class="reserved">if</span> (fbContext.activeConsoleHandlers[i].window == unsafeWin)
+              <span class="reserved">return</span> fbContext.activeConsoleHandlers[i];
+          <span class="reserved">return</span> null;
+        }
+      } catch (e) {
+        dump(<span class="literal">'Webmonkey getFirebugConsole() error:\n'</span>+uneval(e)+<span class="literal">'\n'</span>);
+      }
+      <span class="reserved">return</span> null;
+    }
+  }
+
+};
+
+
+var components = [WebmonkeyService];
+<span class="comment">/**
+ * Standard XPCOM module registration.
+ */</span>
+<span class="reserved">function</span> NSGetModule(compMgr, fileSpec) {
+  <span class="reserved">return</span> XPCOMUtils.generateModule(components);
+}
+
+<span class="comment">/**
+ * Inject a script into a DOM window.
+ * <span class="attrib">@param</span> {Script} script
+ *        &lt;code&gt;Script&lt;/code&gt; to be injected.
+ * <span class="attrib">@param</span> {XPCNativeWrapper} safeWin
+ *        Target &lt;code&gt;Window&lt;/code&gt; to inject script into.
+ * <span class="attrib">@param</span> {GM_BrowserUI} gmBrowser
+ *        &lt;code&gt;GM_BrowserUI&lt;/code&gt; responsible for this window.
+ * <span class="attrib">@param</span> fbConsole
+ *        Firebug console.
+ * <span class="attrib">@return</span>  &lt;code&gt;true&lt;/code&gt; if script succeeds, &lt;code&gt;false&lt;/code&gt; otherwise.
+ * <span class="attrib">@type</span>    Boolean
+ */</span>
+<span class="reserved">function</span> inject(script, safeWin, gmBrowser, fbConsole) {
+  var sandbox   = new Components.utils.Sandbox(safeWin);
+  var logger    = new GM_ScriptLogger(script);
+  var console   = fbConsole ? fbConsole : new GM_console(script);
+  var storage   = new GM_ScriptStorage(script);
+  var unsafeWin = safeWin.wrappedJSObject;
+  var xhr       = new GM_xmlhttpRequester(unsafeWin, appSvc.hiddenDOMWindow);
+  var resources = new GM_Resources(script);
+
+  <span class="comment">// populate sandbox</span>
+  sandbox.window       = safeWin;
+  sandbox.document     = safeWin.document;
+  sandbox.unsafeWindow = unsafeWin;
+  sandbox.console      = console;
+  sandbox.XPathResult  = Ci.nsIDOMXPathResult;
+  <span class="comment">// add our own APIs</span>
+  var GM = sandbox.GM = {};
+  GM.addStyle            = <span class="reserved">function</span>(css) { GM_addStyle(safeDoc, css) };
+  GM.log                 = GM_hitch(logger, <span class="literal">"log"</span>);
+  GM.setValue            = GM_hitch(storage, <span class="literal">"setValue"</span>);
+  GM.getValue            = GM_hitch(storage, <span class="literal">"getValue"</span>);
+  GM.deleteValue         = GM_hitch(storage, <span class="literal">"deleteValue"</span>);
+  GM.listValues          = GM_hitch(storage, <span class="literal">"listValues"</span>);
+  GM.getResourceURL      = GM_hitch(resources, <span class="literal">"getResourceURL"</span>);
+  GM.getResourceText     = GM_hitch(resources, <span class="literal">"getResourceText"</span>);
+  GM.xmlhttpRequest      = GM_hitch(xhr, <span class="literal">"contentStartRequest"</span>);
+  GM.openInTab           = GM_hitch(gmBrowser, <span class="literal">"openInTab"</span>);
+  GM.registerMenuCommand = GM_hitch(gmBrowser, <span class="literal">"registerMenuCommand"</span>,
+                                    unsafeWin);
+  sandbox.__proto__ = safeWin;
+
+  <span class="comment">// compile <span class="attrib">@requires</span></span>
+  var requires = [];
+  var offsets = [];
+  var offset = 0;
+  <span class="reserved">for</span> each(var req in script.requires) {
+    var contents = req.textContent;
+    var lineCount = contents.split(<span class="literal">"\n"</span>).length;
+    requires.push(contents);
+    offset += lineCount;
+    offsets.push(offset);
+  }
+  script.offsets = offsets;
+
+  <span class="comment">// script source (error line-number calculations depend on these \n)</span>
+  var source = <span class="literal">"\n"</span> + requires.join(<span class="literal">"\n"</span>) + <span class="literal">"\n"</span> +
+               script.textContent + <span class="literal">"\n"</span>;
+  var api    = <span class="literal">"for (var i in GM) eval('var GM_'+i+' = GM[i]');"</span>;
+  <span class="reserved">if</span> (script.unwrap)
+    source = api+source;
+  <span class="reserved">else</span> {
+    <span class="comment">// move API inside script wrapper</span>
+    api = <span class="literal">"const GM = this.GM; delete this.GM; "</span>+ api +<span class="literal">"\
+           var window = this.window; delete this.window;\
+           var unsafeWindow = this.unsafeWindow; delete this.unsafeWindow;\
+           var document = this.document; delete this.document;\
+           var XPathResult = this.XPathResult; delete this.XPathResult;\
+           var console = this.console; delete this.console;"</span>;
+    <span class="comment">// wrap script into an anonymous function</span>
+    source = <span class="literal">"(function(){"</span>+ api+source +<span class="literal">"})()"</span>;
+  }
+
+  <span class="comment">// eval in sandbox</span>
+  try {
+    <span class="comment">// workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=307984</span>
+    var lineRef = new Error().lineNumber + 1;
+    Components.utils.evalInSandbox(source, sandbox);
+    <span class="reserved">return</span> true;
+  } catch (e) {
+    <span class="comment">// try to find the line of the actual error line</span>
+    <span class="reserved">if</span> (!e) <span class="reserved">return</span> false;   <span class="comment">// thrown null</span>
+    var line = e.lineNumber;
+    <span class="reserved">if</span> (!line || line == 4294967295) { <span class="comment">// lineNumber==maxint in edge cases</span>
+      <span class="reserved">if</span> (!e.location || !e.location.lineNumber) {
+        GM_logError(e, 0, script.fileURL, 0);
+        <span class="reserved">return</span> false;
+      }
+      <span class="comment">// Sometimes the right one is in "location"</span>
+      line = e.location.lineNumber;
+    }
+    <span class="comment">// find problematic file</span>
+    line -= lineRef;
+    var end, start = 1;
+    var uri   = null;
+    <span class="reserved">for</span> (var i in script.offsets) {
+      end = script.offsets[i];
+      <span class="reserved">if</span> (line &lt; end) {
+        uri = script.requires[i].fileURL;
+        break;
+      }
+      start = end;
+    }
+    line -= start;
+    <span class="reserved">if</span> (!uri)
+      uri = script.fileURL;
+    <span class="comment">// log error</span>
+    GM_logError(e, 0, uri, line);
+    <span class="reserved">return</span> false;
+  }
+}
+</pre>
+	<hr>
+
+
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> <font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top"><em>
+<b>Webmonkey</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<font size="-1">
+
+</font>
+<div class="jsdoc_ctime">Documentation generated by <a href="http://jsdoc.sourceforge.net/" target="_parent">JSDoc</a> on Mon Mar 30 00:30:19 2009</div>
+</body>
+</html>

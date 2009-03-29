@@ -1,0 +1,271 @@
+<!doctype html public "-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset.dtd">
+<html>
+<head>
+<title>
+Webmonkey Overview
+</title>
+<link rel ="stylesheet" type="text/css" href="stylesheet.css" title="Style">
+<script>
+function asd() {
+	
+		parent.document.title="install.js Overview";
+	
+}
+</script>
+</head>
+<body bgcolor="white" onload="asd();">
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> 	<font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top">
+<em>
+<b>Webmonkey</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<center>
+	
+	   <h2>install.js</h2>
+	
+</center>
+
+	
+
+
+<h4>Summary</h4>
+<p>
+	
+		No overview generated for 'install.js'<BR/><BR/>
+	
+</p>
+
+<hr>
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<!-- ========== END METHOD SUMMARY =========== -->
+
+
+        <pre class="sourceview">var GMInstall = {
+  init: <span class="reserved">function</span>() {
+    var ioservice = Components.classes[<span class="literal">"@mozilla.org/network/io-service;1"</span>]
+                              .getService(Components.interfaces.nsIIOService);
+
+    <span class="reserved">this</span>.htmlNs_ = <span class="literal">"http://www.w3.org/1999/xhtml"</span>;
+
+    <span class="reserved">this</span>.scriptDownloader_ = window.arguments[0];
+    <span class="reserved">this</span>.script_ = <span class="reserved">this</span>.scriptDownloader_.script;
+
+    <span class="reserved">this</span>.setupIncludes(<span class="literal">"includes"</span>, <span class="literal">"includes-desc"</span>, <span class="reserved">this</span>.script_.includes);
+    <span class="reserved">this</span>.setupIncludes(<span class="literal">"excludes"</span>, <span class="literal">"excludes-desc"</span>, <span class="reserved">this</span>.script_.excludes);
+
+    <span class="reserved">this</span>.dialog_ = document.documentElement;
+    <span class="reserved">this</span>.extraButton_ = <span class="reserved">this</span>.dialog_.getButton(<span class="literal">"extra1"</span>);
+    <span class="reserved">this</span>.extraButton_.setAttribute(<span class="literal">"type"</span>, <span class="literal">"checkbox"</span>);
+
+    <span class="reserved">this</span>.acceptButton_ = <span class="reserved">this</span>.dialog_.getButton(<span class="literal">"accept"</span>);
+    <span class="reserved">this</span>.acceptButton_.baseLabel = <span class="reserved">this</span>.acceptButton_.label;
+
+    <span class="reserved">this</span>.timer_ = null;
+    <span class="reserved">this</span>.seconds_ = 0;
+    <span class="reserved">this</span>.startTimer();
+
+    <span class="reserved">this</span>.bundle = document.getElementById(<span class="literal">"gm-browser-bundle"</span>);
+    <span class="reserved">this</span>.greetz = new Array();
+    <span class="reserved">for</span>(var i = 0; i &lt; 6; i++){
+      <span class="reserved">this</span>.greetz.push(<span class="reserved">this</span>.bundle.getString(<span class="literal">"greetz."</span> + i));
+    }
+
+    var pick = Math.round(Math.random() * (<span class="reserved">this</span>.greetz.length - 1));
+    var heading = document.getElementById(<span class="literal">"heading"</span>);
+    heading.appendChild(document.createElementNS(<span class="reserved">this</span>.htmlNs_, <span class="literal">"strong"</span>));
+    heading.firstChild.appendChild(document.createTextNode(<span class="reserved">this</span>.greetz[pick]));
+    heading.appendChild(document.createTextNode(<span class="literal">" "</span> + <span class="reserved">this</span>.bundle.getString(<span class="literal">"greeting.msg"</span>)));
+
+    var desc = document.getElementById(<span class="literal">"scriptDescription"</span>);
+    desc.appendChild(document.createElementNS(<span class="reserved">this</span>.htmlNs_, <span class="literal">"strong"</span>));
+    desc.firstChild.appendChild(document.createTextNode(<span class="reserved">this</span>.script_.name));
+    desc.appendChild(document.createElementNS(<span class="reserved">this</span>.htmlNs_, <span class="literal">"br"</span>));
+    desc.appendChild(document.createTextNode(<span class="reserved">this</span>.script_.description));
+  },
+
+  onFocus: <span class="reserved">function</span>(e) {
+    <span class="reserved">this</span>.startTimer();
+  },
+
+  onBlur: <span class="reserved">function</span>(e) {
+    <span class="reserved">this</span>.stopTimer();
+  },
+
+  startTimer: <span class="reserved">function</span>() {
+    <span class="reserved">this</span>.seconds_ = 4;
+    <span class="reserved">this</span>.updateLabel();
+
+    <span class="reserved">if</span> (<span class="reserved">this</span>.timer_) {
+      window.clearInterval(<span class="reserved">this</span>.timer_);
+    }
+
+    <span class="reserved">this</span>.timer_ = window.setInterval(<span class="reserved">function</span>() { GMInstall.onInterval() }, 500);
+  },
+
+  onInterval: <span class="reserved">function</span>() {
+    <span class="reserved">this</span>.seconds_--;
+    <span class="reserved">this</span>.updateLabel();
+
+    <span class="reserved">if</span> (<span class="reserved">this</span>.seconds_ == 0) {
+      <span class="reserved">this</span>.timer_ = window.clearInterval(<span class="reserved">this</span>.timer_);
+    }
+  },
+
+  stopTimer: <span class="reserved">function</span>() {
+    <span class="reserved">this</span>.seconds_ = 5;
+    <span class="reserved">this</span>.timer_ = window.clearInterval(<span class="reserved">this</span>.timer_);
+    <span class="reserved">this</span>.updateLabel();
+  },
+
+  updateLabel: <span class="reserved">function</span>() {
+    <span class="reserved">if</span> (<span class="reserved">this</span>.seconds_ &gt; 0) {
+      <span class="reserved">this</span>.acceptButton_.focus();
+      <span class="reserved">this</span>.acceptButton_.disabled = true;
+      <span class="reserved">this</span>.acceptButton_.label = <span class="reserved">this</span>.acceptButton_.baseLabel + <span class="literal">" ("</span> + <span class="reserved">this</span>.seconds_ + <span class="literal">")"</span>;
+    } <span class="reserved">else</span> {
+      <span class="reserved">this</span>.acceptButton_.disabled = false;
+      <span class="reserved">this</span>.acceptButton_.label = <span class="reserved">this</span>.acceptButton_.baseLabel;
+    }
+  },
+
+  setupIncludes: <span class="reserved">function</span>(box, desc, includes) {
+    <span class="reserved">if</span> (includes.length &gt; 0) {
+      desc = document.getElementById(desc);
+      document.getElementById(box).style.display = <span class="literal">""</span>;
+
+      <span class="reserved">for</span> (var i = 0; i &lt; includes.length; i++) {
+        desc.appendChild(document.createTextNode(includes[i]));
+        desc.appendChild(document.createElementNS(<span class="reserved">this</span>.htmlNs_, <span class="literal">"br"</span>));
+      }
+
+      desc.removeChild(desc.lastChild);
+    }
+  },
+
+  onOK: <span class="reserved">function</span>() {
+    <span class="reserved">this</span>.scriptDownloader_.installScript();
+    window.setTimeout(<span class="literal">"window.close()"</span>, 0);
+  },
+
+  onCancel: <span class="reserved">function</span>(){
+    <span class="reserved">this</span>.scriptDownloader_.cleanupTempFiles();
+    window.close();
+  },
+
+  onShowSource: <span class="reserved">function</span>() {
+    <span class="reserved">this</span>.scriptDownloader_.showScriptView();
+    window.setTimeout(<span class="literal">"window.close()"</span>, 0);
+  }
+};
+</pre>
+	<hr>
+
+
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> <font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top"><em>
+<b>Webmonkey</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<font size="-1">
+
+</font>
+<div class="jsdoc_ctime">Documentation generated by <a href="http://jsdoc.sourceforge.net/" target="_parent">JSDoc</a> on Mon Mar 30 00:30:19 2009</div>
+</body>
+</html>

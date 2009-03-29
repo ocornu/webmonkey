@@ -1,0 +1,431 @@
+<!doctype html public "-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset.dtd">
+<html>
+<head>
+<title>
+Webmonkey Overview
+</title>
+<link rel ="stylesheet" type="text/css" href="stylesheet.css" title="Style">
+<script>
+function asd() {
+	
+		parent.document.title="prefmanager.js Overview";
+	
+}
+</script>
+</head>
+<body bgcolor="white" onload="asd();">
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> 	<font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top">
+<em>
+<b>Webmonkey</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<center>
+	
+	   <h2>prefmanager.js</h2>
+	
+</center>
+
+	
+
+
+<h4>Summary</h4>
+<p>
+	
+		JS Module implementation of the preference manager.<BR/><BR/>
+	
+</p>
+
+<hr>
+
+
+    <table border="1" cellpadding="3" cellspacing="0" width="100%">
+    <tr bgcolor="#CCCCFF" class="TableHeadingColor">
+    <td colspan=2><font size="+2">
+    
+        <b>Class Summary</b>
+    
+    </font></td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="PreferenceManager.html">PreferenceManager</a></b></td>
+    <td>Allow storage and retrieval of (key, value) pairs across tabs,
+          windows and sessions.</td>
+    </tr>
+    
+    </table>
+    <hr/> 
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<!-- ========== END METHOD SUMMARY =========== -->
+
+
+        <pre class="sourceview"><span class="comment">/**
+ * <span class="attrib">@fileoverview</span> JS Module implementation of the preference manager.
+ */</span>
+<span class="comment">// JSM exported symbols</span>
+var EXPORTED_SYMBOLS = [<span class="literal">"GM_prefRoot"</span>];
+
+<span class="comment">// shortcuts</span>
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+
+
+<span class="comment">/**
+ * Construct a new preference manager.
+ * <span class="attrib">@constructor</span>
+ * <span class="attrib">@param</span>   {String} origin (optional)
+ *          The origin of this manager's branch in the main preferences
+ *          tree.
+ * <span class="attrib">@throws</span>  &lt;code&gt;Error&lt;/code&gt; if &lt;code&gt;origin&lt;/code&gt; is not a string.
+ *
+ * <span class="attrib">@class</span>   Allow storage and retrieval of (key, value) pairs across tabs,
+ *          windows and sessions.
+ *          &lt;ul&gt;&lt;li&gt;Keys must be of type &lt;code&gt;String&lt;/code&gt;. They are organized
+ *          in a tree fashion, the leaf/branch separator being a dot (see
+ *          &lt;code&gt;about:config&lt;/code&gt; for an example).&lt;/li&gt;
+ *          &lt;li&gt;Values must be of type &lt;code&gt;String&lt;/code&gt;, &lt;code&gt;Boolean&lt;/code&gt;
+ *          or integer (&lt;i&gt;i.e.&lt;/i&gt; a &lt;code&gt;Number&lt;/code&gt; without decimal part,
+ *          between {<span class="attrib">@link</span> #MIN_INT_32} and {<span class="attrib">@link</span> #MAX_INT_32}).&lt;/li&gt;&lt;/ul&gt;
+ *          This simple API sits on top of
+ *          &lt;a href="https://developer.mozilla.org/En/NsIPrefBranch"&gt;
+ *          nsIPrefService&lt;/a&gt;.
+ */</span>
+<span class="reserved">function</span> PreferenceManager(origin) {
+  <span class="reserved">if</span> (!origin) origin = <span class="literal">""</span>;
+  <span class="reserved">else</span> <span class="reserved">if</span> (typeof origin != <span class="literal">"string"</span>)
+    throw new Error(<span class="literal">"Origin must be of type 'string'"</span>);
+
+  <span class="comment">/**
+   * The origin of this manager's branch in the preferences tree.
+   * <span class="attrib">@type</span>  String
+   * <span class="attrib">@private</span>
+   * <span class="attrib">@final</span>
+   */</span>
+  <span class="reserved">this</span>._origin = origin + (origin.length ? <span class="literal">"."</span> : <span class="literal">""</span>);
+
+  <span class="comment">/**
+   * The preferences branch for this manager.
+   * <span class="attrib">@type</span> nsIPrefBranch
+   * <span class="attrib">@private</span>
+   * <span class="attrib">@final</span>
+   */</span>
+  <span class="reserved">this</span>._branch = Cc[<span class="literal">"@mozilla.org/preferences-service;1"</span>]
+                 .getService(Ci.nsIPrefService).getBranch(<span class="reserved">this</span>._origin);
+
+  <span class="comment">/**
+   * A dictionary of registered observers for this manager's preferences.
+   * <span class="attrib">@private</span>
+   * <span class="attrib">@final</span>
+   */</span>
+  <span class="reserved">this</span>._observers = {};
+}
+
+
+<span class="comment">/*
+ * Prototype
+ */</span>
+PreferenceManager.<span class="reserved">prototype</span> = {
+
+  <span class="comment">/**
+   * Minimum integer value (32 bits).
+   * <span class="attrib">@type</span> Number
+   * <span class="attrib">@final</span>
+   */</span>
+  MIN_INT_32: -0x80000000,
+  <span class="comment">/**
+   * Maximum integer value (32 bits).
+   * <span class="attrib">@type</span> Number
+   * <span class="attrib">@final</span>
+   */</span>
+  MAX_INT_32: 0x7FFFFFFF,
+
+  <span class="comment">/**
+   * Create a new &lt;code&gt;PreferenceManager&lt;/code&gt; instance responsible for a
+   * subtree of this manager's branch.
+   * Will clone the current manager if &lt;code&gt;origin&lt;/code&gt; is
+   * &lt;code&gt;null/undefined&lt;/code&gt;.
+   * <span class="attrib">@param</span> {String} origin (optional)
+   *        The origin of the subtree, relatively to this manager's branch.
+   * <span class="attrib">@return</span>    A new preference manager.
+   * <span class="attrib">@type</span>      PreferenceManager
+   * <span class="attrib">@throws</span>    &lt;code&gt;Error&lt;/code&gt; if &lt;code&gt;origin&lt;/code&gt; is not a string.
+   */</span>
+  subManager: <span class="reserved">function</span>(origin) {
+    <span class="reserved">if</span> (!origin) origin = <span class="literal">""</span>;
+    <span class="reserved">else</span> <span class="reserved">if</span> (typeof origin != <span class="literal">"string"</span>)
+      throw new Error(<span class="literal">"origin must be of type 'string'"</span>);
+    <span class="reserved">return</span> new PreferenceManager(<span class="reserved">this</span>._origin + origin);
+  },
+
+  <span class="comment">/**
+   * Retrieve a stored value.
+   * <span class="attrib">@param</span> {String} key
+   *        Key whose value must be retrieved.
+   * <span class="attrib">@param</span> defaultValue (optional)
+   *        The default value for this key.
+   * <span class="attrib">@return</span>    The associated value if it exists, else
+   *            &lt;code&gt;defaultValue&lt;/code&gt; when it has been specified, otherwise
+   *            &lt;code&gt;null&lt;/code&gt;.
+   * <span class="attrib">@throws</span>    &lt;code&gt;Error&lt;/code&gt; if an existing value cannot be parsed.
+   */</span>
+  get: <span class="reserved">function</span>(key, defaultValue) {
+    <span class="reserved">if</span> (defaultValue == undefined) defaultValue = null;
+    var type = <span class="reserved">this</span>._branch.getPrefType(key);
+    <span class="reserved">if</span> (type == <span class="reserved">this</span>._branch.PREF_INVALID) <span class="reserved">return</span> defaultValue;
+
+    try {
+      switch (type) {
+      case <span class="reserved">this</span>._branch.PREF_STRING:
+        <span class="reserved">return</span> <span class="reserved">this</span>._branch.getCharPref(key);
+      case <span class="reserved">this</span>._branch.PREF_BOOL:
+        <span class="reserved">return</span> <span class="reserved">this</span>._branch.getBoolPref(key);
+      case <span class="reserved">this</span>._branch.PREF_INT:
+        <span class="reserved">return</span> <span class="reserved">this</span>._branch.getIntPref(key);
+      }
+    } catch(e) {}
+    throw new Error(<span class="literal">"Value could not be parsed"</span>);
+  },
+
+  <span class="comment">/**
+   * Set a key to the specified value.
+   * <span class="attrib">@param</span> {String} key
+   *        Key whose value must be set.
+   * <span class="attrib">@param</span> value
+   *        Value for this key. Must be of type &lt;code&gt;String&lt;/code&gt;,
+   *        &lt;code&gt;Boolean&lt;/code&gt; or integer (i.e. a &lt;code&gt;Number&lt;/code&gt; without
+   *        decimal part, between {<span class="attrib">@link</span> #MIN_INT_32} and {<span class="attrib">@link</span> #MAX_INT_32}).
+   * <span class="attrib">@return</span>    The stored &lt;code&gt;value&lt;/code&gt;.
+   * <span class="attrib">@throws</span>    &lt;code&gt;Error&lt;/code&gt; if &lt;code&gt;value&lt;/code&gt; has an invalid type.
+   */</span>
+  set: <span class="reserved">function</span>(key, value) {
+    <span class="comment">// assert value has a valid type</span>
+    var type = typeof(value);
+    var ok = false;
+    switch (type) {
+    case <span class="literal">"string"</span>:
+    case <span class="literal">"boolean"</span>:
+      ok = true;
+      break;
+    case <span class="literal">"number"</span>:
+      <span class="reserved">if</span> (value % 1 == 0 &amp;&amp; value &gt;= <span class="reserved">this</span>.MIN_INT_32 &amp;&amp;
+          value &lt;= <span class="reserved">this</span>.MAX_INT_32)
+        ok = true;
+      break;
+    }
+    <span class="reserved">if</span> (!ok)
+      throw new Error(<span class="literal">"Unsupported value type. Supported types are: "</span> +
+                      <span class="literal">"string, bool, and 32 bit integers."</span>);
+
+    <span class="comment">// underlying preferences object throws an exception if new pref has a</span>
+    <span class="comment">// different type than old one, so delete old pref first if it is the case.</span>
+    <span class="reserved">if</span> (<span class="reserved">this</span>.exists(key) &amp;&amp; type != typeof(<span class="reserved">this</span>.get(key)))
+      <span class="reserved">this</span>.remove(key);
+
+    <span class="comment">// set new value using correct method</span>
+    switch (type) {
+    case <span class="literal">"string"</span>:
+      <span class="reserved">this</span>._branch.setCharPref(key, value);
+      break;
+    case <span class="literal">"boolean"</span>:
+      <span class="reserved">this</span>._branch.setBoolPref(key, value);
+      break;
+    case <span class="literal">"number"</span>:
+      <span class="reserved">this</span>._branch.setIntPref(key, Math.floor(value));
+      break;
+    }
+
+    <span class="reserved">return</span> value;
+  },
+
+  <span class="comment">/**
+   * Whether a key exists.
+   * <span class="attrib">@param</span> {String} key
+   *        Key which existence is tested.
+   * <span class="attrib">@return</span>    &lt;code&gt;true&lt;/code&gt; if key exists, &lt;code&gt;false&lt;/code&gt; otherwise.
+   * <span class="attrib">@type</span>      Boolean
+   */</span>
+  exists: <span class="reserved">function</span>(key) {
+    <span class="reserved">return</span> <span class="reserved">this</span>._branch.getPrefType(key) != 0;
+  },
+
+  <span class="comment">/**
+   * Enumerate keys in a subtree.
+   * <span class="attrib">@param</span> {String} origin (optional)
+   *        The subtree whose keys must be enumerated. If not set, enumerates
+   *        all keys in this manager's branch.
+   * <span class="attrib">@return</span>    The list of keys in the specified subtree.
+   * <span class="attrib">@type</span>      Array
+   */</span>
+  list: <span class="reserved">function</span>(origin) {
+    <span class="reserved">if</span> (!origin) origin = <span class="literal">""</span>;
+    <span class="reserved">return</span> <span class="reserved">this</span>._branch.getChildList(origin, {});
+  },
+
+  <span class="comment">/**
+   * Delete a key or subtree.
+   * <span class="attrib">@param</span> {String} origin (optional)
+   *        The key or subtree to delete. If not set, deletes all keys of this
+   *        manager's branch.
+   */</span>
+  remove: <span class="reserved">function</span>(origin) {
+    <span class="reserved">if</span> (!origin) origin = <span class="literal">""</span>;
+    <span class="reserved">this</span>._branch.deleteBranch(origin);
+  },
+
+  <span class="comment">/**
+   * Register a handler that will be notified when changes occur in a subtree.
+   * <span class="attrib">@param</span> {String} origin
+   *        The origin of the subtree to watch for (may be a single key).
+   * <span class="attrib">@param</span> {Function} handler
+   *        The handler to notify for changes. It will be called with one
+   *        argument, the name of the key which has changed.
+   */</span>
+  watch: <span class="reserved">function</span>(origin, handler) {
+    <span class="reserved">if</span> (typeof handler != <span class="literal">"function"</span>)
+      throw new Error(<span class="literal">"Handler must be a function"</span>);
+
+    <span class="comment">// construct an observer</span>
+    var observer = {
+      observe: <span class="reserved">function</span>(aSubject, aTopic, aPrefName) {
+        handler(aPrefName);
+      }
+    };
+    <span class="comment">// store the observer in case we need to remove it later</span>
+    <span class="reserved">this</span>._observers[handler] = observer;
+
+    <span class="reserved">this</span>._branch.QueryInterface(Ci.nsIPrefBranch2)
+                .addObserver(origin, observer, false);
+  },
+
+  <span class="comment">/**
+   * Unregister a subtree changes handler.
+   * <span class="attrib">@param</span> {String} origin
+   *        The subtree to stop watching.
+   * <span class="attrib">@param</span> {Function} handler
+   *        The handler to remove.
+   */</span>
+  unwatch: <span class="reserved">function</span>(origin, handler) {
+    <span class="reserved">if</span> (!<span class="reserved">this</span>._observers[handler]) <span class="reserved">return</span>;
+    <span class="reserved">this</span>._branch.QueryInterface(Ci.nsIPrefBranch2)
+                .removeObserver(origin, <span class="reserved">this</span>._observers[handler]);
+  }
+
+};
+
+
+<span class="comment">/**
+ * Webmonkey root preference manager.
+ * <span class="attrib">@type</span> PreferenceManager
+ */</span>
+var GM_prefRoot = new PreferenceManager(<span class="literal">"webmonkey"</span>);
+</pre>
+	<hr>
+
+
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> <font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top"><em>
+<b>Webmonkey</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<font size="-1">
+
+</font>
+<div class="jsdoc_ctime">Documentation generated by <a href="http://jsdoc.sourceforge.net/" target="_parent">JSDoc</a> on Mon Mar 30 00:30:19 2009</div>
+</body>
+</html>

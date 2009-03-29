@@ -1,0 +1,667 @@
+<!doctype html public "-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset.dtd">
+<html>
+<head>
+<title>
+Webmonkey Overview
+</title>
+<link rel ="stylesheet" type="text/css" href="stylesheet.css" title="Style">
+<script>
+function asd() {
+	
+		parent.document.title="config.js Overview";
+	
+}
+</script>
+</head>
+<body bgcolor="white" onload="asd();">
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> 	<font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top">
+<em>
+<b>Webmonkey</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<center>
+	
+	   <h2>config.js</h2>
+	
+</center>
+
+	
+
+
+<h4>Summary</h4>
+<p>
+	
+		No overview generated for 'config.js'<BR/><BR/>
+	
+</p>
+
+<hr>
+
+
+    <table border="1" cellpadding="3" cellspacing="0" width="100%">
+    <tr bgcolor="#CCCCFF" class="TableHeadingColor">
+    <td colspan=2><font size="+2">
+    
+        <b>Class Summary</b>
+    
+    </font></td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="Config.html">Config</a></b></td>
+    <td>&nbsp;</td>
+    </tr>
+    
+    </table>
+    <hr/> 
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+	<a name="method_summary"><!-- --></a>
+	<table border="1" cellpadding="3" cellspacing="0" width="100%">
+		<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+			<td colspan=2>
+				<font size="+2">
+					<b>Method Summary</b>
+				</font>
+			</td>
+		</tr>
+	
+		
+		   <tr bgcolor="white" class="TableRowColor">
+		      <td align="right" valign="top" width="1%">
+			 <font size="-1">
+			    <code>static&nbsp;Int</code>
+			 </font>
+		      </td>
+		      <td>
+			 <code>
+			    <b>
+			       <a href="GLOBALS.html#!s!GM_compareVersions">GM_compareVersions</a></b>(&lt;String&gt; aV1, &lt;String&gt; aV2)
+			 </code>
+			 <br>
+			 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			 Compares two version numbers
+		      </td>
+		   </tr>
+		
+	
+	</table>
+    <p>
+
+<!-- ========== END METHOD SUMMARY =========== -->
+
+
+        <pre class="sourceview"><span class="comment">// JSM exported symbols</span>
+var EXPORTED_SYMBOLS = [<span class="literal">"Config"</span>];
+
+
+const GM_GUID = <span class="literal">"webmonkey@webmonkey.info"</span>;
+
+Components.utils.import(<span class="literal">"resource://webmonkey/prefmanager.js"</span>);
+Components.utils.import(<span class="literal">"resource://webmonkey/script.js"</span>);
+Components.utils.import(<span class="literal">"resource://webmonkey/lib/file.js"</span>);
+
+
+<span class="reserved">function</span> Config() {
+  <span class="reserved">this</span>._scripts = null;
+  <span class="reserved">this</span>._configFile = <span class="reserved">this</span>._scriptDir;
+  <span class="reserved">this</span>._configFile.append(<span class="literal">"config.xml"</span>);
+  <span class="reserved">this</span>._initScriptDir();
+
+  <span class="reserved">this</span>._observers = [];
+
+  <span class="reserved">this</span>._updateVersion();
+  <span class="reserved">this</span>._load();
+}
+
+Config.<span class="reserved">prototype</span> = {
+  addObserver: <span class="reserved">function</span>(observer, script) {
+    var observers = script ? script._observers : <span class="reserved">this</span>._observers;
+    observers.push(observer);
+  },
+
+  removeObserver: <span class="reserved">function</span>(observer, script) {
+    var observers = script ? script._observers : <span class="reserved">this</span>._observers;
+    var index = observers.indexOf(observer);
+    <span class="reserved">if</span> (index == -1) throw new Error(<span class="literal">"Observer not found"</span>);
+    observers.splice(index, 1);
+  },
+
+  _notifyObservers: <span class="reserved">function</span>(script, event, data) {
+    var observers = <span class="reserved">this</span>._observers.concat(script._observers);
+    <span class="reserved">for</span> (var i = 0, observer; observer = observers[i]; i++) {
+      observer.notifyEvent(script, event, data);
+    }
+  },
+
+  _changed: <span class="reserved">function</span>(script, event, data) {
+    <span class="reserved">this</span>._save();
+    <span class="reserved">this</span>._notifyObservers(script, event, data);
+  },
+
+  installIsUpdate: <span class="reserved">function</span>(script) {
+    <span class="reserved">return</span> <span class="reserved">this</span>._find(script) &gt; -1;
+  },
+
+  _find: <span class="reserved">function</span>(aScript) {
+    namespace = aScript._namespace.toLowerCase();
+    name = aScript._name.toLowerCase();
+
+    <span class="reserved">for</span> (var i = 0, script; script = <span class="reserved">this</span>._scripts[i]; i++) {
+      <span class="reserved">if</span> (script._namespace.toLowerCase() == namespace
+        &amp;&amp; script._name.toLowerCase() == name) {
+        <span class="reserved">return</span> i;
+      }
+    }
+
+    <span class="reserved">return</span> -1;
+  },
+
+  _load: <span class="reserved">function</span>() {
+    var domParser = Components.classes[<span class="literal">"@mozilla.org/xmlextras/domparser;1"</span>]
+                              .createInstance(Components.interfaces.nsIDOMParser);
+
+    var configContents = getTextContent(<span class="reserved">this</span>._configFile);
+    var doc = domParser.parseFromString(configContents, <span class="literal">"text/xml"</span>);
+    var nodes = doc.evaluate(<span class="literal">"/UserScriptConfig/Script"</span>, doc, null, 0, null);
+
+    <span class="reserved">this</span>._scripts = [];
+
+    <span class="reserved">for</span> (var node = null; node = nodes.iterateNext(); ) {
+      var script = new Script(<span class="reserved">this</span>);
+
+      <span class="reserved">for</span> (var i = 0, childNode; childNode = node.childNodes[i]; i++) {
+        switch (childNode.nodeName) {
+        case <span class="literal">"Include"</span>:
+          script._includes.push(childNode.firstChild.nodeValue);
+          break;
+        case <span class="literal">"Exclude"</span>:
+          script._excludes.push(childNode.firstChild.nodeValue);
+          break;
+        case <span class="literal">"Require"</span>:
+          var scriptRequire = new ScriptRequire(script);
+          scriptRequire._filename = childNode.getAttribute(<span class="literal">"filename"</span>);
+          script._requires.push(scriptRequire);
+          break;
+        case <span class="literal">"Resource"</span>:
+          var scriptResource = new ScriptResource(script);
+          scriptResource._name = childNode.getAttribute(<span class="literal">"name"</span>);
+          scriptResource._filename = childNode.getAttribute(<span class="literal">"filename"</span>);
+          scriptResource._mimetype = childNode.getAttribute(<span class="literal">"mimetype"</span>);
+          scriptResource._charset = childNode.getAttribute(<span class="literal">"charset"</span>);
+          script._resources.push(scriptResource);
+          break;
+        case <span class="literal">"Unwrap"</span>:
+          script._unwrap = true;
+          break;
+        }
+      }
+
+      script._filename = node.getAttribute(<span class="literal">"filename"</span>);
+      script._name = node.getAttribute(<span class="literal">"name"</span>);
+      script._namespace = node.getAttribute(<span class="literal">"namespace"</span>);
+      script._description = node.getAttribute(<span class="literal">"description"</span>);
+      script._enabled = node.getAttribute(<span class="literal">"enabled"</span>) == true.toString();
+      script._basedir = node.getAttribute(<span class="literal">"basedir"</span>) || <span class="literal">"."</span>;
+
+      <span class="reserved">this</span>._scripts.push(script);
+    }
+  },
+
+  _save: <span class="reserved">function</span>() {
+    var doc = Components.classes[<span class="literal">"@mozilla.org/xmlextras/domparser;1"</span>]
+      .createInstance(Components.interfaces.nsIDOMParser)
+      .parseFromString(<span class="literal">"&lt;UserScriptConfig&gt;&lt;/UserScriptConfig&gt;"</span>, <span class="literal">"text/xml"</span>);
+
+    <span class="reserved">for</span> (var i = 0, scriptObj; scriptObj = <span class="reserved">this</span>._scripts[i]; i++) {
+      var scriptNode = doc.createElement(<span class="literal">"Script"</span>);
+
+      <span class="reserved">for</span> (var j = 0; j &lt; scriptObj._includes.length; j++) {
+        var includeNode = doc.createElement(<span class="literal">"Include"</span>);
+        includeNode.appendChild(doc.createTextNode(scriptObj._includes[j]));
+        scriptNode.appendChild(doc.createTextNode(<span class="literal">"\n\t\t"</span>));
+        scriptNode.appendChild(includeNode);
+      }
+
+      <span class="reserved">for</span> (var j = 0; j &lt; scriptObj._excludes.length; j++) {
+        var excludeNode = doc.createElement(<span class="literal">"Exclude"</span>);
+        excludeNode.appendChild(doc.createTextNode(scriptObj._excludes[j]));
+        scriptNode.appendChild(doc.createTextNode(<span class="literal">"\n\t\t"</span>));
+        scriptNode.appendChild(excludeNode);
+      }
+
+      <span class="reserved">for</span> (var j = 0; j &lt; scriptObj._requires.length; j++) {
+        var req = scriptObj._requires[j];
+        var resourceNode = doc.createElement(<span class="literal">"Require"</span>);
+
+        resourceNode.setAttribute(<span class="literal">"filename"</span>, req._filename);
+
+        scriptNode.appendChild(doc.createTextNode(<span class="literal">"\n\t\t"</span>));
+        scriptNode.appendChild(resourceNode);
+      }
+
+      <span class="reserved">for</span> (var j = 0; j &lt; scriptObj._resources.length; j++) {
+        var imp = scriptObj._resources[j];
+        var resourceNode = doc.createElement(<span class="literal">"Resource"</span>);
+
+        resourceNode.setAttribute(<span class="literal">"name"</span>, imp._name);
+        resourceNode.setAttribute(<span class="literal">"filename"</span>, imp._filename);
+        resourceNode.setAttribute(<span class="literal">"mimetype"</span>, imp._mimetype);
+        <span class="reserved">if</span> (imp._charset) {
+          resourceNode.setAttribute(<span class="literal">"charset"</span>, imp._charset);
+        }
+
+        scriptNode.appendChild(doc.createTextNode(<span class="literal">"\n\t\t"</span>));
+        scriptNode.appendChild(resourceNode);
+      }
+
+      <span class="reserved">if</span> (scriptObj._unwrap) {
+        scriptNode.appendChild(doc.createTextNode(<span class="literal">"\n\t\t"</span>));
+        scriptNode.appendChild(doc.createElement(<span class="literal">"Unwrap"</span>));
+      }
+
+      scriptNode.appendChild(doc.createTextNode(<span class="literal">"\n\t"</span>));
+
+      scriptNode.setAttribute(<span class="literal">"filename"</span>, scriptObj._filename);
+      scriptNode.setAttribute(<span class="literal">"name"</span>, scriptObj._name);
+      scriptNode.setAttribute(<span class="literal">"namespace"</span>, scriptObj._namespace);
+      scriptNode.setAttribute(<span class="literal">"description"</span>, scriptObj._description);
+      scriptNode.setAttribute(<span class="literal">"enabled"</span>, scriptObj._enabled);
+      scriptNode.setAttribute(<span class="literal">"basedir"</span>, scriptObj._basedir);
+
+      doc.firstChild.appendChild(doc.createTextNode(<span class="literal">"\n\t"</span>));
+      doc.firstChild.appendChild(scriptNode);
+    }
+
+    doc.firstChild.appendChild(doc.createTextNode(<span class="literal">"\n"</span>));
+
+    var configStream = getWriteStream(<span class="reserved">this</span>._configFile);
+    Components.classes[<span class="literal">"@mozilla.org/xmlextras/xmlserializer;1"</span>]
+      .createInstance(Components.interfaces.nsIDOMSerializer)
+      .serializeToStream(doc, configStream, <span class="literal">"utf-8"</span>);
+    configStream.close();
+  },
+
+  parse: <span class="reserved">function</span>(source, uri) {
+    var ioservice = Components.classes[<span class="literal">"@mozilla.org/network/io-service;1"</span>]
+                              .getService(Components.interfaces.nsIIOService);
+
+    var script = new Script(<span class="reserved">this</span>);
+    script._downloadURL = uri.spec;
+    script._enabled = true;
+
+    <span class="comment">// read one line at a time looking for start meta delimiter or EOF</span>
+    var lines = source.match(/.+/g);
+    var lnIdx = 0;
+    var result = {};
+    var foundMeta = false;
+
+    <span class="reserved">while</span> ((result = lines[lnIdx++])) {
+      <span class="reserved">if</span> (result.indexOf(<span class="literal">"// ==UserScript=="</span>) == 0) {
+        foundMeta = true;
+        break;
+      }
+    }
+
+    <span class="comment">// gather up meta lines</span>
+    <span class="reserved">if</span> (foundMeta) {
+      <span class="comment">// used for duplicate resource name detection</span>
+      var previousResourceNames = {};
+
+      <span class="reserved">while</span> ((result = lines[lnIdx++])) {
+        <span class="reserved">if</span> (result.indexOf(<span class="literal">"// ==/UserScript=="</span>) == 0) {
+          break;
+        }
+
+        var match = result.match(/\/\/ \@(\S+)(?:\s+([^\n]+))?/);
+        <span class="reserved">if</span> (match === null) continue;
+
+        var header = match[1];
+        var value = match[2];
+        <span class="reserved">if</span> (value) { <span class="comment">// <span class="attrib">@header</span> &lt;value&gt;</span>
+          switch (header) {
+            case <span class="literal">"name"</span>:
+            case <span class="literal">"namespace"</span>:
+            case <span class="literal">"description"</span>:
+              script[<span class="literal">"_"</span> + header] = value;
+              break;
+            case <span class="literal">"include"</span>:
+              script._includes.push(value);
+              break;
+            case <span class="literal">"exclude"</span>:
+              script._excludes.push(value);
+              break;
+            case <span class="literal">"require"</span>:
+              var reqUri = ioservice.newURI(value, null, uri);
+              var scriptRequire = new ScriptRequire(script);
+              scriptRequire._downloadURL = reqUri.spec;
+              script._requires.push(scriptRequire);
+              break;
+            case <span class="literal">"resource"</span>:
+              var res = value.match(/(\S+)\s+(.*)/);
+              <span class="reserved">if</span> (res === null) {
+                <span class="comment">// NOTE: Unlocalized strings</span>
+                throw new Error(<span class="literal">"Invalid syntax for @resource declaration '"</span> +
+                                value + <span class="literal">"'. Resources are declared like: "</span> +
+                                <span class="literal">"@resource &lt;name&gt; &lt;url&gt;."</span>);
+              }
+
+              var resName = res[1];
+              <span class="reserved">if</span> (previousResourceNames[resName]) {
+                throw new Error(<span class="literal">"Duplicate resource name '"</span> + resName + <span class="literal">"' "</span> +
+                                <span class="literal">"detected. Each resource must have a unique "</span> +
+                                <span class="literal">"name."</span>);
+              } <span class="reserved">else</span> {
+                previousResourceNames[resName] = true;
+              }
+
+              var resUri = ioservice.newURI(res[2], null, uri);
+              var scriptResource = new ScriptResource(script);
+              scriptResource._name = resName;
+              scriptResource._downloadURL = resUri.spec;
+              script._resources.push(scriptResource);
+              break;
+          }
+        } <span class="reserved">else</span> { <span class="comment">// plain <span class="attrib">@header</span></span>
+          switch (header) {
+            case <span class="literal">"unwrap"</span>:
+              script._unwrap = true;
+              break;
+          }
+        }
+      }
+    }
+
+    <span class="comment">// if no meta info, default to reasonable values</span>
+    <span class="reserved">if</span> (script._name == null) script._name = parseScriptName(uri);
+    <span class="reserved">if</span> (script._namespace == null) script._namespace = uri.host;
+    <span class="reserved">if</span> (!script._description) script._description = <span class="literal">""</span>;
+    <span class="reserved">if</span> (script._includes.length == 0) script._includes.push(<span class="literal">"*"</span>);
+
+    <span class="reserved">return</span> script;
+  },
+
+  install: <span class="reserved">function</span>(script) {
+<span class="comment">//    GM_log("&gt; Config.install");</span>
+
+    var existingIndex = <span class="reserved">this</span>._find(script);
+    <span class="reserved">if</span> (existingIndex &gt; -1) {
+      <span class="reserved">this</span>.uninstall(<span class="reserved">this</span>._scripts[existingIndex], false);
+    }
+
+    script._initFile(script._tempFile);
+    script._tempFile = null;
+
+    <span class="reserved">for</span> (var i = 0; i &lt; script._requires.length; i++) {
+      script._requires[i]._initFile();
+    }
+
+    <span class="reserved">for</span> (var i = 0; i &lt; script._resources.length; i++) {
+      script._resources[i]._initFile();
+    }
+
+    <span class="reserved">this</span>._scripts.push(script);
+    <span class="reserved">this</span>._changed(script, <span class="literal">"install"</span>, null);
+
+<span class="comment">//    GM_log("&lt; Config.install");</span>
+  },
+
+  uninstall: <span class="reserved">function</span>(script, uninstallPrefs) {
+    var idx = <span class="reserved">this</span>._find(script);
+    <span class="reserved">this</span>._scripts.splice(idx, 1);
+    <span class="reserved">this</span>._changed(script, <span class="literal">"uninstall"</span>, null);
+
+    <span class="comment">// watch out for cases like basedir="." and basedir="../scripts"</span>
+    <span class="reserved">if</span> (!script._basedirFile.equals(<span class="reserved">this</span>._scriptDir)) {
+      <span class="comment">// if script has its own dir, remove the dir + contents</span>
+      script._basedirFile.remove(true);
+    } <span class="reserved">else</span> {
+      <span class="comment">// if script is in the root, just remove the file</span>
+      script._file.remove(false);
+    }
+
+    <span class="reserved">if</span> (uninstallPrefs) {
+      <span class="comment">// Remove saved preferences</span>
+      GM_prefRoot.remove(<span class="literal">"scriptvals."</span> + script._namespace + <span class="literal">"/"</span> + script._name + <span class="literal">"."</span>);
+    }
+  },
+
+  <span class="comment">/**
+   * Moves an installed user script to a new position in the array of installed scripts.
+   *
+   * <span class="attrib">@param</span> script The script to be moved.
+   * <span class="attrib">@param</span> destination Can be either (a) a numeric offset for the script to be
+   *                    moved or (b) another installet script to which position
+   *                    the script will be moved.
+   */</span>
+  move: <span class="reserved">function</span>(script, destination) {
+    var from = <span class="reserved">this</span>._scripts.indexOf(script);
+    var to = -1;
+
+    <span class="comment">// Make sure the user script is installed</span>
+    <span class="reserved">if</span> (from == -1) <span class="reserved">return</span>;
+
+    <span class="reserved">if</span> (typeof destination == <span class="literal">"number"</span>) { <span class="comment">// if destination is an offset</span>
+      to = from + destination;
+      to = Math.max(0, to);
+      to = Math.min(<span class="reserved">this</span>._scripts.length - 1, to);
+    } <span class="reserved">else</span> { <span class="comment">// if destination is a script object</span>
+      to = <span class="reserved">this</span>._scripts.indexOf(destination);
+    }
+
+    <span class="reserved">if</span> (to == -1) <span class="reserved">return</span>;
+
+    var tmp = <span class="reserved">this</span>._scripts.splice(from, 1)[0];
+    <span class="reserved">this</span>._scripts.splice(to, 0, tmp);
+    <span class="reserved">this</span>._changed(script, <span class="literal">"move"</span>, to);
+  },
+
+  get _scriptDir() {
+    var file = Components.classes[<span class="literal">"@mozilla.org/file/directory_service;1"</span>]
+                         .getService(Components.interfaces.nsIProperties)
+                         .get(<span class="literal">"ProfD"</span>, Components.interfaces.nsILocalFile);
+    file.append(<span class="literal">"scripts"</span>);
+    <span class="reserved">return</span> file;
+  },
+
+  <span class="comment">/**
+   * Create an empty configuration if none exist.
+   */</span>
+  _initScriptDir: <span class="reserved">function</span>() {
+    var dir = <span class="reserved">this</span>._scriptDir;
+
+    <span class="reserved">if</span> (!dir.exists()) {
+      dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755);
+
+      var configStream = getWriteStream(<span class="reserved">this</span>._configFile);
+      var xml = <span class="literal">"&lt;UserScriptConfig/&gt;"</span>;
+      configStream.write(xml, xml.length);
+      configStream.close();
+    }
+  },
+
+  get scripts() { <span class="reserved">return</span> <span class="reserved">this</span>._scripts.concat(); },
+  getMatchingScripts: <span class="reserved">function</span>(testFunc) { <span class="reserved">return</span> <span class="reserved">this</span>._scripts.filter(testFunc); },
+
+  <span class="comment">/**
+   * Checks whether the version has changed since the last run and performs
+   * any necessary upgrades.
+   */</span>
+  _updateVersion: <span class="reserved">function</span>() {
+<span class="comment">//    log("&gt; GM_updateVersion");</span>
+
+    <span class="comment">// this is the last version which has been run at least once</span>
+    var initialized = GM_prefRoot.get(<span class="literal">"version"</span>, <span class="literal">"0.0"</span>);
+
+    <span class="reserved">if</span> (GM_compareVersions(initialized, <span class="literal">"0.8"</span>) == -1)
+      <span class="reserved">this</span>._pointEightBackup();
+
+    <span class="comment">// update the currently initialized version so we don't do this work again.</span>
+    var extMan = Components.classes[<span class="literal">"@mozilla.org/extensions/manager;1"</span>]
+      .getService(Components.interfaces.nsIExtensionManager);
+
+    var item = extMan.getItemForID(GM_GUID);
+    GM_prefRoot.set(<span class="literal">"version"</span>, item.version);
+
+<span class="comment">//    log("&lt; GM_updateVersion");</span>
+  },
+
+  <span class="comment">/**
+   * In Greasemonkey 0.8 there was a format change to the scripts folder and
+   * testing found several bugs where the entire folder would get nuked. So we
+   * are paranoid and backup the folder the first time 0.8 runs.
+   */</span>
+  _pointEightBackup: <span class="reserved">function</span>() {
+    var scriptDir = <span class="reserved">this</span>._scriptDir;
+    var scriptDirBackup = scriptDir.clone();
+    scriptDirBackup.leafName += <span class="literal">"_08bak"</span>;
+    <span class="reserved">if</span> (scriptDir.exists() &amp;&amp; !scriptDirBackup.exists())
+      scriptDir.copyTo(scriptDirBackup.parent, scriptDirBackup.leafName);
+  }
+};
+
+
+<span class="comment">/**
+ * Compares two version numbers
+ * <span class="attrib">@param</span> {String} aV1
+ *        Version of first item in 1.2.3.4..9. format
+ * <span class="attrib">@param</span> {String} aV2
+ *        Version of second item in 1.2.3.4..9. format
+ * <span class="attrib">@returns</span> {Int}  1 if first argument is higher
+ *                 0 if arguments are equal
+ *                 -1 if second argument is higher
+ */</span>
+<span class="reserved">function</span> GM_compareVersions(aV1, aV2) {
+  var v1 = aV1.split(<span class="literal">"."</span>);
+  var v2 = aV2.split(<span class="literal">"."</span>);
+  var numSubversions = (v1.length &gt; v2.length) ? v1.length : v2.length;
+
+  <span class="reserved">for</span> (var i = 0; i &lt; numSubversions; i++) {
+    <span class="reserved">if</span> (typeof v2[i] == <span class="literal">"undefined"</span>) {
+      <span class="reserved">return</span> 1;
+    }
+
+    <span class="reserved">if</span> (typeof v1[i] == <span class="literal">"undefined"</span>) {
+      <span class="reserved">return</span> -1;
+    }
+
+    <span class="reserved">if</span> (parseInt(v2[i], 10) &gt; parseInt(v1[i], 10)) {
+      <span class="reserved">return</span> -1;
+    } <span class="reserved">else</span> <span class="reserved">if</span> (parseInt(v2[i], 10) &lt; parseInt(v1[i], 10)) {
+      <span class="reserved">return</span> 1;
+    }
+  }
+
+  <span class="comment">// v2 was never higher or lower than v1</span>
+  <span class="reserved">return</span> 0;
+}
+</pre>
+	<hr>
+
+
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> <font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top"><em>
+<b>Webmonkey</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<font size="-1">
+
+</font>
+<div class="jsdoc_ctime">Documentation generated by <a href="http://jsdoc.sourceforge.net/" target="_parent">JSDoc</a> on Mon Mar 30 00:30:19 2009</div>
+</body>
+</html>
