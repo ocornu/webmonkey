@@ -7,8 +7,8 @@ var EXPORTED_SYMBOLS = ["Script", "ScriptRequire", "ScriptResource"];
 
 Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
                    .getService(Components.interfaces.mozIJSSubScriptLoader)
-                   .loadSubScript("resource://webmonkey/utils/convert2RegExp.js");
-Components.utils.import("resource://webmonkey/utils/file.js");
+                   .loadSubScript("resource://webmonkey/lib/convert2RegExp.js");
+Components.utils.import("resource://webmonkey/lib/file.js");
 
 
 /**
