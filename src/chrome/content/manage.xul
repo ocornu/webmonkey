@@ -14,7 +14,7 @@
 
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js" />
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/utils/utils.js" />
+  <script type="application/x-javascript" src="chrome://webmonkey/content/lib/utils.js" />
   <script type="application/x-javascript" src="chrome://webmonkey/content/manage.js" />
 
   <stringbundle id="gm-manage-bundle" src="chrome://webmonkey/locale/gm-manage.properties" />
