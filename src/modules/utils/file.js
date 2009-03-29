@@ -2,11 +2,11 @@
  * @fileoverview JSM library of file-system oriented helper-functions.
  */
 // JSM exported symbols
-var EXPORTED_SYMBOLS = ["GM_getUriFromFile", "getTempFile", "getWriteStream",
-                        "getBinaryContents", "getContents"];
+var EXPORTED_SYMBOLS = ["getUriFromFile", "getTempFile", "getWriteStream",
+                        "getBinaryContent", "getTextContent"];
 
 
-function GM_getUriFromFile(file) {
+function getUriFromFile(file) {
   return Components.classes["@mozilla.org/network/io-service;1"]
                    .getService(Components.interfaces.nsIIOService)
                    .newFileURI(file);
@@ -28,7 +28,7 @@ function getTempFile() {
 }
 
 
-function getBinaryContents(file) {
+function getBinaryContent(file) {
   var ioService = Components.classes["@mozilla.org/network/io-service;1"]
                             .getService(Components.interfaces.nsIIOService);
 
@@ -45,7 +45,7 @@ function getBinaryContents(file) {
 }
 
 
-function getContents(file, charset) {
+function getTextContent(file, charset) {
   if( !charset ) {
     charset = "UTF-8"
   }

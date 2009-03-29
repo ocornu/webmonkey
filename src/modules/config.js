@@ -70,7 +70,7 @@ Config.prototype = {
     var domParser = Components.classes["@mozilla.org/xmlextras/domparser;1"]
                               .createInstance(Components.interfaces.nsIDOMParser);
 
-    var configContents = getContents(this._configFile);
+    var configContents = getTextContent(this._configFile);
     var doc = domParser.parseFromString(configContents, "text/xml");
     var nodes = doc.evaluate("/UserScriptConfig/Script", doc, null, 0, null);
 
@@ -633,8 +633,8 @@ Script.prototype = {
     return file;
   },
 
-  get fileURL() { return GM_getUriFromFile(this._file).spec; },
-  get textContent() { return getContents(this._file); },
+  get fileURL() { return getUriFromFile(this._file).spec; },
+  get textContent() { return getTextContent(this._file); },
 
   /**
    * Craft a proper directory/file name.
@@ -729,8 +729,8 @@ ScriptRequire.prototype = {
     return file;
   },
 
-  get fileURL() { return GM_getUriFromFile(this._file).spec; },
-  get textContent() { return getContents(this._file); },
+  get fileURL() { return getUriFromFile(this._file).spec; },
+  get textContent() { return getTextContent(this._file); },
 
   _initFile: function() {
     var name = this._downloadURL.substr(this._downloadURL.lastIndexOf("/") + 1);
@@ -777,14 +777,14 @@ ScriptResource.prototype = {
     return file;
   },
 
-  get textContent() { return getContents(this._file); },
+  get textContent() { return getTextContent(this._file); },
 
   get dataContent() {
     var appSvc = Components.classes["@mozilla.org/appshell/appShellService;1"]
                            .getService(Components.interfaces.nsIAppShellService);
 
     var window = appSvc.hiddenDOMWindow;
-    var binaryContents = getBinaryContents(this._file);
+    var binaryContents = getBinaryContent(this._file);
 
     var mimetype = this._mimetype;
     if (this._charset && this._charset.length > 0) {
