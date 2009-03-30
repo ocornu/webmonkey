@@ -2,8 +2,7 @@
  * @fileoverview JSM library of file-system oriented helper-functions.
  */
 // JSM exported symbols
-var EXPORTED_SYMBOLS = ["getUriFromFile", "getTempFile", "getWriteStream",
-                        "getBinaryContent", "getTextContent"];
+var EXPORTED_SYMBOLS = ["File"];
 
 
 /*
@@ -21,17 +20,18 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 
+function File() {}
+
+
 /**
  * Get a file's URI.
- * @param {nsIFile} file
- *        The target file.
- * @return {nsIURI}
- *         This <code>file</code>'s URI.
+ * @param {nsIFile} aFile   The target file.
+ * @return {nsIURI}         Its URI.
  */
-function getUriFromFile(file) {
+File.getUri = function(aFile) {
   return Cc["@mozilla.org/network/io-service;1"]
          .getService(Ci.nsIIOService)
-         .newFileURI(file);
+         .newFileURI(aFile);
 }
 
 
@@ -39,11 +39,11 @@ function getUriFromFile(file) {
  * Get a temporary file.
  * @return {nsILocalFile}   A temporary local file.
  */
-function getTempFile() {
+File.getTemp = function(aFileName) {
   var file = Cc["@mozilla.org/file/directory_service;1"]
              .getService(Ci.nsIProperties)
              .get("TmpD", Ci.nsILocalFile);
-  file.append("gm-temp");
+  file.append(aFileName);
   file.createUnique(Ci.nsILocalFile.NORMAL_FILE_TYPE, 0640);
   return file;
 }
@@ -51,13 +51,13 @@ function getTempFile() {
 
 /**
 * Get binary file content.
-* @param {nsIFile} file    The file to read from.
+* @param {nsIFile} aFile    The file to read from.
 * @return {String}         The binary content of <code>file</code>.
 */
-function getBinaryContent(file) {
+File.getBinaryContent = function(aFile) {
     var input  = Cc["@mozilla.org/network/io-service;1"]
                  .getService(Ci.nsIIOService)
-                 .newChannelFromURI(getUriFromFile(file))
+                 .newChannelFromURI(File.getUri(aFile))
                  .open();
     var stream = Cc["@mozilla.org/binaryinputstream;1"]
                  .createInstance(Ci.nsIBinaryInputStream);
@@ -69,34 +69,34 @@ function getBinaryContent(file) {
 
 /**
  * Get text file content.
- * @param {nsIFile} file    The file to read from.
- * @param {String} charset  The charset to use.
- * @return {String}         The text content of <code>file</code>.
+ * @param {nsIFile} aFile       The file to read from.
+ * @param {String} aCharset     The charset to use.
+ * @return {String}             The text content of <code>file</code>.
  */
-function getTextContent(file, charset) {
+File.getTextContent = function(aFile, aCharset) {
   // read content from file
   var input  = Cc["@mozilla.org/network/io-service;1"]
                   .getService(Ci.nsIIOService)
-                  .newChannelFromURI(getUriFromFile(file))
+                  .newChannelFromURI(File.getUri(aFile))
                   .open();
   var stream = Cc["@mozilla.org/scriptableinputstream;1"]
                .getService(Ci.nsIScriptableInputStream);
   stream.init(input);
-  var content = stream.read(input.available());
+  var text = stream.read(input.available());
   stream.close();
   input.close();
 
   // convert to target charset
-  if(!charset) charset = "UTF-8";
+  if(!aCharset) aCharset = "UTF-8";
   // http://lxr.mozilla.org/mozilla/source/intl/uconv/idl/nsIScriptableUConv.idl
   var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
                   .createInstance(Ci.nsIScriptableUnicodeConverter);
-  converter.charset = charset;
+  converter.charset = aCharset;
   try {
-    return converter.ConvertToUnicode(content);
+    return converter.ConvertToUnicode(text);
   } catch(e) {
     // conversion failed, return content as-is
-    return content;
+    return text;
   }
 }
 
@@ -106,9 +106,9 @@ function getTextContent(file, charset) {
  * @param {nsIFile} file            The target file.
  * @return {nsIFileOutputStream}    An output stream to <code>file</code>.
  */
-function getWriteStream(file) {
+File.getWriteStream = function(aFile) {
   var stream = Cc["@mozilla.org/network/file-output-stream;1"]
                .createInstance(Ci.nsIFileOutputStream);
-  stream.init(file, PR_WRONLY | PR_CREATE_FILE | PR_TRUNCATE, 420, -1);
+  stream.init(aFile, PR_WRONLY | PR_CREATE_FILE | PR_TRUNCATE, 420, -1);
   return stream;
 }

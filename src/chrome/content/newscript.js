@@ -22,8 +22,8 @@ function doInstall() {
   if (!script) return false;
 
   // put this created script into a file -- only way to install it
-  var tempFile = getTempFile();
-  var foStream = getWriteStream(tempFile);
+  var tempFile = File.getTemp("gm-temp");
+  var foStream = File.getWriteStream(tempFile);
   foStream.write(script, script.length);
   foStream.close();
 

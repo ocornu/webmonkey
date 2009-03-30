@@ -206,8 +206,8 @@ Script.prototype = {
     return file;
   },
 
-  get fileURL() { return getUriFromFile(this._file).spec; },
-  get textContent() { return getTextContent(this._file); },
+  get fileURL() { return File.getUri(this._file).spec; },
+  get textContent() { return File.getTextContent(this._file); },
 
   /**
    * Craft a proper directory/file name.
@@ -331,8 +331,8 @@ ScriptRequire.prototype = {
     return file;
   },
 
-  get fileURL() { return getUriFromFile(this._file).spec; },
-  get textContent() { return getTextContent(this._file); },
+  get fileURL() { return File.getUri(this._file).spec; },
+  get textContent() { return File.getTextContent(this._file); },
 
   /**
   * Move a temporary required file to its final location.
@@ -432,14 +432,14 @@ ScriptResource.prototype = {
     return file;
   },
 
-  get textContent() { return getTextContent(this._file); },
+  get textContent() { return File.getTextContent(this._file); },
 
   get dataContent() {
     var appSvc = Components.classes["@mozilla.org/appshell/appShellService;1"]
                            .getService(Components.interfaces.nsIAppShellService);
 
     var window = appSvc.hiddenDOMWindow;
-    var binaryContents = getBinaryContent(this._file);
+    var binaryContents = File.getBinaryContent(this._file);
 
     var mimetype = this._mimetype;
     if (this._charset && this._charset.length > 0) {

@@ -68,7 +68,7 @@ Config.prototype = {
     var domParser = Components.classes["@mozilla.org/xmlextras/domparser;1"]
                               .createInstance(Components.interfaces.nsIDOMParser);
 
-    var configContents = getTextContent(this._configFile);
+    var configContents = File.getTextContent(this._configFile);
     var doc = domParser.parseFromString(configContents, "text/xml");
     var nodes = doc.evaluate("/UserScriptConfig/Script", doc, null, 0, null);
 
@@ -182,7 +182,7 @@ Config.prototype = {
 
     doc.firstChild.appendChild(doc.createTextNode("\n"));
 
-    var configStream = getWriteStream(this._configFile);
+    var configStream = File.getWriteStream(this._configFile);
     Components.classes["@mozilla.org/xmlextras/xmlserializer;1"]
       .createInstance(Components.interfaces.nsIDOMSerializer)
       .serializeToStream(doc, configStream, "utf-8");
@@ -380,7 +380,7 @@ Config.prototype = {
     if (!dir.exists()) {
       dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755);
 
-      var configStream = getWriteStream(this._configFile);
+      var configStream = File.getWriteStream(this._configFile);
       var xml = "<UserScriptConfig/>";
       configStream.write(xml, xml.length);
       configStream.close();
