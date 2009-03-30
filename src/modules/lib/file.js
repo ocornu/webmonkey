@@ -18,6 +18,7 @@ const PR_TRUNCATE    = 0x20;    // File size is truncated to 0.
 // Shortcuts
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const io = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
 
 
 function File() {}
@@ -29,9 +30,7 @@ function File() {}
  * @return {nsIURI}         Its URI.
  */
 File.getUri = function(aFile) {
-  return Cc["@mozilla.org/network/io-service;1"]
-         .getService(Ci.nsIIOService)
-         .newFileURI(aFile);
+  return io.newFileURI(aFile);
 }
 
 
@@ -55,14 +54,13 @@ File.getTemp = function(aFileName) {
 * @return {String}         The binary content of <code>file</code>.
 */
 File.getBinaryContent = function(aFile) {
-    var input  = Cc["@mozilla.org/network/io-service;1"]
-                 .getService(Ci.nsIIOService)
-                 .newChannelFromURI(File.getUri(aFile))
-                 .open();
+    var input  = io.newChannelFromURI(File.getUri(aFile)).open();
     var stream = Cc["@mozilla.org/binaryinputstream;1"]
                  .createInstance(Ci.nsIBinaryInputStream);
     stream.setInputStream(input);
     var bytes = stream.readBytes(stream.available());
+    stream.close();
+    input.close();
     return bytes;
 }
 
@@ -75,10 +73,7 @@ File.getBinaryContent = function(aFile) {
  */
 File.getTextContent = function(aFile, aCharset) {
   // read content from file
-  var input  = Cc["@mozilla.org/network/io-service;1"]
-                  .getService(Ci.nsIIOService)
-                  .newChannelFromURI(File.getUri(aFile))
-                  .open();
+  var input  = io.newChannelFromURI(File.getUri(aFile)).open();
   var stream = Cc["@mozilla.org/scriptableinputstream;1"]
                .getService(Ci.nsIScriptableInputStream);
   stream.init(input);
