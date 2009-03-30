@@ -11,7 +11,6 @@ const appSvc = Cc["@mozilla.org/appshell/appShellService;1"]
 const gmSvcFilename = Components.stack.filename;
 
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-Components.utils.import("resource://webmonkey/config.js");
 
 
 /**
@@ -74,6 +73,7 @@ WebmonkeyService.prototype = {
    */
   observe: function(aSubject, aTopic, aData) {
     if (aTopic != "app-startup") return;
+    Components.utils.import("resource://webmonkey/config.js");
     var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
                  .getService(Ci.mozIJSSubScriptLoader);
     loader.loadSubScript("chrome://global/content/XPCNativeWrapper.js");
