@@ -400,9 +400,6 @@ Config.prototype = {
     // this is the last version which has been run at least once
     var initialized = GM_prefRoot.get("version", "0.0");
 
-    if (GM_compareVersions(initialized, "0.8") == -1)
-      this._pointEightBackup();
-
     // update the currently initialized version so we don't do this work again.
     var extMan = Components.classes["@mozilla.org/extensions/manager;1"]
       .getService(Components.interfaces.nsIExtensionManager);
@@ -413,18 +410,6 @@ Config.prototype = {
 //    log("< GM_updateVersion");
   },
 
-  /**
-   * In Greasemonkey 0.8 there was a format change to the scripts folder and
-   * testing found several bugs where the entire folder would get nuked. So we
-   * are paranoid and backup the folder the first time 0.8 runs.
-   */
-  _pointEightBackup: function() {
-    var scriptDir = this._scriptDir;
-    var scriptDirBackup = scriptDir.clone();
-    scriptDirBackup.leafName += "_08bak";
-    if (scriptDir.exists() && !scriptDirBackup.exists())
-      scriptDir.copyTo(scriptDirBackup.parent, scriptDirBackup.leafName);
-  }
 };
 
 
