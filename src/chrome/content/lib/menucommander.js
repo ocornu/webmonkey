@@ -1,5 +1,5 @@
 function GM_MenuCommander() {
-  GM_log("> GM_MenuCommander")
+  GM_log("> GM_MenuCommander");
 
   this.menu = document.getElementById("userscript-commands-sb");
   this.keyset = document.getElementById("mainKeyset");
