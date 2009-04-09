@@ -192,22 +192,21 @@ Script.prototype = {
   get unwrap() { return this._unwrap; },
 
   get _file() {
-    var file = this._basedirFile;
-    file.append(this._filename);
+    var file = new File(this._basedirFile);
+    file.name = this._filename;
     return file;
   },
 
-  get editFile() { return this._file; },
+  get editFile() { return this._file._nsIFile; },
 
   get _basedirFile() {
-    var file = this._config._scriptDir;
-    file.append(this._basedir);
-    file.normalize();
+    var file = new File(this._config._scriptDir);
+    file.name = this._basedir;
     return file;
   },
 
-  get fileURL() { return File.getUri(this._file).spec; },
-  get textContent() { return File.getTextContent(this._file); },
+  get fileURL() { return this._file.uri.spec; },
+  get textContent() { return this._file.readText(); },
 
   /**
    * Craft a proper directory/file name.
@@ -251,21 +250,15 @@ Script.prototype = {
    * @private
    */
   _initFile: function(tempFile) {
-    var file = this._config._scriptDir;
+    var file = new File(this._config._scriptDir);
     var name = this._initFileName(this._name, false);
-
-    file.append(name);
-    file.createUnique(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755);
-    this._basedir = file.leafName;
-
-    file.append(name + ".user.js");
-    file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0644);
-    this._filename = file.leafName;
-
-//    GM_log("Moving script file from " + tempFile.path + " to " + file.path);
-
-    file.remove(true);
-    tempFile.moveTo(file.parent, file.leafName);
+    // create script directory
+    file.name = name;
+    file.createUnique(File.DIRECTORY);
+    this._basedir = file.name;
+    // create script file
+    this._filename = name + ".user.js";
+    tempFile.moveTo(file._nsIFile, this._filename);
   },
 
   /**
@@ -326,13 +319,13 @@ function ScriptRequire(script) {
 
 ScriptRequire.prototype = {
   get _file() {
-    var file = this._script._basedirFile;
-    file.append(this._filename);
+    var file = new File(this._script._basedirFile);
+    file.name = this._filename;
     return file;
   },
 
-  get fileURL() { return File.getUri(this._file).spec; },
-  get textContent() { return File.getTextContent(this._file); },
+  get fileURL() { return this._file.uri.spec; },
+  get textContent() { return this._file.readText(); },
 
   /**
   * Move a temporary required file to its final location.
@@ -340,21 +333,21 @@ ScriptRequire.prototype = {
   * @private
   */
   _initFile: function() {
+    // build a file name
     var name = this._downloadURL.substr(this._downloadURL.lastIndexOf("/") + 1);
-    if(name.indexOf("?") > 0) {
+    if(name.indexOf("?") > 0)
       name = name.substr(0, name.indexOf("?"));
-    }
     name = this._script._initFileName(name, true);
-
-    var file = this._script._basedirFile;
-    file.append(name);
-    file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0644);
-    this._filename = file.leafName;
+    // create file
+    var file = new File(this._script._basedirFile);
+    file.name = name;
+    file.createUnique(File.FILE, 0644);
+    this._filename = file.name;
 
 //    GM_log("Moving dependency file from " + this._tempFile.path + " to " + file.path);
 
     file.remove(true);
-    this._tempFile.moveTo(file.parent, file.leafName);
+    this._tempFile.moveTo(file.parent, file.name);
     this._tempFile = null;
   },
 
@@ -427,19 +420,19 @@ ScriptResource.prototype = {
   get name() { return this._name; },
 
   get _file() {
-    var file = this._script._basedirFile;
-    file.append(this._filename);
+    var file = new File(this._script._basedirFile);
+    file.name = this._filename;
     return file;
   },
 
-  get textContent() { return File.getTextContent(this._file); },
+  get textContent() { return this._file.readText(); },
 
   get dataContent() {
     var appSvc = Components.classes["@mozilla.org/appshell/appShellService;1"]
                            .getService(Components.interfaces.nsIAppShellService);
 
     var window = appSvc.hiddenDOMWindow;
-    var binaryContents = File.getBinaryContent(this._file);
+    var binaryContents = this._file.readBytes();
 
     var mimetype = this._mimetype;
     if (this._charset && this._charset.length > 0) {
