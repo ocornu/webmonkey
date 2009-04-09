@@ -11,9 +11,18 @@ Components.utils.import("resource://webmonkey/lib/file.js");
 
 function Config() {
   this._scripts = null;
-  this._configFile = this._scriptDir;
-  this._configFile.append("config.xml");
-  this._initScriptDir();
+
+  this._scriptDir = File.profile();
+  this._scriptDir.name = "scripts";
+  if (!this._scriptDir.exists())
+    this._scriptDir.create(File.DIRECTORY);
+
+  this._configFile = new File(this._scriptDir);
+  this._configFile.name = "config.xml";
+  if (!this._configFile.exists()) {
+    this._configFile.create(File.FILE);
+    this._configFile.write("<UserScriptConfig/>");
+  }
 
   this._observers = [];
 
@@ -65,11 +74,7 @@ Config.prototype = {
   },
 
   _load: function() {
-    var domParser = Components.classes["@mozilla.org/xmlextras/domparser;1"]
-                              .createInstance(Components.interfaces.nsIDOMParser);
-
-    var configContents = File.getTextContent(this._configFile);
-    var doc = domParser.parseFromString(configContents, "text/xml");
+    var doc = this._configFile.readXML();
     var nodes = doc.evaluate("/UserScriptConfig/Script", doc, null, 0, null);
 
     this._scripts = [];
@@ -181,12 +186,7 @@ Config.prototype = {
     }
 
     doc.firstChild.appendChild(doc.createTextNode("\n"));
-
-    var configStream = File.getWriteStream(this._configFile);
-    Components.classes["@mozilla.org/xmlextras/xmlserializer;1"]
-      .createInstance(Components.interfaces.nsIDOMSerializer)
-      .serializeToStream(doc, configStream, "utf-8");
-    configStream.close();
+    this._configFile.writeXML(doc);
   },
 
   parse: function(source, uri) {
@@ -318,14 +318,7 @@ Config.prototype = {
     this._scripts.splice(idx, 1);
     this._changed(script, "uninstall", null);
 
-    // watch out for cases like basedir="." and basedir="../scripts"
-    if (!script._basedirFile.equals(this._scriptDir)) {
-      // if script has its own dir, remove the dir + contents
-      script._basedirFile.remove(true);
-    } else {
-      // if script is in the root, just remove the file
-      script._file.remove(false);
-    }
+    script._basedirFile.remove(true);
 
     if (uninstallPrefs) {
       // Remove saved preferences
@@ -363,30 +356,6 @@ Config.prototype = {
     this._changed(script, "move", to);
   },
 
-  get _scriptDir() {
-    var file = Components.classes["@mozilla.org/file/directory_service;1"]
-                         .getService(Components.interfaces.nsIProperties)
-                         .get("ProfD", Components.interfaces.nsILocalFile);
-    file.append("scripts");
-    return file;
-  },
-
-  /**
-   * Create an empty configuration if none exist.
-   */
-  _initScriptDir: function() {
-    var dir = this._scriptDir;
-
-    if (!dir.exists()) {
-      dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755);
-
-      var configStream = File.getWriteStream(this._configFile);
-      var xml = "<UserScriptConfig/>";
-      configStream.write(xml, xml.length);
-      configStream.close();
-    }
-  },
-
   get scripts() { return this._scripts.concat(); },
   getMatchingScripts: function(testFunc) { return this._scripts.filter(testFunc); },
 
@@ -408,7 +377,7 @@ Config.prototype = {
     GM_prefRoot.set("version", item.version);
 
 //    log("< GM_updateVersion");
-  },
+  }
 
 };
 
