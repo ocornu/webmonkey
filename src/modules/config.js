@@ -114,7 +114,7 @@ Config.prototype = {
       script._namespace = node.getAttribute("namespace");
       script._description = node.getAttribute("description");
       script._enabled = node.getAttribute("enabled") == true.toString();
-      script._basedir = node.getAttribute("basedir") || ".";
+      script._basedir = node.getAttribute("basedir");
 
       this._scripts.push(script);
     }
