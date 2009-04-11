@@ -48,7 +48,7 @@ pre.code
 #content
 {
 	margin-left: 190px;
-	width: 600px;
+	width: 100%;
 }
 
 .classList
@@ -101,7 +101,7 @@ div.sectionTitle { margin-bottom: 8px; }
 .summaryTable td.attributes
 {
 	border-left: 1px #7F8FB1 solid;
-	width: 140px;
+	width: 200px;
 	text-align: right;
 }
 
