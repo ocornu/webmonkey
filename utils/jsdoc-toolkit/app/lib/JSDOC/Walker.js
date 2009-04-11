@@ -326,7 +326,9 @@ JSDOC.Walker.prototype.step = function() {
 				else LOG.warn("Mismatched } character. Can't parse code in file " + symbol.srcFile + ".");
 			}
 			// foo: x
-			else if (this.ts.look(1).is("COLON")) {
+			// get x()
+			// set x()
+			else if (this.ts.look(1).is("COLON") || this.ts.look(-1).is("GET") || this.ts.look(-1).is("SET")) {
 				name = (this.namescope.last().alias+"."+name).replace("#.", "#");;
 				
 				if (this.lastDoc) doc = this.lastDoc;
