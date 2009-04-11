@@ -89,7 +89,10 @@ Link.prototype._makeSymbolLink = function(alias) {
 	var target = (this.targetName)? " target=\""+this.targetName+"\"" : "";
 
 	// is it an internal link?
-	if (alias.charAt(0) == "#") var linkPath = alias;
+	if (alias.charAt(0) == "#") {
+    linkPath = alias;
+    alias = alias.substr(1);
+  }
 	
 	// if there is no symbol by that name just return the name unaltered
 	else if (!linkTo) return this.text || alias;
