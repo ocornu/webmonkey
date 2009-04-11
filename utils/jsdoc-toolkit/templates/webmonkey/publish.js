@@ -164,7 +164,13 @@ function makeSignature(params) {
 		}
 	).map(
 		function($) {
-			return $.name;
+      var out = "";
+      if ($.type)
+        out += '<span class="light fixedFont">'+(new Link().toSymbol($.type))+'</span>&nbsp;';
+      out += $.name;
+      if ($.isOptional)
+        out = "[" + out + "]";
+			return out;
 		}
 	).join(", ")
 	+
