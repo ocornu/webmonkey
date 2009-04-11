@@ -125,7 +125,7 @@ Link.prototype._makeSymbolLink = function(alias) {
 		JSDOC.PluginManager.run("onSymbolLink", link);
 	}
 	
-	return "<a href=\""+link.linkPath+"\""+target+">"+link.linkText+"</a>";
+	return "<a href=\""+link.linkPath+"\""+target+" class=\"symbol\">"+link.linkText+"</a>";
 }
 
 /** Create a link to a source file. */

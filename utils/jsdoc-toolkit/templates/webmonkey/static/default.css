@@ -114,6 +114,13 @@ td.attributes, .fixedFont
 	font-size: 13px;
 }
 
+a.symbol
+{
+  white-space: nowrap;
+	font-family: "Courier New",Courier,monospace;
+	font-size: 13px;
+}
+
 .summaryTable td.nameDescription
 {
 	text-align: left;
