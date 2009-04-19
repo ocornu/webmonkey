@@ -277,18 +277,49 @@ Script.prototype = {
     return Components.classes["@mozilla.org/network/io-service;1"]
                      .getService(Components.interfaces.nsIIOService)
                      .newFileURI(this._tempFile).spec;
+  },
+  
+  load: function(node) {
+    this._basedir     = node.getAttribute("basedir");
+    this._filename    = node.getAttribute("filename");
+    this._name        = node.getAttribute("name");
+    this._namespace   = node.getAttribute("namespace");
+    this._description = node.getAttribute("description");
+    this._enabled     = node.getAttribute("enabled") == true.toString();
+  
+    for (var i = 0, childNode; childNode = node.childNodes[i]; i++)
+      switch (childNode.nodeName) {
+      case "Include":
+        this._includes.push(childNode.firstChild.nodeValue);
+        break;
+      case "Exclude":
+        this._excludes.push(childNode.firstChild.nodeValue);
+        break;
+      case "Require":
+        this._requires.push(new ScriptRequire(this, childNode));
+        break;
+      case "Resource":
+        this._resources.push(new ScriptResource(this, childNode));
+        break;
+      case "Unwrap":
+        this._unwrap = true;
+        break;
+      }
+    return this;
   }
+  
 };
 
 
 /**
  * Construct a new require object.
  * @constructor
- * @param {Script} script   Parent script.
+ * @param script    Parent script.
+ * @param [node]    XML node from config file.
  *
  * @class   Implementation of some <code>&#64;require</code> functionalities.
  */
-function ScriptRequire(script) {
+function ScriptRequire(/**Script*/ script, /**nsIDOMNode*/ node) {
   /**
    * The parent script.
    * @type Script
@@ -315,6 +346,9 @@ function ScriptRequire(script) {
    * @private
    */
   this._filename = null;
+
+  if (node)
+    this._load(node);
 }
 
 ScriptRequire.prototype = {
@@ -356,18 +390,24 @@ ScriptRequire.prototype = {
   * Set this require's temporary file.
   * @param {nsIFile} file      Target temporary file.
   */
-  setDownloadedFile: function(file) { this._tempFile = file; }
+  setDownloadedFile: function(file) { this._tempFile = file; },
+  
+  _load: function(node) {
+    this._filename = node.getAttribute("filename");
+  }
+
 };
 
 
 /**
  * Construct a new resource object.
  * @constructor
- * @param {Script} script   Parent script.
+ * @param script    Parent script.
+ * @param [node]    XML node from config file.
  *
  * @class   Implementation of some <code>&#64;resource</code> functionalities.
  */
-function ScriptResource(script) {
+function ScriptResource(/**Script*/ script, /**nsIDOMNode*/ node) {
   /**
   * The parent script.
   * @type Script
@@ -414,6 +454,9 @@ function ScriptResource(script) {
    * @private
    */
   this._name = null;
+
+  if (node)
+    this._load(node);
 }
 
 ScriptResource.prototype = {
@@ -461,5 +504,13 @@ ScriptResource.prototype = {
     this._tempFile = file;
     this._mimetype = mimetype;
     this._charset = charset;
+  },
+  
+  _load: function(node) {
+    this._name     = node.getAttribute("name");
+    this._filename = node.getAttribute("filename");
+    this._mimetype = node.getAttribute("mimetype");
+    this._charset  = node.getAttribute("charset");
   }
+
 };

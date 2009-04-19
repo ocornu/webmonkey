@@ -76,48 +76,9 @@ Config.prototype = {
   _load: function() {
     var doc = this._configFile.readXML();
     var nodes = doc.evaluate("/UserScriptConfig/Script", doc, null, 0, null);
-
     this._scripts = [];
-
-    for (var node = null; node = nodes.iterateNext(); ) {
-      var script = new Script(this);
-
-      for (var i = 0, childNode; childNode = node.childNodes[i]; i++) {
-        switch (childNode.nodeName) {
-        case "Include":
-          script._includes.push(childNode.firstChild.nodeValue);
-          break;
-        case "Exclude":
-          script._excludes.push(childNode.firstChild.nodeValue);
-          break;
-        case "Require":
-          var scriptRequire = new ScriptRequire(script);
-          scriptRequire._filename = childNode.getAttribute("filename");
-          script._requires.push(scriptRequire);
-          break;
-        case "Resource":
-          var scriptResource = new ScriptResource(script);
-          scriptResource._name = childNode.getAttribute("name");
-          scriptResource._filename = childNode.getAttribute("filename");
-          scriptResource._mimetype = childNode.getAttribute("mimetype");
-          scriptResource._charset = childNode.getAttribute("charset");
-          script._resources.push(scriptResource);
-          break;
-        case "Unwrap":
-          script._unwrap = true;
-          break;
-        }
-      }
-
-      script._filename = node.getAttribute("filename");
-      script._name = node.getAttribute("name");
-      script._namespace = node.getAttribute("namespace");
-      script._description = node.getAttribute("description");
-      script._enabled = node.getAttribute("enabled") == true.toString();
-      script._basedir = node.getAttribute("basedir");
-
-      this._scripts.push(script);
-    }
+    for (var node; node = nodes.iterateNext();)
+      this._scripts.push(new Script(this).load(node));
   },
 
   _save: function() {
