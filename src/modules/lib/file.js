@@ -171,7 +171,7 @@ File.prototype = {
     if (!aCharset) aCharset = "UTF-8";
     Cc["@mozilla.org/xmlextras/xmlserializer;1"]
        .createInstance(Ci.nsIDOMSerializer)
-       .serializeToStream(aXMLData, out, "utf-8");
+       .serializeToStream(aXMLData, out, aCharset);
     out.close();
   },
 
