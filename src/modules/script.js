@@ -306,6 +306,47 @@ Script.prototype = {
         break;
       }
     return this;
+  },
+
+  save: function(doc) {
+    var node = doc.createElement("Script");
+
+    node.setAttribute("basedir", this._basedir);
+    node.setAttribute("filename", this._filename);
+    node.setAttribute("name", this._name);
+    node.setAttribute("namespace", this._namespace);
+    node.setAttribute("description", this._description);
+    node.setAttribute("enabled", this._enabled);
+    for each (var include in this._includes) {
+      var includeNode = doc.createElement("Include");
+      includeNode.appendChild(doc.createTextNode(include));
+      append(includeNode);
+    }
+    for each (var exclude in this._excludes) {
+      var excludeNode = doc.createElement("Exclude");
+      excludeNode.appendChild(doc.createTextNode(exclude));
+      append(excludeNode);
+    }
+    for each (var require in this._requires) {
+      var requireNode = doc.createElement("Require");
+      require.save(requireNode);
+      append(requireNode);
+    }
+    for each (var resource in this._resources) {
+      var resourceNode = doc.createElement("Resource");
+      resource.save(resourceNode);
+      append(resourceNode);
+    }
+    if (this._unwrap)
+      append(doc.createElement("Unwrap"));
+
+    node.appendChild(doc.createTextNode("\n\t"));
+    return node;
+    
+    function append(childNode) {
+      node.appendChild(doc.createTextNode("\n\t\t"));
+      node.appendChild(childNode);
+    }
   }
   
 };
@@ -394,6 +435,10 @@ ScriptRequire.prototype = {
   
   _load: function(node) {
     this._filename = node.getAttribute("filename");
+  },
+  
+  save: function(node) {
+    node.setAttribute("filename", this._filename);
   }
 
 };
@@ -511,6 +556,14 @@ ScriptResource.prototype = {
     this._filename = node.getAttribute("filename");
     this._mimetype = node.getAttribute("mimetype");
     this._charset  = node.getAttribute("charset");
+  },
+
+  save: function(node) {
+    node.setAttribute("name", this._name);
+    node.setAttribute("filename", this._filename);
+    node.setAttribute("mimetype", this._mimetype);
+    if (this._charset)
+      node.setAttribute("charset", this._charset);
   }
 
 };
