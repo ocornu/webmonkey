@@ -396,11 +396,11 @@ Script.prototype = {
     // assert there is no duplicate resource name
     var tmp = {};
     for each (var resource in this._resources)
-      if (tmp[resource._name])
-        throw new Error("Duplicate resource name '" + resName + "' " +
-                        "detected. Each resource must have a unique name.");
-      else
+      if (!tmp[resource._name])
         tmp[resource._name] = true;
+      else
+        throw new Error("Duplicate resource name '" + resource._name + "' " +
+                        "detected. Each resource must have a unique name.");
 
     // if no meta info, default to reasonable values
     if (this._name == null) this._name = parseScriptName(uri);
