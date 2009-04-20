@@ -28,6 +28,12 @@ function Script(config) {
    */
   this._config = config;
   /**
+   * Script meta-data.
+   * @type Script.MetaData
+   * @private
+   */
+  this._meta = new Script.MetaData();
+  /**
    * Registered handlers for events originating from this script.
    * @type Array
    * @private
@@ -60,60 +66,11 @@ function Script(config) {
   this._filename = null;
 
   /**
-   * Script <code>&#64;name</code>.
-   * @type String
-   * @private
-   */
-  this._name = null;
-  /**
-   * Script <code>&#64;namespace</code>.
-   * @type String
-   * @private
-   */
-  this._namespace = null;
-  /**
-   * Script <code>&#64;description</code>.
-   * @type String
-   * @private
-   */
-  this._description = null;
-
-  /**
    * Enabled/disabled state.
    * @type Boolean
    * @private
    */
   this._enabled = true;
-  /**
-   * List of included URL masks.
-   * @type Array
-   * @private
-   */
-  this._includes = [];
-  /**
-   * List of excluded URL masks.
-   * @type Array
-   * @private
-   */
-  this._excludes = [];
-  /**
-   * List of <code>&#64;require</code> items.
-   * @type Array
-   * @private
-   */
-  this._requires = [];
-  /**
-   * List of <code>&#64;resource</code> items.
-   * @type Array
-   * @private
-   */
-  this._resources = [];
-  /**
-   * Should this script be wrapped into a function before being injected.
-   * @type Boolean
-   * @private
-   */
-  this._unwrap = false;
 }
 
 
@@ -131,7 +88,7 @@ Script.prototype = {
       return convert2RegExp(page).test(url);
     }
 
-    return this._includes.some(test) && !this._excludes.some(test);
+    return this._meta.include.some(test) && !this._meta.exclude.some(test);
   },
 
   /**
@@ -142,22 +99,22 @@ Script.prototype = {
    */
   _changed: function(event, data) { this._config._changed(this, event, data); },
 
-  get name() { return this._name; },
-  get namespace() { return this._namespace; },
-  get description() { return this._description; },
+  get name() { return this._meta.name; },
+  get namespace() { return this._meta.namespace; },
+  get description() { return this._meta.description; },
   get enabled() { return this._enabled; },
   set enabled(enabled) {
     this._enabled = enabled;
     this._changed("edit-enabled", enabled);
   },
 
-  get includes() { return this._includes.concat(); },
+  get includes() { return this._meta.include.concat(); },
   /**
    * Add an include mask.
    * @param {String} url    The URL include mask to add.
    */
   addInclude: function(url) {
-    this._includes.push(url);
+    this._meta.include.push(url);
     this._changed("edit-include-add", url);
   },
   /**
@@ -165,7 +122,7 @@ Script.prototype = {
    * @param {Number} index  The index of the include mask to remove.
    */
   removeIncludeAt: function(index) {
-    this._includes.splice(index, 1);
+    this._meta.include.splice(index, 1);
     this._changed("edit-include-remove", index);
   },
 
@@ -175,7 +132,7 @@ Script.prototype = {
   * @param {String} url     The URL exclude mask to add.
   */
   addExclude: function(url) {
-    this._excludes.push(url);
+    this._meta.exclude.push(url);
     this._changed("edit-exclude-add", url);
   },
   /**
@@ -183,13 +140,13 @@ Script.prototype = {
   * @param {Number} index   The index of the exclude mask to remove.
   */
   removeExcludeAt: function(index) {
-    this._excludes.splice(index, 1);
+    this._meta.exclude.splice(index, 1);
     this._changed("edit-exclude-remove", index);
   },
 
-  get requires() { return this._requires.concat(); },
-  get resources() { return this._resources.concat(); },
-  get unwrap() { return this._unwrap; },
+  get requires() { return this._meta.require.concat(); },
+  get resources() { return this._meta.resource.concat(); },
+  get unwrap() { return this._meta.unwrap; },
 
   get _file() {
     var file = new File(this._basedirFile);
@@ -251,7 +208,7 @@ Script.prototype = {
    */
   _initFile: function(tempFile) {
     var file = new File(this._config._scriptDir);
-    var name = this._initFileName(this._name, false);
+    var name = this._initFileName(this._meta.name, false);
     // create script directory
     file.name = name;
     file.createUnique(File.DIRECTORY);
@@ -282,66 +239,131 @@ Script.prototype = {
   load: function(node) {
     this._basedir     = node.getAttribute("basedir");
     this._filename    = node.getAttribute("filename");
-    this._name        = node.getAttribute("name");
-    this._namespace   = node.getAttribute("namespace");
-    this._description = node.getAttribute("description");
     this._enabled     = node.getAttribute("enabled") == true.toString();
-  
-    for (var i = 0, childNode; childNode = node.childNodes[i]; i++)
-      switch (childNode.nodeName) {
-      case "Include":
-        this._includes.push(childNode.firstChild.nodeValue);
-        break;
-      case "Exclude":
-        this._excludes.push(childNode.firstChild.nodeValue);
-        break;
-      case "Require":
-        this._requires.push(new Script.Require(this, childNode));
-        break;
-      case "Resource":
-        this._resources.push(new Script.Resource(this, childNode));
-        break;
-      case "Unwrap":
-        this._unwrap = true;
-        break;
-      }
+    this._meta.load(this, node);
     return this;
   },
 
   save: function(doc) {
     var node = doc.createElement("Script");
-
     node.setAttribute("basedir", this._basedir);
     node.setAttribute("filename", this._filename);
+    node.setAttribute("enabled", this._enabled);
+    this._meta.save(doc, node);
+    node.appendChild(doc.createTextNode("\n\t"));
+    return node;
+  },
+
+  parse: function(source, uri) {
+    this._downloadURL = uri.spec;
+    this._enabled = true;
+    this._meta.parse(this, source, uri);
+  }
+
+};
+
+
+/**
+ * Construct a new script meta-data object.
+ * @constructor
+ *
+ * @class Implementation of scripts meta-data.
+ */
+Script.MetaData = function() {
+  /**
+   * Script <code>&#64;name</code>.
+   * @type String
+   */
+  this.name = null;
+  /**
+   * Script <code>&#64;namespace</code>.
+   * @type String
+   */
+  this.namespace = null;
+  /**
+   * Script <code>&#64;description</code>.
+   * @type String
+   */
+  this.description = null;
+  /**
+   * List of <code>&#64;include</code> URL masks.
+   * @type String[]
+   */
+  this.include = [];
+  /**
+   * List of <code>&#64;exclude</code> URL masks.
+   * @type String[]
+   */
+  this.exclude = [];
+  /**
+   * List of <code>&#64;require</code> items.
+   * @type Script.Require[]
+   */
+  this.require = [];
+  /**
+   * List of <code>&#64;resource</code> items.
+   * @type Script.Resource[]
+   */
+  this.resource = [];
+  /**
+   * <code>&#64;unwrap</code> this script before injection.
+   * @type Boolean
+   */
+  this.unwrap = false;
+};
+
+Script.MetaData.prototype = {
+  load: function(script, node) {
+    this.name        = node.getAttribute("name");
+    this.namespace   = node.getAttribute("namespace");
+    this.description = node.getAttribute("description");
+    for (var i = 0, childNode; childNode = node.childNodes[i]; i++)
+      switch (childNode.nodeName) {
+      case "Include":
+        this.include.push(childNode.firstChild.nodeValue);
+        break;
+      case "Exclude":
+        this.exclude.push(childNode.firstChild.nodeValue);
+        break;
+      case "Require":
+        this.require.push(new Script.Require(script, childNode));
+        break;
+      case "Resource":
+        this.resource.push(new Script.Resource(script, childNode));
+        break;
+      case "Unwrap":
+        this.unwrap = true;
+        break;
+      }
+  },
+
+  save: function(doc, node) {
     node.setAttribute("name", this._name);
     node.setAttribute("namespace", this._namespace);
     node.setAttribute("description", this._description);
-    node.setAttribute("enabled", this._enabled);
-    for each (var include in this._includes) {
+    for each (var include in this.include) {
       var includeNode = doc.createElement("Include");
       includeNode.appendChild(doc.createTextNode(include));
       append(includeNode);
     }
-    for each (var exclude in this._excludes) {
+    for each (var exclude in this.exclude) {
       var excludeNode = doc.createElement("Exclude");
       excludeNode.appendChild(doc.createTextNode(exclude));
       append(excludeNode);
     }
-    for each (var require in this._requires) {
+    for each (var require in this.require) {
       var requireNode = doc.createElement("Require");
       require.save(requireNode);
       append(requireNode);
     }
-    for each (var resource in this._resources) {
+    for each (var resource in this.resource) {
       var resourceNode = doc.createElement("Resource");
       resource.save(resourceNode);
       append(resourceNode);
     }
-    if (this._unwrap)
+    if (this.unwrap)
       append(doc.createElement("Unwrap"));
-
     node.appendChild(doc.createTextNode("\n\t"));
-    return node;
     
     function append(childNode) {
       node.appendChild(doc.createTextNode("\n\t\t"));
@@ -349,11 +371,7 @@ Script.prototype = {
     }
   },
 
-  parse: function(source, uri) {
-    this._downloadURL = uri.spec;
-    this._enabled = true;
-    
-    // parse metadata
+  parse: function(script, source, uri) {
     var meta = false;
     for each (var line in source.match(/.+/g)) {
       if (!meta) {
@@ -371,31 +389,31 @@ Script.prototype = {
         case "name":
         case "namespace":
         case "description":
-          this["_" + header] = value;
+          this[header] = value;
           break;
         case "include":
         case "exclude":
-          this["_" + header + "s"].push(value);
+          this[header].push(value);
           break;
         case "require":
-          var require = new Script.Require(this);
+          var require = new Script.Require(script);
           require.parse(value, uri);
-          this._requires.push(require);
+          this.require.push(require);
           break;
         case "resource":
-          var resource = new Script.Resource(this);
+          var resource = new Script.Resource(script);
           resource.parse(value, uri);
-          this._resources.push(resource);
+          this.resource.push(resource);
           break;
         }
       else              // plain @header
         if (header == "unwrap")
-          this._unwrap = true;
+          this.unwrap = true;
     }
     
     // assert there is no duplicate resource name
     var tmp = {};
-    for each (var resource in this._resources)
+    for each (var resource in this.resource)
       if (!tmp[resource._name])
         tmp[resource._name] = true;
       else
@@ -403,10 +421,10 @@ Script.prototype = {
                         "detected. Each resource must have a unique name.");
 
     // if no meta info, default to reasonable values
-    if (this._name == null) this._name = parseScriptName(uri);
-    if (this._namespace == null) this._namespace = uri.host;
-    if (!this._description) this._description = "";
-    if (this._includes.length == 0) this._includes.push("*");
+    if (this.name == null) this.name = parseScriptName(uri);
+    if (this.namespace == null) this.namespace = uri.host;
+    if (!this.description) this.description = "";
+    if (!this.include.length) this.include.push("*");
 
     function parseScriptName(sourceUri) {
       var name = sourceUri.spec;
