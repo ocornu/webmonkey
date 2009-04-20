@@ -2,7 +2,7 @@
  * @fileoverview JS Module implementation of a script.
  */
 // JSM exported symbols
-var EXPORTED_SYMBOLS = ["Script", "ScriptRequire", "ScriptResource"];
+var EXPORTED_SYMBOLS = ["Script"];
 
 
 Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
