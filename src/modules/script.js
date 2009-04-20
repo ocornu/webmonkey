@@ -296,10 +296,10 @@ Script.prototype = {
         this._excludes.push(childNode.firstChild.nodeValue);
         break;
       case "Require":
-        this._requires.push(new ScriptRequire(this, childNode));
+        this._requires.push(new Script.Require(this, childNode));
         break;
       case "Resource":
-        this._resources.push(new ScriptResource(this, childNode));
+        this._resources.push(new Script.Resource(this, childNode));
         break;
       case "Unwrap":
         this._unwrap = true;
@@ -378,14 +378,14 @@ Script.prototype = {
           this["_" + header + "s"].push(value);
           break;
         case "require":
-          var scriptRequire = new ScriptRequire(this);
-          scriptRequire.parse(value, uri);
-          this._requires.push(scriptRequire);
+          var require = new Script.Require(this);
+          require.parse(value, uri);
+          this._requires.push(require);
           break;
         case "resource":
-          var scriptResource = new ScriptResource(this);
-          scriptResource.parse(value, uri);
-          this._resources.push(scriptResource);
+          var resource = new Script.Resource(this);
+          resource.parse(value, uri);
+          this._resources.push(resource);
           break;
         }
       else              // plain @header
@@ -426,7 +426,7 @@ Script.prototype = {
  *
  * @class   Implementation of some <code>&#64;require</code> functionalities.
  */
-function ScriptRequire(/**Script*/ script, /**nsIDOMNode*/ node) {
+Script.Require = function(/**Script*/ script, /**nsIDOMNode*/ node) {
   /**
    * The parent script.
    * @type Script
@@ -456,9 +456,9 @@ function ScriptRequire(/**Script*/ script, /**nsIDOMNode*/ node) {
 
   if (node)
     this._load(node);
-}
+};
 
-ScriptRequire.prototype = {
+Script.Require.prototype = {
   get _file() {
     var file = new File(this._script._basedirFile);
     file.name = this._filename;
@@ -522,7 +522,7 @@ ScriptRequire.prototype = {
  *
  * @class   Implementation of some <code>&#64;resource</code> functionalities.
  */
-function ScriptResource(/**Script*/ script, /**nsIDOMNode*/ node) {
+Script.Resource = function(/**Script*/ script, /**nsIDOMNode*/ node) {
   /**
   * The parent script.
   * @type Script
@@ -572,9 +572,9 @@ function ScriptResource(/**Script*/ script, /**nsIDOMNode*/ node) {
 
   if (node)
     this._load(node);
-}
+};
 
-ScriptResource.prototype = {
+Script.Resource.prototype = {
   get name() { return this._name; },
 
   get _file() {
@@ -605,7 +605,7 @@ ScriptResource.prototype = {
   * Used during the script install process.
   * @private
   */
-  _initFile: ScriptRequire.prototype._initFile,
+  _initFile: Script.Require.prototype._initFile,
 
   get urlToDownload() { return this._downloadURL; },
   /**
