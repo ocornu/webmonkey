@@ -2,7 +2,7 @@ var GM_consoleService = Components.classes["@mozilla.org/consoleservice;1"]
                         .getService(Components.interfaces.nsIConsoleService);
 
 Components.utils.import("resource://webmonkey/prefmanager.js");
-Components.utils.import("resource://webmonkey/lib/file.js");
+Components.utils.import("resource://webmonkey/file.js");
 
 /**
  * Examines the stack to determine if an API should be callable.

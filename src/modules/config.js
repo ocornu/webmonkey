@@ -6,7 +6,7 @@ const GM_GUID = "webmonkey@webmonkey.info";
 
 Components.utils.import("resource://webmonkey/prefmanager.js");
 Components.utils.import("resource://webmonkey/script.js");
-Components.utils.import("resource://webmonkey/lib/file.js");
+Components.utils.import("resource://webmonkey/file.js");
 
 
 function Config() {
