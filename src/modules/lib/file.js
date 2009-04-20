@@ -339,13 +339,14 @@ File.temp = function() {
 
 /**
  * Get a file's URI.
- * @param aTarget       The target file or full path.
+ * @param aTarget       The target file or path.
+ * @param [aBase]       The base URI (relative <code>aTarget</code> path only).  
  * @returns {nsIURI}    Its URI object.
  * @deprecated  Static method deprecated in favor of the File object.
  */
-File.getUri = function(/**nsIFile|String*/ aTarget) {
+File.getUri = function(/**nsIFile|String*/ aTarget, /**nsIURI*/ aBase) {
   if (typeof aTarget == "string")
-    return IO.newURI(aTarget, null, null);
+    return IO.newURI(aTarget, null, aBase);
   return IO.newFileURI(aTarget);
 }
 

@@ -212,13 +212,6 @@ function launchApplicationWithDoc(appFile, docFile) {
   process.run(false, args, args.length);
 }
 
-function parseScriptName(sourceUri) {
-  var name = sourceUri.spec;
-  name = name.substring(0, name.indexOf(".user.js"));
-  name = name.substring(name.lastIndexOf("/") + 1);
-  return name;
-}
-
 function alert(msg) {
   Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
     .getService(Components.interfaces.nsIPromptService)

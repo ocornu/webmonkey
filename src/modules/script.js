@@ -347,8 +347,74 @@ Script.prototype = {
       node.appendChild(doc.createTextNode("\n\t\t"));
       node.appendChild(childNode);
     }
+  },
+
+  parse: function(source, uri) {
+    this._downloadURL = uri.spec;
+    this._enabled = true;
+    
+    // parse metadata
+    var meta = false;
+    for each (var line in source.match(/.+/g)) {
+      if (!meta) {
+        if (line.indexOf("// ==UserScript==") == 0) meta = true;
+        continue;
+      }
+      if (line.indexOf("// ==/UserScript==") == 0) break;
+      var match = line.match(/\/\/ \@(\S+)(?:\s+([^\n]+))?/);
+      if (match === null) continue;
+
+      var header = match[1];
+      var value  = match[2];
+      if (value)          // @header <value>
+        switch (header) {
+        case "name":
+        case "namespace":
+        case "description":
+          this["_" + header] = value;
+          break;
+        case "include":
+        case "exclude":
+          this["_" + header + "s"].push(value);
+          break;
+        case "require":
+          var scriptRequire = new ScriptRequire(this);
+          scriptRequire.parse(value, uri);
+          this._requires.push(scriptRequire);
+          break;
+        case "resource":
+          var scriptResource = new ScriptResource(this);
+          scriptResource.parse(value, uri);
+          this._resources.push(scriptResource);
+          break;
+        }
+      else              // plain @header
+        if (header == "unwrap")
+          this._unwrap = true;
+    }
+    
+    // assert there is no duplicate resource name
+    var tmp = {};
+    for each (var resource in this._resources)
+      if (tmp[resource._name])
+        throw new Error("Duplicate resource name '" + resName + "' " +
+                        "detected. Each resource must have a unique name.");
+      else
+        tmp[resource._name] = true;
+
+    // if no meta info, default to reasonable values
+    if (this._name == null) this._name = parseScriptName(uri);
+    if (this._namespace == null) this._namespace = uri.host;
+    if (!this._description) this._description = "";
+    if (this._includes.length == 0) this._includes.push("*");
+
+    function parseScriptName(sourceUri) {
+      var name = sourceUri.spec;
+      name = name.substring(0, name.indexOf(".user.js"));
+      return name.substring(name.lastIndexOf("/") + 1);
+    }
   }
-  
+
 };
 
 
@@ -439,6 +505,10 @@ ScriptRequire.prototype = {
   
   save: function(node) {
     node.setAttribute("filename", this._filename);
+  },
+
+  parse: function(value, uri) {
+    this._downloadURL = File.getUri(value, uri).spec;
   }
 
 };
@@ -517,8 +587,7 @@ ScriptResource.prototype = {
 
   get dataContent() {
     var appSvc = Components.classes["@mozilla.org/appshell/appShellService;1"]
-                           .getService(Components.interfaces.nsIAppShellService);
-
+                 .getService(Components.interfaces.nsIAppShellService);
     var window = appSvc.hiddenDOMWindow;
     var binaryContents = this._file.readBytes();
 
@@ -564,6 +633,16 @@ ScriptResource.prototype = {
     node.setAttribute("mimetype", this._mimetype);
     if (this._charset)
       node.setAttribute("charset", this._charset);
+  },
+
+  parse: function(value, uri) {
+    var res = value.match(/(\S+)\s+(.*)/);
+    if (res === null)   // NOTE: Unlocalized strings
+      throw new Error("Invalid syntax for @resource declaration '" +
+                      value + "'. Resources are declared like this: " +
+                      "@resource <name> <url>");
+    this._name = res[1];
+    this._downloadURL = File.getUri(res[2], uri).spec;
   }
 
 };
