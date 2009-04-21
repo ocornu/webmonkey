@@ -77,14 +77,14 @@ File.prototype = {
    * Used internally to write file content.
    * Users should only use the <code>write()</code> method, unless impossible.
    * @see   <a href="https://developer.mozilla.org/En/NsIFileOutputStream#init()">NsIFileOutputStream.init</a>
-   * @param [ioFlags=File.IO.WRONLY | File.IO.CREATE_FILE | File.IO.TRUNCATE]
+   * @param [ioFlags=File.IO.WRONLY | File.IO.CREATE | File.IO.TRUNCATE]
    *                    Input/output flags (see {@link File.IO}).
    * @param [perm=0644] Unix file permissions.
    * @returns {nsIFileOutputStream}
    */
   _output: function(/**int*/ ioFlags, /**int*/ perm) {
     if (!ioFlags)
-      ioFlags = File.IO.WRONLY | File.IO.CREATE_FILE | File.IO.TRUNCATE;
+      ioFlags = File.IO.WRONLY | File.IO.CREATE | File.IO.TRUNCATE;
     if (!perm)
       perm = 0644;
     var out = Cc["@mozilla.org/network/file-output-stream;1"]
@@ -379,7 +379,7 @@ File.getTextContent = function(/**nsIFile*/ aFile, /**string*/ aCharset) {
 File.getWriteStream = function(/**nsIFile*/ aFile) {
   var stream = Cc["@mozilla.org/network/file-output-stream;1"]
                .createInstance(Ci.nsIFileOutputStream);
-  stream.init(aFile, File.IO.WRONLY | File.IO.CREATE_FILE | File.IO.TRUNCATE,
+  stream.init(aFile, File.IO.WRONLY | File.IO.CREATE | File.IO.TRUNCATE,
               420, -1);
   return stream;
 }
@@ -418,7 +418,7 @@ File.IO.RDWR        = 0x04;
  * @type int
  * @constant
  */
-File.IO.CREATE_FILE = 0x08;
+File.IO.CREATE = 0x08;
 /**
  * Append to end of file.
  * @type int
