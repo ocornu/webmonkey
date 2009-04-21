@@ -32,7 +32,7 @@ function WebmonkeyService() {
 WebmonkeyService.prototype = {
   /**
    * Standard XPCOM class description.
-   * @type  String
+   * @type  string
    */
   classDescription:  DESCRIPTION,
   /**
@@ -41,7 +41,7 @@ WebmonkeyService.prototype = {
   classID:           CLASS_ID,
   /**
    * Standard XPCOM contract ID.
-   * @type  String
+   * @type  string
    */
   contractID:        CONTRACT_ID,
   /**
@@ -157,7 +157,7 @@ WebmonkeyService.prototype = {
 
   /**
    * Do not install next script.
-   * @type  Boolean
+   * @type  boolean
    * @private
    */
   _ignoreNextScript: false,
@@ -259,7 +259,7 @@ function NSGetModule(compMgr, fileSpec) {
  * @param fbConsole
  *        Firebug console.
  * @return  <code>true</code> if script succeeds, <code>false</code> otherwise.
- * @type    Boolean
+ * @type    boolean
  */
 function inject(script, safeWin, gmBrowser, fbConsole) {
   var sandbox   = new Components.utils.Sandbox(safeWin);

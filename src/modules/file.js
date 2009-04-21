@@ -17,11 +17,11 @@ const IO = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
  * @param aOrigin   Origin location.
  * @constructor
  *
- * @class The <code>File</code> class is a wrapper around
- *        <a href="https://developer.mozilla.org/En/NsIFile" class="symbol">nsIFile</a>.
- *        providing easy file management.<br>
+ * @class The <code>File</code> class allows to manage files easily.
  *        It is centered around simple actions, in particular full-content
- *        read/write.
+ *        reading and writing.<br>
+ *        Technically, <code>File</code> inherits from
+ *        <a href="https://developer.mozilla.org/En/NsIFile" class="symbol">nsIFile</a>.
  * @extends nsIFile
  */
 function File(/**File|nsIFile*/ aOrigin) {
@@ -44,7 +44,7 @@ File.prototype = {
   /**
    * File name on the local file-system.
    * Can be set to navigate to a descendent of the current file.
-   * @type String
+   * @type string
    * @see <a href="https://developer.mozilla.org/en/nsIFile/append" class="symbol">nsIFile.append</a>
    */
   get name() {
@@ -95,7 +95,7 @@ File.prototype = {
 
   /**
    * Read raw content.
-   * @returns {String}   The raw content.
+   * @returns {string}   The raw content.
    */
   read: function() {
     // read content from file
@@ -110,9 +110,9 @@ File.prototype = {
   /**
    * Read text content.
    * @param [aCharset="UTF-8"]  The charset to use.
-   * @returns {String}   The text content.
+   * @returns {string}   The text content.
    */
-  readText: function(/**String*/ aCharset) {
+  readText: function(/**string*/ aCharset) {
     var text = this.read();
     // convert to target charset
     if(!aCharset) aCharset = "UTF-8";
@@ -128,7 +128,7 @@ File.prototype = {
    * @param [aCharset="UTF-8"]  The charset to convert content to.
    * @returns {nsIDOMDocument}  The XML content.
    */
-  readXML: function(/**String*/ aCharset) {
+  readXML: function(/**string*/ aCharset) {
     var parser = Cc["@mozilla.org/xmlextras/domparser;1"]
                  .createInstance(Ci.nsIDOMParser);
     var text = this.readText(aCharset);
@@ -137,7 +137,7 @@ File.prototype = {
 
   /**
    * Read binary content.
-   * @returns {String}   The binary content.
+   * @returns {string}   The binary content.
    */
   readBytes: function() {
     var stream = Cc["@mozilla.org/binaryinputstream;1"]
@@ -153,7 +153,7 @@ File.prototype = {
    * @param aData       The raw content to write.
    * @param [perm=0644] Unix file permissions.
    */
-  write: function(/**String*/ aData, /**int*/ perm) {
+  write: function(/**string*/ aData, /**int*/ perm) {
     var out = this._output(null, perm);
     out.write(aData, aData.length);
     out.close();
@@ -165,7 +165,7 @@ File.prototype = {
    * @param [aCharset]  The charset to use.
    * @param [perm=0644] Unix file permissions.
    */
-  writeXML: function(/**nsIDOMNode*/ aXMLData, /**String*/ aCharset,
+  writeXML: function(/**nsIDOMNode*/ aXMLData, /**string*/ aCharset,
                      /**int*/ perm) {
     var out = this._output(null, perm);
     if (!aCharset) aCharset = "UTF-8";
@@ -218,6 +218,7 @@ File.prototype = {
    *        File type: {@link File.FILE} or {@link File.DIRECTORY}.
    * @param [aPermissions=0644|0755]
    *        Unix permissions (default is 0644 for a file, 0755 for a directory).
+   * @returns {string}  The name of the created file.
    * @see <a href="https://developer.mozilla.org/en/nsIFile/createUnique" class="symbol">nsIFile.createUnique</a>
    */
   createUnique: function(/**int*/ aType, /**int*/ aPermissions) {
@@ -261,49 +262,6 @@ File.DIRECTORY = Ci.nsIFile.DIRECTORY_TYPE;
 File.FILE      = Ci.nsIFile.NORMAL_FILE_TYPE;
 
 
-/**
- * @namespace I/O flags.
- * See <a href="https://developer.mozilla.org/en/PR_Open#Parameters">MDC documentation</a>.
- */
-File.IO = {};
-/**
- * Open for reading only.
- * @type int
- * @constant
- */
-File.IO.RDONLY      = 0x01;
-/**
- * Open for writing only.
- * @type int
- * @constant
- */
-File.IO.WRONLY      = 0x02;
-/**
- * Open for reading and writing.
- * @type int
- * @constant
- */
-File.IO.RDWR        = 0x04;
-/**
- * Create file if needed.
- * @type int
- * @constant
- */
-File.IO.CREATE_FILE = 0x08;
-/**
- * Append to end of file.
- * @type int
- * @constant
- */
-File.IO.APPEND      = 0x10;
-/**
- * Reset file size to zero.
- * @type int
- * @constant
- */
-File.IO.TRUNCATE    = 0x20;
-
-
 /*
  * ============================== factory methods ==============================
  */
@@ -344,12 +302,11 @@ File.temp = function() {
  * @returns {nsIURI}    Its URI object.
  * @deprecated  Static method deprecated in favor of the File object.
  */
-File.getUri = function(/**nsIFile|String*/ aTarget, /**nsIURI*/ aBase) {
+File.getUri = function(/**nsIFile|string*/ aTarget, /**nsIURI*/ aBase) {
   if (typeof aTarget == "string")
     return IO.newURI(aTarget, null, aBase);
   return IO.newFileURI(aTarget);
 }
-
 
 /**
  * Create a temporary file on the local file-system.
@@ -357,7 +314,7 @@ File.getUri = function(/**nsIFile|String*/ aTarget, /**nsIURI*/ aBase) {
  * @returns {nsILocalFile}  A temporary local file.
  * @deprecated  Static method deprecated in favor of the File object.
  */
-File.getTempFile = function(/**String*/ aFileName) {
+File.getTempFile = function(/**string*/ aFileName) {
   var file = Cc["@mozilla.org/file/directory_service;1"]
              .getService(Ci.nsIProperties)
              .get("TmpD", Ci.nsILocalFile);
@@ -366,11 +323,10 @@ File.getTempFile = function(/**String*/ aFileName) {
   return file;
 }
 
-
 /**
  * Get binary file content.
  * @param aFile         The file to read from.
- * @returns {String}    The binary content of <code>aFile</code>.
+ * @returns {string}    The binary content of <code>aFile</code>.
  * @deprecated  Static method deprecated in favor of the File object.
  */
 File.getBinaryContent = function(/**nsIFile*/ aFile) {
@@ -384,15 +340,14 @@ File.getBinaryContent = function(/**nsIFile*/ aFile) {
     return bytes;
 }
 
-
 /**
  * Get text file content.
  * @param aFile         The file to read from.
  * @param [aCharset]    The charset to use.
- * @returns {String}    The text content of <code>file</code>.
+ * @returns {string}    The text content of <code>file</code>.
  * @deprecated  Static method deprecated in favor of the File object.
  */
-File.getTextContent = function(/**nsIFile*/ aFile, /**String*/ aCharset) {
+File.getTextContent = function(/**nsIFile*/ aFile, /**string*/ aCharset) {
   // read content from file
   var input  = IO.newChannelFromURI(File.getUri(aFile)).open();
   var stream = Cc["@mozilla.org/scriptableinputstream;1"]
@@ -415,7 +370,6 @@ File.getTextContent = function(/**nsIFile*/ aFile, /**String*/ aCharset) {
   }
 }
 
-
 /**
  * Get an output stream to a file.
  * @param aFile     The target file.
@@ -429,3 +383,51 @@ File.getWriteStream = function(/**nsIFile*/ aFile) {
               420, -1);
   return stream;
 }
+
+
+/*
+ * ================================ File.IO ====================================
+ */
+
+
+/**
+ * @namespace   File input/output flags.<br>
+ * See: <a href="https://developer.mozilla.org/en/PR_Open#Parameters">MDC documentation</a>.
+ */
+File.IO = {};
+/**
+ * Open for reading only.
+ * @type int
+ * @constant
+ */
+File.IO.RDONLY      = 0x01;
+/**
+ * Open for writing only.
+ * @type int
+ * @constant
+ */
+File.IO.WRONLY      = 0x02;
+/**
+ * Open for reading and writing.
+ * @type int
+ * @constant
+ */
+File.IO.RDWR        = 0x04;
+/**
+ * Create file if needed.
+ * @type int
+ * @constant
+ */
+File.IO.CREATE_FILE = 0x08;
+/**
+ * Append to end of file.
+ * @type int
+ * @constant
+ */
+File.IO.APPEND      = 0x10;
+/**
+ * Reset file size to zero.
+ * @type int
+ * @constant
+ */
+File.IO.TRUNCATE    = 0x20;

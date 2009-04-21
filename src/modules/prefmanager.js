@@ -12,17 +12,17 @@ const Ci = Components.interfaces;
 /**
  * Construct a new preference manager.
  * @constructor
- * @param   {String} origin (optional)
+ * @param   {string} origin (optional)
  *          The origin of this manager's branch in the main preferences
  *          tree.
  * @throws  <code>Error</code> if <code>origin</code> is not a string.
  *
  * @class   Allow storage and retrieval of (key, value) pairs across tabs,
  *          windows and sessions.
- *          <ul><li>Keys must be of type <code>String</code>. They are organized
+ *          <ul><li>Keys must be of type <code>string</code>. They are organized
  *          in a tree fashion, the leaf/branch separator being a dot (see
  *          <code>about:config</code> for an example).</li>
- *          <li>Values must be of type <code>String</code>, <code>Boolean</code>
+ *          <li>Values must be of type <code>string</code>, <code>boolean</code>
  *          or integer (<i>i.e.</i> a <code>Number</code> without decimal part,
  *          between {@link #MIN_INT_32} and {@link #MAX_INT_32}).</li></ul>
  *          This simple API sits on top of
@@ -36,7 +36,7 @@ function PreferenceManager(origin) {
 
   /**
    * The origin of this manager's branch in the preferences tree.
-   * @type  String
+   * @type  string
    * @private
    * @final
    */
@@ -83,7 +83,7 @@ PreferenceManager.prototype = {
    * subtree of this manager's branch.
    * Will clone the current manager if <code>origin</code> is
    * <code>null/undefined</code>.
-   * @param {String} origin (optional)
+   * @param {string} origin (optional)
    *        The origin of the subtree, relatively to this manager's branch.
    * @return    A new preference manager.
    * @type      PreferenceManager
@@ -98,7 +98,7 @@ PreferenceManager.prototype = {
 
   /**
    * Retrieve a stored value.
-   * @param {String} key
+   * @param {string} key
    *        Key whose value must be retrieved.
    * @param defaultValue (optional)
    *        The default value for this key.
@@ -127,11 +127,11 @@ PreferenceManager.prototype = {
 
   /**
    * Set a key to the specified value.
-   * @param {String} key
+   * @param {string} key
    *        Key whose value must be set.
    * @param value
-   *        Value for this key. Must be of type <code>String</code>,
-   *        <code>Boolean</code> or integer (i.e. a <code>Number</code> without
+   *        Value for this key. Must be of type <code>string</code>,
+   *        <code>boolean</code> or integer (i.e. a <code>Number</code> without
    *        decimal part, between {@link #MIN_INT_32} and {@link #MAX_INT_32}).
    * @return    The stored <code>value</code>.
    * @throws    <code>Error</code> if <code>value</code> has an invalid type.
@@ -178,10 +178,10 @@ PreferenceManager.prototype = {
 
   /**
    * Whether a key exists.
-   * @param {String} key
+   * @param {string} key
    *        Key which existence is tested.
    * @return    <code>true</code> if key exists, <code>false</code> otherwise.
-   * @type      Boolean
+   * @type      boolean
    */
   exists: function(key) {
     return this._branch.getPrefType(key) != 0;
@@ -189,7 +189,7 @@ PreferenceManager.prototype = {
 
   /**
    * Enumerate keys in a subtree.
-   * @param {String} origin (optional)
+   * @param {string} origin (optional)
    *        The subtree whose keys must be enumerated. If not set, enumerates
    *        all keys in this manager's branch.
    * @return    The list of keys in the specified subtree.
@@ -202,7 +202,7 @@ PreferenceManager.prototype = {
 
   /**
    * Delete a key or subtree.
-   * @param {String} origin (optional)
+   * @param {string} origin (optional)
    *        The key or subtree to delete. If not set, deletes all keys of this
    *        manager's branch.
    */
@@ -213,7 +213,7 @@ PreferenceManager.prototype = {
 
   /**
    * Register a handler that will be notified when changes occur in a subtree.
-   * @param {String} origin
+   * @param {string} origin
    *        The origin of the subtree to watch for (may be a single key).
    * @param {Function} handler
    *        The handler to notify for changes. It will be called with one
@@ -238,7 +238,7 @@ PreferenceManager.prototype = {
 
   /**
    * Unregister a subtree changes handler.
-   * @param {String} origin
+   * @param {string} origin
    *        The subtree to stop watching.
    * @param {Function} handler
    *        The handler to remove.

@@ -8,7 +8,9 @@ Components.utils.import("resource://webmonkey/prefmanager.js");
 Components.utils.import("resource://webmonkey/script.js");
 Components.utils.import("resource://webmonkey/file.js");
 
-
+/**
+ * @class
+ */
 function Config() {
   this._scripts = null;
 
@@ -143,12 +145,12 @@ Config.prototype = {
   /**
    * Moves an installed user script to a new position in the array of installed scripts.
    *
-   * @param script The script to be moved.
+   * @param script      The script to be moved.
    * @param destination Can be either (a) a numeric offset for the script to be
-   *                    moved or (b) another installet script to which position
+   *                    moved or (b) another installed script to which position
    *                    the script will be moved.
    */
-  move: function(script, destination) {
+  move: function(/**Script*/ script, /**int|Script*/ destination) {
     var from = this._scripts.indexOf(script);
     var to = -1;
 
@@ -197,16 +199,13 @@ Config.prototype = {
 
 
 /**
- * Compares two version numbers
- * @param {String} aV1
- *        Version of first item in 1.2.3.4..9. format
- * @param {String} aV2
- *        Version of second item in 1.2.3.4..9. format
- * @returns {Int}  1 if first argument is higher
- *                 0 if arguments are equal
- *                 -1 if second argument is higher
+ * Compares two version numbers.
+ * @param aV1   Version of first item in 1.2.3.4..9. format.
+ * @param aV2   Version of second item in 1.2.3.4..9. format.
+ * @returns {int}  1 if first argument is higher, 0 if arguments are equal,
+ *                 -1 if second argument is higher.
  */
-function GM_compareVersions(aV1, aV2) {
+function GM_compareVersions(/**string*/ aV1, /**string*/ aV2) {
   var v1 = aV1.split(".");
   var v2 = aV2.split(".");
   var numSubversions = (v1.length > v2.length) ? v1.length : v2.length;

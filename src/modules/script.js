@@ -42,7 +42,7 @@ function Script(config) {
 
   /**
    * URL to download this script from.
-   * @type String
+   * @type string
    * @private
    */
   this._downloadURL = null; // Only for scripts not installed
@@ -54,20 +54,20 @@ function Script(config) {
   this._tempFile = null; // Only for scripts not installed
   /**
    * Name of the directory holding this script file(s).
-   * @type String
+   * @type string
    * @private
    */
   this._basedir = null;
   /**
    * Script file name in {@link #_basedir}.
-   * @type String
+   * @type string
    * @private
    */
   this._filename = null;
 
   /**
    * Enabled/disabled state.
-   * @type Boolean
+   * @type boolean
    * @private
    */
   this._enabled = true;
@@ -79,11 +79,11 @@ Script.prototype = {
    * Whether this script can run at a specified universal location.
    * <code>url</code> is checked against its sets of {@link #_includes} and
    * {@link #_excludes}.
-   * @param {String} url    The URL to test.
-   * @return {Boolean}      <code>true</code> if this script can run,
-   *                        <code>false</code> otherwise.
+   * @param url         The URL to test.
+   * @return {boolean}  <code>true</code> if this script can run,
+   *                    <code>false</code> otherwise.
    */
-  matchesURL: function(url) {
+  matchesURL: function(/**string*/ url) {
     function test(page) {
       return convert2RegExp(page).test(url);
     }
@@ -93,11 +93,13 @@ Script.prototype = {
 
   /**
    * Notify observers of a change in this script's configuration.
-   * @param {String} event  A label defining what has changed.
-   * @param {Object} data   An associated payload.
+   * @param event  A label defining what has changed.
+   * @param data   An associated payload.
    * @private
    */
-  _changed: function(event, data) { this._config._changed(this, event, data); },
+  _changed: function(/**string*/ event, /**Object*/ data) {
+     this._config._changed(this, event, data);
+  },
 
   get name() { return this._meta.name; },
   get namespace() { return this._meta.namespace; },
@@ -111,35 +113,35 @@ Script.prototype = {
   get includes() { return this._meta.include.concat(); },
   /**
    * Add an include mask.
-   * @param {String} url    The URL include mask to add.
+   * @param url    The URL include mask to add.
    */
-  addInclude: function(url) {
+  addInclude: function(/**string*/ url) {
     this._meta.include.push(url);
     this._changed("edit-include-add", url);
   },
   /**
    * Remove an include mask.
-   * @param {Number} index  The index of the include mask to remove.
+   * @param index  The index of the include mask to remove.
    */
-  removeIncludeAt: function(index) {
+  removeIncludeAt: function(/**int*/ index) {
     this._meta.include.splice(index, 1);
     this._changed("edit-include-remove", index);
   },
 
   get excludes() { return this._meta.exclude.concat(); },
   /**
-  * Add an exclude mask.
-  * @param {String} url     The URL exclude mask to add.
-  */
-  addExclude: function(url) {
+   * Add an exclude mask.
+   * @param url     The URL exclude mask to add.
+   */
+  addExclude: function(/**string*/ url) {
     this._meta.exclude.push(url);
     this._changed("edit-exclude-add", url);
   },
   /**
-  * Remove an exclude mask.
-  * @param {Number} index   The index of the exclude mask to remove.
-  */
-  removeExcludeAt: function(index) {
+   * Remove an exclude mask.
+   * @param index   The index of the exclude mask to remove.
+   */
+  removeExcludeAt: function(/**int*/ index) {
     this._meta.exclude.splice(index, 1);
     this._changed("edit-exclude-remove", index);
   },
@@ -170,13 +172,12 @@ Script.prototype = {
    * Spaces are replaced by an underscore, non-Latin chars are removed (if a
    * name only contains non-Latin chars, <code>gm_script</code> is used as a
    * default name). Names longer than 24 chars are truncated.
-   * @param {String} name       The script name to process.
-   * @param {Boolean} useExt    Whether <code>name</code> includes a file
-   *                            extension.
-   * @return {String}           The corresponding directory/file name.
+   * @param name       The script name to process.
+   * @param useExt     Whether <code>name</code> includes a file extension.
+   * @return {string}  The corresponding directory/file name.
    * @private
    */
-  _initFileName: function(name, useExt) {
+  _initFileName: function(/**string*/ name, /**boolean*/ useExt) {
     var ext = "";
     name = name.toLowerCase();
 
@@ -203,10 +204,10 @@ Script.prototype = {
   /**
    * Move a temporary script file to its final location.
    * Used during the script install process.
-   * @param {nsIFile} tempFile  The temporary file to install.
+   * @param tempFile  The temporary file to install.
    * @private
    */
-  _initFile: function(tempFile) {
+  _initFile: function(/**nsIFile*/ tempFile) {
     var file = new File(this._config._scriptDir);
     var name = this._initFileName(this._meta.name, false);
     // create script directory
@@ -220,14 +221,14 @@ Script.prototype = {
 
   /**
    * Get this script download URL.
-   * @return {String}       The download URL.
+   * @return {string}       The download URL.
    */
   get urlToDownload() { return this._downloadURL; },
   /**
    * Set this script's temporary file.
-   * @param {nsIFile} file      Target temporary file.
+   * @param file      Target temporary file.
    */
-  setDownloadedFile: function(file) { this._tempFile = file; },
+  setDownloadedFile: function(/**nsIFile*/ file) { this._tempFile = file; },
 
   
   get previewURL() {
@@ -272,27 +273,27 @@ Script.prototype = {
 Script.MetaData = function() {
   /**
    * Script <code>&#64;name</code>.
-   * @type String
+   * @type string
    */
   this.name = null;
   /**
    * Script <code>&#64;namespace</code>.
-   * @type String
+   * @type string
    */
   this.namespace = null;
   /**
    * Script <code>&#64;description</code>.
-   * @type String
+   * @type string
    */
   this.description = null;
   /**
    * List of <code>&#64;include</code> URL masks.
-   * @type String[]
+   * @type string[]
    */
   this.include = [];
   /**
    * List of <code>&#64;exclude</code> URL masks.
-   * @type String[]
+   * @type string[]
    */
   this.exclude = [];
   /**
@@ -307,7 +308,7 @@ Script.MetaData = function() {
   this.resource = [];
   /**
    * <code>&#64;unwrap</code> this script before injection.
-   * @type Boolean
+   * @type boolean
    */
   this.unwrap = false;
 };
@@ -453,7 +454,7 @@ Script.Require = function(/**Script*/ script, /**nsIDOMNode*/ node) {
 
   /**
    * URL to download this <code>&#64;require</code> from.
-   * @type String
+   * @type string
    * @private
    */
   this._downloadURL = null; // Only for scripts not installed
@@ -466,7 +467,7 @@ Script.Require = function(/**Script*/ script, /**nsIDOMNode*/ node) {
   /**
    * <code>&#64;require</code> file name (storage in the {@link Script#_basedir}
    * directory).
-   * @type String
+   * @type string
    * @private
    */
   this._filename = null;
@@ -486,10 +487,10 @@ Script.Require.prototype = {
   get textContent() { return this._file.readText(); },
 
   /**
-  * Move a temporary required file to its final location.
-  * Used during the script install process.
-  * @private
-  */
+   * Move a temporary required file to its final location.
+   * Used during the script install process.
+   * @private
+   */
   _initFile: function() {
     // build a file name
     var name = this._downloadURL.substr(this._downloadURL.lastIndexOf("/") + 1);
@@ -511,10 +512,10 @@ Script.Require.prototype = {
 
   get urlToDownload() { return this._downloadURL; },
   /**
-  * Set this require's temporary file.
-  * @param {nsIFile} file      Target temporary file.
-  */
-  setDownloadedFile: function(file) { this._tempFile = file; },
+   * Set this require's temporary file.
+   * @param file      Target temporary file.
+   */
+  setDownloadedFile: function(/**nsIFile*/ file) { this._tempFile = file; },
   
   _load: function(node) {
     this._filename = node.getAttribute("filename");
@@ -541,15 +542,15 @@ Script.Require.prototype = {
  */
 Script.Resource = function(/**Script*/ script, /**nsIDOMNode*/ node) {
   /**
-  * The parent script.
-  * @type Script
-  * @private
-  */
+   * The parent script.
+   * @type Script
+   * @private
+   */
   this._script = script;
 
   /**
    * URL to download this <code>&#64;resource</code> from.
-   * @type String
+   * @type string
    * @private
    */
   this._downloadURL = null; // Only for scripts not installed
@@ -562,27 +563,27 @@ Script.Resource = function(/**Script*/ script, /**nsIDOMNode*/ node) {
   /**
    * <code>&#64;resource</code> file name (storage in the
    * {@link Script#_basedir} directory).
-   * @type String
+   * @type string
    * @private
    */
   this._filename = null;
   /**
    * File mime type.
-   * @type String
+   * @type string
    * @private
    */
   this._mimetype = null;
   
   /**
    * File charset.
-   * @type String
+   * @type string
    * @private
    */
   this._charset = null;
 
   /**
    * <code>&#64;resource</code> name
-   * @type String
+   * @type string
    * @private
    */
   this._name = null;
@@ -618,20 +619,21 @@ Script.Resource.prototype = {
   },
 
   /**
-  * Move a temporary resource file to its final location.
-  * Used during the script install process.
-  * @private
-  */
+   * Move a temporary resource file to its final location.
+   * Used during the script install process.
+   * @private
+   */
   _initFile: Script.Require.prototype._initFile,
 
   get urlToDownload() { return this._downloadURL; },
   /**
-  * Set this resource's temporary file.
-  * @param {nsIFile} file       Target temporary file.
-  * @param {String}  mimetype   File mime type.
-  * @param {String}  charset    File charset.
-  */
-  setDownloadedFile: function(file, mimetype, charset) {
+   * Set this resource's temporary file.
+   * @param file       Target temporary file.
+   * @param mimetype   File mime type.
+   * @param charset    File charset.
+   */
+  setDownloadedFile: function(/**nsIFile*/ file, /**string*/ mimetype,
+                              /**string*/ charset) {
     this._tempFile = file;
     this._mimetype = mimetype;
     this._charset = charset;
