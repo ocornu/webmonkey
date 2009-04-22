@@ -60,12 +60,12 @@ Config.prototype = {
   },
 
   _find: function(aScript) {
-    namespace = aScript._namespace.toLowerCase();
-    name = aScript._name.toLowerCase();
+    var namespace = aScript.namespace.toLowerCase();
+    var name = aScript.name.toLowerCase();
 
     for (var i = 0, script; script = this._scripts[i]; i++) {
-      if (script._namespace.toLowerCase() == namespace
-        && script._name.toLowerCase() == name) {
+      if (script.namespace.toLowerCase() == namespace
+        && script.name.toLowerCase() == name) {
         return i;
       }
     }
@@ -113,12 +113,12 @@ Config.prototype = {
     script._initFile(script._tempFile);
     script._tempFile = null;
 
-    for (var i = 0; i < script._requires.length; i++) {
-      script._requires[i]._initFile();
+    for (var i = 0; i < script.requires.length; i++) {
+      script.requires[i]._initFile();
     }
 
-    for (var i = 0; i < script._resources.length; i++) {
-      script._resources[i]._initFile();
+    for (var i = 0; i < script.resources.length; i++) {
+      script.resources[i]._initFile();
     }
 
     this._scripts.push(script);
@@ -136,7 +136,7 @@ Config.prototype = {
 
     if (uninstallPrefs) {
       // Remove saved preferences
-      GM_prefRoot.remove("scriptvals." + script._namespace + "/" + script._name + ".");
+      GM_prefRoot.remove("scriptvals." + script.namespace + "/" + script.name + ".");
     }
   },
 

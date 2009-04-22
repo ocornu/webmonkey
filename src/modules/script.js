@@ -126,7 +126,7 @@ Script.prototype = {
     this._changed("edit-include-remove", index);
   },
 
-  get excludes() { return this._excludes.concat(); },
+  get excludes() { return this._meta.exclude.concat(); },
   /**
   * Add an exclude mask.
   * @param {String} url     The URL exclude mask to add.
@@ -338,9 +338,9 @@ Script.MetaData.prototype = {
   },
 
   save: function(doc, node) {
-    node.setAttribute("name", this._name);
-    node.setAttribute("namespace", this._namespace);
-    node.setAttribute("description", this._description);
+    node.setAttribute("name", this.name);
+    node.setAttribute("namespace", this.namespace);
+    node.setAttribute("description", this.description);
     for each (var include in this.include) {
       var includeNode = doc.createElement("Include");
       includeNode.appendChild(doc.createTextNode(include));
@@ -363,7 +363,6 @@ Script.MetaData.prototype = {
     }
     if (this.unwrap)
       append(doc.createElement("Unwrap"));
-    node.appendChild(doc.createTextNode("\n\t"));
     
     function append(childNode) {
       node.appendChild(doc.createTextNode("\n\t\t"));
