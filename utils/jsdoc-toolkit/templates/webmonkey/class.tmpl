@@ -574,7 +574,7 @@
 						if (member.isPrivate) output += "&lt;private&gt; ";
 						if (member.isInner) output += "&lt;inner&gt; ";
 					!}
-					<if test="member.type"><span class="light">{+new Link().toSymbol(member.type)+}</span></if>
+					<span class="light"><if test="member.type">{+new Link().toSymbol(member.type)+}<else/>void</if></span>
 					<if test="member.isStatic && member.memberOf != '_global_'"><span class="light">{+member.memberOf+}.</span></if><b><if test="member.deprecated"><s></if>{+member.name+}<if test="member.deprecated"></s></if></b>{+makeSignature(member.params)+}
 					
 					</div>
