@@ -237,20 +237,23 @@ Script.prototype = {
                      .newFileURI(this._tempFile).spec;
   },
   
-  load: function(node) {
+  _fromXml: function(/**nsIDOMNode*/ node) {
     this._basedir     = node.getAttribute("basedir");
     this._filename    = node.getAttribute("filename");
     this._enabled     = node.getAttribute("enabled") == true.toString();
-    this._meta.load(this, node);
+    this._meta.fromXml(this, node);
     return this;
   },
 
-  save: function(doc) {
+  /**
+   * @return {nsIDOMNode}
+   */
+  toXml: function(/**nsIDOMDocument*/ doc) {
     var node = doc.createElement("Script");
     node.setAttribute("basedir", this._basedir);
     node.setAttribute("filename", this._filename);
     node.setAttribute("enabled", this._enabled);
-    this._meta.save(doc, node);
+    this._meta.toXml(doc, node);
     node.appendChild(doc.createTextNode("\n\t"));
     return node;
   },
@@ -314,7 +317,7 @@ Script.MetaData = function() {
 };
 
 Script.MetaData.prototype = {
-  load: function(script, node) {
+  fromXml: function(/**Script*/ script, /**nsIDOMNode*/ node) {
     this.name        = node.getAttribute("name");
     this.namespace   = node.getAttribute("namespace");
     this.description = node.getAttribute("description");
@@ -338,7 +341,7 @@ Script.MetaData.prototype = {
       }
   },
 
-  save: function(doc, node) {
+  toXml: function(doc, node) {
     node.setAttribute("name", this.name);
     node.setAttribute("namespace", this.namespace);
     node.setAttribute("description", this.description);
@@ -354,12 +357,12 @@ Script.MetaData.prototype = {
     }
     for each (var require in this.require) {
       var requireNode = doc.createElement("Require");
-      require.save(requireNode);
+      require.toXml(requireNode);
       append(requireNode);
     }
     for each (var resource in this.resource) {
       var resourceNode = doc.createElement("Resource");
-      resource.save(resourceNode);
+      resource.toXml(resourceNode);
       append(resourceNode);
     }
     if (this.unwrap)
@@ -473,7 +476,7 @@ Script.Require = function(/**Script*/ script, /**nsIDOMNode*/ node) {
   this._filename = null;
 
   if (node)
-    this._load(node);
+    this._fromXml(node);
 };
 
 Script.Require.prototype = {
@@ -517,11 +520,11 @@ Script.Require.prototype = {
    */
   setDownloadedFile: function(/**nsIFile*/ file) { this._tempFile = file; },
   
-  _load: function(node) {
+  _fromXml: function(node) {
     this._filename = node.getAttribute("filename");
   },
   
-  save: function(node) {
+  toXml: function(node) {
     node.setAttribute("filename", this._filename);
   },
 
@@ -589,7 +592,7 @@ Script.Resource = function(/**Script*/ script, /**nsIDOMNode*/ node) {
   this._name = null;
 
   if (node)
-    this._load(node);
+    this._fromXml(node);
 };
 
 Script.Resource.prototype = {
@@ -639,14 +642,14 @@ Script.Resource.prototype = {
     this._charset = charset;
   },
   
-  _load: function(node) {
+  _fromXml: function(node) {
     this._name     = node.getAttribute("name");
     this._filename = node.getAttribute("filename");
     this._mimetype = node.getAttribute("mimetype");
     this._charset  = node.getAttribute("charset");
   },
 
-  save: function(node) {
+  toXml: function(node) {
     node.setAttribute("name", this._name);
     node.setAttribute("filename", this._filename);
     node.setAttribute("mimetype", this._mimetype);

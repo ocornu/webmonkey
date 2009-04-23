@@ -29,7 +29,7 @@ function Config() {
   this._observers = [];
 
   this._updateVersion();
-  this._load();
+  this._loadFromXml();
 }
 
 Config.prototype = {
@@ -53,7 +53,7 @@ Config.prototype = {
   },
 
   _changed: function(script, event, data) {
-    this._save();
+    this._saveToXml();
     this._notifyObservers(script, event, data);
   },
 
@@ -75,7 +75,7 @@ Config.prototype = {
     return -1;
   },
 
-  _load: function() {
+  _loadFromXml: function() {
     var doc = this._configFile.readXML();
     var nodes = doc.evaluate("/UserScriptConfig/Script", doc, null, 0, null);
     this._scripts = [];
@@ -83,14 +83,14 @@ Config.prototype = {
       this._scripts.push(new Script(this).load(node));
   },
 
-  _save: function() {
+  _saveToXml: function() {
     var doc = Components.classes["@mozilla.org/xmlextras/domparser;1"]
               .createInstance(Components.interfaces.nsIDOMParser)
               .parseFromString("<UserScriptConfig></UserScriptConfig>",
                                "text/xml");
     var config = doc.firstChild; 
     for each (var script in this._scripts) {
-      var scriptNode = script.save(doc);
+      var scriptNode = script.toXml(doc);
       config.appendChild(doc.createTextNode("\n\t"));
       config.appendChild(scriptNode);
     }
