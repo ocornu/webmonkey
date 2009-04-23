@@ -175,6 +175,54 @@ File.prototype = {
     out.close();
   },
 
+  /**
+   * Asynchronously load a target URI in this file.<br><br>
+   * If present, <code>onComplete</code> is called on completion, with three
+   * parameters:
+   * <ul>
+   * <li><code class="light">nsIChannel</code> :
+   *    The channel used to load the target URI. If the HTTP protocol is used,
+   *    this is a <code class="light">nsIHttpChannel</code>.</li>
+   * <li><code class="light">int</code> :
+   *    The request status code (0 on success). In case of error, this is a HTTP
+   *    error code if HTTP was used.</li>
+   * <li><code class="light">string</code> :
+   *    The message associated with this status/error code.</li>
+   * </ul>
+   * This method bypasses the files cache and replaces existing files.
+   * It uses a <a href="https://developer.mozilla.org/en/nsIWebBrowserPersist" class="symbol">nsIWebBrowserPersist</a>
+   * to perform its task.
+   * @param aURI            The target URI to load.
+   * @param [onComplete]    The function to call on completion.
+   */
+  load: function(/**nsIURI|String*/ aUri, /**Function*/ onComplete) {
+    if (typeof aUri == "string") aUri = File.getUri(aUri);
+    var channel = IO.newChannelFromURI(aUri);
+    var file    = this._nsIFile;
+    var persist = Cc["@mozilla.org/embedding/browser/nsWebBrowserPersist;1"]
+                  .createInstance(Ci.nsIWebBrowserPersist);
+    persist.persistFlags = persist.PERSIST_FLAGS_BYPASS_CACHE |
+                           persist.PERSIST_FLAGS_REPLACE_EXISTING_FILES;
+    if (onComplete)
+      persist.progressListener = {
+        onStateChange: function(aWebProgress, aRequest, aStateFlags, aStatus) {
+          if (persist.currentState != persist.PERSIST_STATE_FINISHED)
+            return;
+          if (aUri.scheme!="http" && aUri.scheme!="https") {
+            onComplete(channel, aStatus, aStatus==0 ? "OK" : "Unknown error");
+            return;
+          }
+          channel = channel.QueryInterface(Ci.nsIHttpChannel);
+          onComplete(channel,
+                     channel.requestSucceeded ? 0 : channel.responseStatus,
+                     channel.responseStatusText);
+        },
+        onProgressChange: function() {}, onLocationChange: function() {},
+        onStatusChange: function() {}, onSecurityChange: function() {}
+      };
+    persist.saveChannel(channel, file);
+  },
+
   /*
    * ============================ nsIFile interface ============================
    *
@@ -300,7 +348,6 @@ File.temp = function() {
  * @param aTarget       The target file or path.
  * @param [aBase]       The base URI (relative <code>aTarget</code> path only).  
  * @returns {nsIURI}    Its URI object.
- * @deprecated  Static method deprecated in favor of the File object.
  */
 File.getUri = function(/**nsIFile|string*/ aTarget, /**nsIURI*/ aBase) {
   if (typeof aTarget == "string")
