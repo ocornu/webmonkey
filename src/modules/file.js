@@ -245,6 +245,15 @@ File.prototype = {
    },
 
   /**
+   * This file's path.
+   * @type string
+   * @see <a href="https://developer.mozilla.org/en/nsIFile/path" class="symbol">nsIFile.path</a>
+   */
+  get path() {
+     return this._nsIFile.path;
+  },
+
+  /**
    * Create a new file/directory.
    * @param [aType=File.FILE]
    *        File type: {@link File.FILE} or {@link File.DIR}.
@@ -341,6 +350,19 @@ File.temp = function() {
  *
  * Helper functions.
  */
+
+/**
+ * Get a file from an arbitrary path.
+ * @param aPath                 The target path on the local file system.  
+ * @param [aFollowLinks=false]  Whether links should be followed.
+ * @returns {File}   The corresponding file.
+ */
+File.path = function(/**string*/ aPath, /**boolean*/ aFollowLinks) {
+  var file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsILocalFile);
+  file.followLinks = aFollowLinks!=undefined ? aFollowLinks : false;
+  file.initWithPath(aPath);
+  return new File(file);
+}
 
 
 /**
