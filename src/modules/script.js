@@ -12,15 +12,17 @@ Components.utils.import("resource://webmonkey/file.js");
 
 
 /**
- * Construct a new script object.
+ * Construct a new script object.<br>
+ * This constructor should not be used directly, use the static factory methods
+ * instead.
  * @constructor
- * @param {Config} config   Associated Webmonkey configuration.
+ * @param [config]  Associated Webmonkey configuration.
  *
  * @class   Implementation of a script.<br>
  *          Provides place-holders for its configuration and status, as well as
  *          facilities to manage its presence in the filesystem.
  */
-function Script(config) {
+function Script(/**Config*/ config) {
   /**
    * Associated Webmonkey configuration manager.
    * @type Config
@@ -45,25 +47,19 @@ function Script(config) {
    * @type string
    * @private
    */
-  this._downloadURL = null; // Only for scripts not installed
+  this._downloadURL = null;
   /**
-   * Temporary file used during the installation process.
-   * @type nsIFile
-   * @private
-   */
-  this._tempFile = null; // Only for scripts not installed
-  /**
-   * Name of the directory holding this script file(s).
-   * @type string
-   * @private
-   */
-  this._basedir = null;
-  /**
-   * Script file name in {@link #_basedir}.
+   * Script file name in its {@link #_directory}.
    * @type string
    * @private
    */
   this._filename = null;
+  /**
+   * Script directory.
+   * @type File
+   * @private
+   */
+  this._directory = null;
 
   /**
    * Enabled/disabled state.
@@ -151,98 +147,41 @@ Script.prototype = {
   get unwrap() { return this._meta.unwrap; },
 
   get _file() {
-    var file = new File(this._basedirFile);
+    var file = new File(this._directory);
     file.name = this._filename;
     return file;
   },
 
   get editFile() { return this._file._nsIFile; },
 
-  get _basedirFile() {
-    var file = new File(this._config._scriptDir);
-    file.name = this._basedir;
-    return file;
-  },
-
-  get fileURL() { return this._file.uri.spec; },
   get textContent() { return this._file.readText(); },
 
   /**
-   * Craft a proper directory/file name.
-   * Spaces are replaced by an underscore, non-Latin chars are removed (if a
-   * name only contains non-Latin chars, <code>gm_script</code> is used as a
-   * default name). Names longer than 24 chars are truncated.
-   * @param name       The script name to process.
-   * @param useExt     Whether <code>name</code> includes a file extension.
-   * @return {string}  The corresponding directory/file name.
-   * @private
+   * Install a script.<br>
+   * Moves its directory from the temp folder to the scripts folder.
+   * @param aConfig  Associated Webmonkey configuration manager.
    */
-  _initFileName: function(/**string*/ name, /**boolean*/ useExt) {
-    var ext = "";
-    name = name.toLowerCase();
-
-    var dotIndex = name.lastIndexOf(".");
-    if (dotIndex > 0 && useExt) {
-      ext = name.substring(dotIndex + 1);
-      name = name.substring(0, dotIndex);
-    }
-
-    name = name.replace(/\s+/g, "_").replace(/[^-_A-Z0-9]+/gi, "");
-    ext = ext.replace(/\s+/g, "_").replace(/[^-_A-Z0-9]+/gi, "");
-
-    // If no Latin characters found - use default
-    if (!name) name = "gm_script";
-
-    // 24 is a totally arbitrary max length
-    if (name.length > 24) name = name.substring(0, 24);
-
-    if (ext) name += "." + ext;
-
-    return name;
-  },
-
-  /**
-   * Move a temporary script file to its final location.
-   * Used during the script install process.
-   * @param tempFile  The temporary file to install.
-   * @private
-   */
-  _initFile: function(/**nsIFile*/ tempFile) {
-    var file = new File(this._config._scriptDir);
-    var name = this._initFileName(this._meta.name, false);
-    // create script directory
-    file.name = name;
-    file.createUnique(File.DIRECTORY);
-    this._basedir = file.name;
+  install: function(/**Config*/ aConfig) {
+    this._config = aConfig;
+    var dir = new File(aConfig._scriptDir);
+    dir.name = this._filename.replace(/\.user\.js$/, "");
+    dir.createUnique(File.DIRECTORY);
+    dir.remove(true);
     // create script file
-    this._filename = name + ".user.js";
-    tempFile.moveTo(file._nsIFile, this._filename);
+    this._directory.moveTo(dir._nsIFile.parent, dir.name);
+    this._directory = dir;
   },
 
-  /**
-   * Get this script download URL.
-   * @return {string}       The download URL.
-   */
-  get urlToDownload() { return this._downloadURL; },
-  /**
-   * Set this script's temporary file.
-   * @param file      Target temporary file.
-   */
-  setDownloadedFile: function(/**nsIFile*/ file) { this._tempFile = file; },
-
-  
   get previewURL() {
-    return Components.classes["@mozilla.org/network/io-service;1"]
-                     .getService(Components.interfaces.nsIIOService)
-                     .newFileURI(this._tempFile).spec;
+    return "view-source:" + this._file.uri.spec;
   },
   
-  _fromXml: function(/**nsIDOMNode*/ node) {
-    this._basedir     = node.getAttribute("basedir");
-    this._filename    = node.getAttribute("filename");
-    this._enabled     = node.getAttribute("enabled") == true.toString();
+  _fromXml: function(/**nsIDOMNode*/ node, /**File*/ dir) {
+    this._directory = new File(dir);
+    this._directory.name = node.getAttribute("basedir");
+    this._filename = node.getAttribute("filename");
+    this._enabled = node.getAttribute("enabled") == true.toString();
     this._meta.fromXml(this, node);
-    return this;
   },
 
   /**
@@ -250,7 +189,7 @@ Script.prototype = {
    */
   toXml: function(/**nsIDOMDocument*/ doc) {
     var node = doc.createElement("Script");
-    node.setAttribute("basedir", this._basedir);
+    node.setAttribute("basedir", this._directory.name);
     node.setAttribute("filename", this._filename);
     node.setAttribute("enabled", this._enabled);
     this._meta.toXml(doc, node);
@@ -258,12 +197,90 @@ Script.prototype = {
     return node;
   },
 
-  parse: function(source, uri) {
-    this._downloadURL = uri.spec;
+  _parse: function(source, uri) {
+    this._downloadURL = uri ? uri.spec : null;
     this._enabled = true;
     this._meta.parse(this, source, uri);
-  }
+  },
 
+  /**
+   * Fetch this script dependencies.<br>
+   * Do not set the <code>deps</code> parameter: it is used internally to track
+   * remaining dependencies as <code>fetchDeps</code> is recursively called.
+   * @param onSuccess   The function to call back on success.
+   * @param onError     The function to call back on error.
+   * @param [deps]      The list of dependencies yet to fetch (internal only).
+   */
+  fetchDeps: function(/**Function*/ onSuccess,
+                      /**Function*/ onError,
+                      /**boolean*/  deps) {
+    if (deps == undefined)
+      deps = this._meta.require.concat(this._meta.resource);
+    if (deps.length == 0)
+      onSuccess(this);
+    else
+      deps.shift().fetch(onSuccess, onError, deps);
+  }
+};
+
+
+/**
+ * Factory method to create a new {@link Script} instance from its source code.
+ * @param aSource   The script source code.
+ * @param [aUri]    The script's original URI.
+ * @return {Script}
+ */
+Script.fromSource = function(/**string*/ aSource, /**nsIURI*/ aUri) {
+  var script = new Script();
+  script._parse(aSource, aUri);
+  // create temp script dir (max name length: 24)
+  var name = toFilename(script.name, "script");
+  if (name.length > 24) name = name.substring(0, 24);
+  script._directory = File.temp();
+  script._directory.name = name;
+  script._directory.createUnique(File.DIRECTORY);
+  // create script file
+  script._filename = name + ".user.js";
+  var file = script._file;
+  file.create();
+  file.write(aSource);
+  return script;
+};
+
+/**
+ * Factory method to create a new {@link Script} instance from its stored config.
+ * @param aConfig   The Webmonkey configuration.
+ * @param aNode     This script config XML node.
+ * @return {Script}
+ */
+Script.fromConfig = function(/**Config*/ aConfig, /**nsiDOMNode*/ aNode) {
+  var script = new Script(aConfig);
+  script._fromXml(aNode, aConfig._scriptDir);
+  return script;
+};
+
+/**
+ * Factory method to create a new {@link Script} instance from a URI.
+ * @param aUri      The script's original URI.
+ * @param onSuccess The function to call back on success.
+ * @param onError   The function to call back on error.
+ * @param [noDeps]  If <code>true</code>, do not fetch dependencies.
+ */
+Script.fromUri = function(/**nsIURI*/   aUri,
+                          /**Function*/ onSuccess,
+                          /**Function*/ onError,
+                          /**boolean*/  noDeps) {
+  var file = File.temp();
+  file.name = "script";
+  file.createUnique();
+  file.load(aUri, function(channel, status, statusText) {
+    if (status)
+      return onError(null, status, statusText);
+    var script = Script.fromSource(file.readText(), aUri);
+    file.remove();
+    if (noDeps) return onSuccess(script);
+    script.fetchDeps(onSuccess, onError);
+  });
 };
 
 
@@ -435,7 +452,6 @@ Script.MetaData.prototype = {
       return name.substring(name.lastIndexOf("/") + 1);
     }
   }
-
 };
 
 
@@ -462,14 +478,7 @@ Script.Require = function(/**Script*/ script, /**nsIDOMNode*/ node) {
    */
   this._downloadURL = null; // Only for scripts not installed
   /**
-   * Temporary file used during the installation process.
-   * @type nsIFile
-   * @private
-   */
-  this._tempFile = null; // Only for scripts not installed
-  /**
-   * <code>&#64;require</code> file name (storage in the {@link Script#_basedir}
-   * directory).
+   * <code>&#64;require</code> file name (storage in {@link Script#_directory}).
    * @type string
    * @private
    */
@@ -480,58 +489,74 @@ Script.Require = function(/**Script*/ script, /**nsIDOMNode*/ node) {
 };
 
 Script.Require.prototype = {
+  DEFAULT_FILENAME: "require.js",
+  
   get _file() {
-    var file = new File(this._script._basedirFile);
+    var file = new File(this._script._directory);
     file.name = this._filename;
     return file;
   },
 
-  get fileURL() { return this._file.uri.spec; },
   get textContent() { return this._file.readText(); },
 
-  /**
-   * Move a temporary required file to its final location.
-   * Used during the script install process.
-   * @private
-   */
-  _initFile: function() {
-    // build a file name
-    var name = this._downloadURL.substr(this._downloadURL.lastIndexOf("/") + 1);
-    if(name.indexOf("?") > 0)
-      name = name.substr(0, name.indexOf("?"));
-    name = this._script._initFileName(name, true);
-    // create file
-    var file = new File(this._script._basedirFile);
-    file.name = name;
-    file.createUnique(File.FILE, 0644);
-    this._filename = file.name;
-
-//    GM_log("Moving dependency file from " + this._tempFile.path + " to " + file.path);
-
-    file.remove(true);
-    this._tempFile.moveTo(file.parent, file.name);
-    this._tempFile = null;
-  },
-
-  get urlToDownload() { return this._downloadURL; },
-  /**
-   * Set this require's temporary file.
-   * @param file      Target temporary file.
-   */
-  setDownloadedFile: function(/**nsIFile*/ file) { this._tempFile = file; },
-  
-  _fromXml: function(node) {
+  _fromXml: function(/**nsIDOMNode*/ node) {
     this._filename = node.getAttribute("filename");
   },
   
-  toXml: function(node) {
+  toXml: function(/**nsIDOMNode*/ node) {
     node.setAttribute("filename", this._filename);
   },
 
-  parse: function(value, uri) {
-    this._downloadURL = File.getUri(value, uri).spec;
-  }
+  parse: function(/**string*/ value, /**nsIURI*/ baseUri) {
+    this._downloadURL = File.getUri(value, baseUri).spec;
+  },
 
+  /**
+   * Fetch this dependency file. Called internally by {@link Script#fetchDeps}.
+   * @param onSuccess   The function to call back on success.
+   * @param onError     The function to call back on error.
+   * @param deps      The list of dependencies yet to fetch.
+   */
+  fetch: function(/**Function*/ onSuccess, /**Function*/ onError,
+                  /**boolean*/deps) {
+    var uri = this._validateUri();
+    if (!uri) return onError(this, -1, "SecurityException: " +
+                             "Request to local URI is forbidden");
+    // create dependency file
+    var file = new File(this._script._directory);
+    file.name = toFilename(uri, this.DEFAULT_FILENAME);
+    this._filename = file.createUnique();
+    // fetch it
+    var script = this._script;
+    var dep = this;
+    file.load(uri, function(channel, status, statusText) {
+      if (status)
+        return onError(dep, status, statusText);
+      this._mimeType = channel.contentType;
+      this._charset  = channel.contentCharset;
+      script.fetchDeps(onSuccess, onError, deps);
+    });
+  },
+
+  /**
+   * Validate this dependency URI.<br>
+   * Remote originating scripts cannot include local dependencies.
+   * @return {nsIURI}
+   */
+  _validateUri: function() {
+    var uri = File.getUri(this._downloadURL);
+    switch (uri.scheme) {
+    case "http":
+    case "https":
+    case "ftp":
+      return uri;
+    case "file":
+      if (File.getUri(this._script._downloadURL).scheme == "file")
+        return uri;
+    default:
+      return false;
+    }
+  }
 };
 
 
@@ -542,6 +567,7 @@ Script.Require.prototype = {
  * @param [node]    XML node from config file.
  *
  * @class   Implementation of some <code>&#64;resource</code> functionalities.
+ * @augments Script.Require
  */
 Script.Resource = function(/**Script*/ script, /**nsIDOMNode*/ node) {
   /**
@@ -558,14 +584,7 @@ Script.Resource = function(/**Script*/ script, /**nsIDOMNode*/ node) {
    */
   this._downloadURL = null; // Only for scripts not installed
   /**
-   * Temporary file used during the installation process.
-   * @type nsIFile
-   * @private
-   */
-  this._tempFile = null; // Only for scripts not installed
-  /**
-   * <code>&#64;resource</code> file name (storage in the
-   * {@link Script#_basedir} directory).
+   * <code>&#64;resource</code> file name (storage in {@link Script#_directory}).
    * @type string
    * @private
    */
@@ -596,15 +615,9 @@ Script.Resource = function(/**Script*/ script, /**nsIDOMNode*/ node) {
 };
 
 Script.Resource.prototype = {
+  DEFAULT_FILENAME: "resource",
+
   get name() { return this._name; },
-
-  get _file() {
-    var file = new File(this._script._basedirFile);
-    file.name = this._filename;
-    return file;
-  },
-
-  get textContent() { return this._file.readText(); },
 
   get dataContent() {
     var appSvc = Components.classes["@mozilla.org/appshell/appShellService;1"]
@@ -621,35 +634,14 @@ Script.Resource.prototype = {
       window.encodeURIComponent(window.btoa(binaryContents));
   },
 
-  /**
-   * Move a temporary resource file to its final location.
-   * Used during the script install process.
-   * @private
-   */
-  _initFile: Script.Require.prototype._initFile,
-
-  get urlToDownload() { return this._downloadURL; },
-  /**
-   * Set this resource's temporary file.
-   * @param file       Target temporary file.
-   * @param mimetype   File mime type.
-   * @param charset    File charset.
-   */
-  setDownloadedFile: function(/**nsIFile*/ file, /**string*/ mimetype,
-                              /**string*/ charset) {
-    this._tempFile = file;
-    this._mimetype = mimetype;
-    this._charset = charset;
-  },
-  
-  _fromXml: function(node) {
+  _fromXml: function(/**nsIDOMNode*/ node) {
     this._name     = node.getAttribute("name");
     this._filename = node.getAttribute("filename");
     this._mimetype = node.getAttribute("mimetype");
     this._charset  = node.getAttribute("charset");
   },
 
-  toXml: function(node) {
+  toXml: function(/**nsIDOMNode*/ node) {
     node.setAttribute("name", this._name);
     node.setAttribute("filename", this._filename);
     node.setAttribute("mimetype", this._mimetype);
@@ -657,14 +649,37 @@ Script.Resource.prototype = {
       node.setAttribute("charset", this._charset);
   },
 
-  parse: function(value, uri) {
+  parse: function(/**string*/ value, /**nsIURI*/ baseUri) {
     var res = value.match(/(\S+)\s+(.*)/);
     if (res === null)   // NOTE: Unlocalized strings
       throw new Error("Invalid syntax for @resource declaration '" +
                       value + "'. Resources are declared like this: " +
-                      "@resource <name> <url>");
+                      "@resource <name> <URI>");
     this._name = res[1];
-    this._downloadURL = File.getUri(res[2], uri).spec;
+    this._downloadURL = File.getUri(res[2], baseUri).spec;
   }
+};
 
+Script.Resource.prototype.__proto__ = Script.Require.prototype;
+
+
+/**
+ * Transform a script name or a URI into a file name.<br>
+ * A set of spaces/tabs becomes an underscore, non-Latin chars are removed.
+ * Latin letters are lower-cased. Numbers, dots and minus sign are allowed. 
+ * @param aOrigin               What to transform.
+ * @param [aDefault="noname"]   Default value, in case of empty string.
+ * @return {string}             A file name.
+ * @private
+ */
+function toFilename(/**string|nsIURI*/ aOrigin, /**string*/ aDefault) {
+  var name = aOrigin;
+  if (typeof aOrigin != "string") {
+    name = aOrigin.path;
+    name = name.replace(/^.*\/([^/]*)$/, "$1").replace(/^([^?]*)\?.*$/, "$1");
+  }
+  name = name.toLowerCase().replace(/\s+/g, "_").replace(/[^-_A-Z0-9.]+/gi, "");
+  // If no Latin characters found - use default
+  if (name.length == 0) name = aDefault ? aDefault : "noname";
+  return name;
 };

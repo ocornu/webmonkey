@@ -18,83 +18,61 @@ window.addEventListener("load", function() {
 ////////////////////////////////// functions ///////////////////////////////////
 
 function doInstall() {
-  var script = createScriptSource();
-  if (!script) return false;
-
-  // put this created script into a file -- only way to install it
-  var tempFile = File.getTempFile("gm-temp");
-  var foStream = File.getWriteStream(tempFile);
-  foStream.write(script, script.length);
-  foStream.close();
+  var source = createScriptSource();
+  if (!source) return false;
+  var script = Script.fromSource(source);
 
   var config = GM_getConfig();
-
-  // create a script object with parsed metadata,
-  script = config.parse(script, tempFile);
-
   // make sure entered details will not ruin an existing file
   if (config.installIsUpdate(script)) {
     var overwrite = confirm(bundle.getString("newscript.exists"));
     if (!overwrite) return false;
   }
-
-  // finish making the script object ready to install
-  script.setDownloadedFile(tempFile);
-
-  // install this script
   config.install(script);
-
-  // and fire up the editor!
-  openInEditor(script);
-
   // persist namespace value
   GM_prefRoot.set("newscript_namespace", script.namespace);
 
+  // and fire up the editor!
+  openInEditor(script);
   return true;
 }
 
 // assemble the XUL fields into a script template
 function createScriptSource() {
-  var script = ["// ==UserScript=="];
+  var source = ["// ==UserScript=="];
 
   var name = document.getElementById("name").value;
-  if ("" == name) {
+  if (name == "") {
     alert(bundle.getString("newscript.noname"));
     return false;
-  } else {
-    script.push("// @name           " + name);
   }
+  source.push("// @name           " + name);
 
   var namespace = document.getElementById("namespace").value;
-  if ("" == namespace) {
+  if (namespace == "") {
     alert(bundle.getString("newscript.nonamespace"));
     return false;
-  } else {
-    script.push("// @namespace      " + namespace);
   }
+  source.push("// @namespace      " + namespace);
 
   var descr = document.getElementById("descr").value;
-  if ("" != descr) {
-    script.push("// @description    " + descr);
-  }
+  if (descr != "")
+    source.push("// @description    " + descr);
 
   var includes = document.getElementById("includes").value;
-  if ("" != includes) {
+  if (includes != "") {
     includes = includes.match(/.+/g);
     includes = "// @include        " + includes.join("\n// @include        ");
-    script.push(includes);
+    source.push(includes);
   }
 
   var excludes = document.getElementById("excludes").value;
-  if ("" != excludes) {
+  if (excludes != "") {
     excludes = excludes.match(/.+/g);
     excludes = "// @exclude        " + excludes.join("\n// @exclude        ");
-    script.push(excludes);
+    source.push(excludes);
   }
 
-  script.push("// ==/UserScript==");
-
-  script = script.join("\n");
-
-  return script;
+  source.push("// ==/UserScript==");
+  return source.join("\n");
 }

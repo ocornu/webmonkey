@@ -108,30 +108,16 @@ WebmonkeyService.prototype = {
     if (contentLocation.scheme == "view-source") return ret;
 
     if (contentType == Ci.nsIContentPolicy.TYPE_DOCUMENT
-        && contentLocation.spec.match(/\.user\.js$/)
-        && !this._ignoreNextScript && !isTempScript(contentLocation)) {
+        && contentLocation.spec.match(/\.user\.js$/)) {
       var winWat = Cc["@mozilla.org/embedcomp/window-watcher;1"]
                    .getService(Ci.nsIWindowWatcher);
       if (winWat.activeWindow && winWat.activeWindow.GM_BrowserUI) {
-        winWat.activeWindow.GM_BrowserUI.startInstallScript(contentLocation);
+        winWat.activeWindow.GM_BrowserUI.downloadScript(contentLocation, true);
         ret = Ci.nsIContentPolicy.REJECT_REQUEST;
       }
     }
 
-    this._ignoreNextScript = false;
     return ret;
-
-    /* is URI a temporary script file? */
-    function isTempScript(uri) {
-      if (uri.scheme != "file") return false;
-      var file   = Cc["@mozilla.org/network/protocol;1?name=file"]
-                   .getService(Ci.nsIFileProtocolHandler)
-                   .getFileFromURLSpec(uri.spec);
-      var tmpDir = Cc["@mozilla.org/file/directory_service;1"]
-                   .getService(Ci.nsIProperties)
-                   .get("TmpD", Ci.nsILocalFile);
-      return file.parent.equals(tmpDir) && file.leafName != "newscript.user.js";
-    }
   },
 
   /**
@@ -153,21 +139,6 @@ WebmonkeyService.prototype = {
     if (!this._config)
       this._config = new Config();
     return this._config;
-  },
-
-  /**
-   * Do not install next script.
-   * @type  boolean
-   * @private
-   */
-  _ignoreNextScript: false,
-  /**
-   * Allow next script encountered to be ignored during the install process.
-   * @see ScriptDownloader#startDownload
-   */
-  ignoreNextScript: function() {
-    dump("ignoring next script...\n");
-    this._ignoreNextScript = true;
   },
 
   /**
@@ -247,6 +218,7 @@ var components = [WebmonkeyService];
 function NSGetModule(compMgr, fileSpec) {
   return XPCOMUtils.generateModule(components);
 }
+
 
 /**
  * Inject a script into a DOM window.
@@ -335,7 +307,7 @@ function inject(script, safeWin, gmBrowser, fbConsole) {
     var line = e.lineNumber;
     if (!line || line == 4294967295) { // lineNumber==maxint in edge cases
       if (!e.location || !e.location.lineNumber) {
-        GM_logError(e, 0, script.fileURL, 0);
+        GM_logError(e, 0, script._file.uri.spec, 0);
         return false;
       }
       // Sometimes the right one is in "location"
@@ -348,14 +320,14 @@ function inject(script, safeWin, gmBrowser, fbConsole) {
     for (var i in script.offsets) {
       end = script.offsets[i];
       if (line < end) {
-        uri = script.requires[i].fileURL;
+        uri = script.requires[i]._file.uri.spec;
         break;
       }
       start = end;
     }
     line -= start;
     if (!uri)
-      uri = script.fileURL;
+      uri = script._file.uri.spec;
     // log error
     GM_logError(e, 0, uri, line);
     return false;

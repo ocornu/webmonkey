@@ -5,8 +5,8 @@ var GMInstall = {
 
     this.htmlNs_ = "http://www.w3.org/1999/xhtml";
 
-    this.scriptDownloader_ = window.arguments[0];
-    this.script_ = this.scriptDownloader_.script;
+    this.gmui_ = window.arguments[0];
+    this.script_ = window.arguments[1];
 
     this.setupIncludes("includes", "includes-desc", this.script_.includes);
     this.setupIncludes("excludes", "excludes-desc", this.script_.excludes);
@@ -101,17 +101,17 @@ var GMInstall = {
   },
 
   onOK: function() {
-    this.scriptDownloader_.installScript();
+    this.gmui_.installScript(this.script_);
     window.setTimeout("window.close()", 0);
   },
 
   onCancel: function(){
-    this.scriptDownloader_.cleanupTempFiles();
+    this.script_._directory.remove(true);
     window.close();
   },
 
   onShowSource: function() {
-    this.scriptDownloader_.showScriptView();
+    this.gmui_.showScriptView(this.script_);
     window.setTimeout("window.close()", 0);
   }
 };

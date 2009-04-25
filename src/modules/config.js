@@ -80,7 +80,7 @@ Config.prototype = {
     var nodes = doc.evaluate("/UserScriptConfig/Script", doc, null, 0, null);
     this._scripts = [];
     for (var node; node = nodes.iterateNext();)
-      this._scripts.push(new Script(this).load(node));
+      this._scripts.push(Script.fromConfig(this, node));
   },
 
   _saveToXml: function() {
@@ -98,12 +98,6 @@ Config.prototype = {
     this._configFile.writeXML(doc);
   },
 
-  parse: function(source, uri) {
-    var script = new Script(this);
-    script.parse(source, uri);
-    return script;
-  },
-
   install: function(script) {
 //    GM_log("> Config.install");
 
@@ -112,17 +106,7 @@ Config.prototype = {
       this.uninstall(this._scripts[existingIndex], false);
     }
 
-    script._initFile(script._tempFile);
-    script._tempFile = null;
-
-    for (var i = 0; i < script.requires.length; i++) {
-      script.requires[i]._initFile();
-    }
-
-    for (var i = 0; i < script.resources.length; i++) {
-      script.resources[i]._initFile();
-    }
-
+    script.install(this);
     this._scripts.push(script);
     this._changed(script, "install", null);
 
@@ -134,7 +118,7 @@ Config.prototype = {
     this._scripts.splice(idx, 1);
     this._changed(script, "uninstall", null);
 
-    script._basedirFile.remove(true);
+    script._directory.remove(true);
 
     if (uninstallPrefs) {
       // Remove saved preferences

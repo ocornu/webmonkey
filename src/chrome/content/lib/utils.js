@@ -2,6 +2,7 @@ var GM_consoleService = Components.classes["@mozilla.org/consoleservice;1"]
                         .getService(Components.interfaces.nsIConsoleService);
 
 Components.utils.import("resource://webmonkey/prefmanager.js");
+Components.utils.import("resource://webmonkey/script.js");
 Components.utils.import("resource://webmonkey/file.js");
 
 /**

@@ -2,7 +2,9 @@
 // browser.xul. It also initializes the Greasemonkey singleton which contains
 // all the main injection logic, though that should probably be a proper XPCOM
 // service and wouldn't need to be initialized in that case.
-
+/**
+ * @namespace
+ */
 var GM_BrowserUI = new Object();
 
 /**
@@ -199,31 +201,47 @@ GM_BrowserUI.showInstallBanner = function(browser) {
 /**
  * Called from greasemonkey service when we should load a user script.
  */
-GM_BrowserUI.startInstallScript = function(uri, timer) {
-  if (!timer) {
-    // docs for nsicontentpolicy say we're not supposed to block, so short
-    // timer.
-    window.setTimeout(
-      function() { GM_BrowserUI.startInstallScript(uri, true); }, 0);
-
-    return;
-  }
-
-  this.scriptDownloader_ = new ScriptDownloader(window, uri, this.bundle);
-  this.scriptDownloader_.startInstall();
+GM_BrowserUI.downloadScript = function(/**nsIURI*/ uri, /**boolean*/ install) {
+  this.statusImage.src = "chrome://global/skin/throbber/Throbber-small.gif";
+  this.statusImage.style.opacity = "0.5";
+  this.statusImage.tooltipText = this.bundle.getString("tooltip.loading");
+  this.showStatus("Fetching user script", false);
+  Script.fromUri(uri,
+    function(script) {
+      GM_BrowserUI.refreshStatus();
+      GM_BrowserUI.hideStatusImmediately();
+      if (install)
+        GM_BrowserUI.showInstallDialog(script);
+      else
+        GM_BrowserUI.showScriptView(script);
+    },
+    function(source, status, statusText) {
+      window.alert("Could not download script:\n"
+                   + uri.spec + "\n\n"
+                   + "Error "+ status + " (" + statusText +")\n");
+    },
+    true);
 };
 
+GM_BrowserUI.showInstallDialog = function(script, timer) {
+  if (!timer) {
+    // otherwise, the status bar stays in the loading state.
+    window.setTimeout(GM_hitch(this, "showInstallDialog", script, true), 0);
+    return;
+  }
+  window.openDialog("chrome://webmonkey/content/install.xul", "",
+                    "chrome,centerscreen,modal,dialog,titlebar,resizable",
+                    this, script);
+};
 
 /**
  * Open the tab to show the contents of a script and display the banner to let
  * the user install it.
  */
-GM_BrowserUI.showScriptView = function(scriptDownloader) {
-  this.scriptDownloader_ = scriptDownloader;
-
-  var tab = this.tabBrowser.addTab(scriptDownloader.script.previewURL);
-  var browser = this.tabBrowser.getBrowserForTab(tab);
-
+GM_BrowserUI.showScriptView = function(script) {
+  var tab = this.tabBrowser.addTab(script.previewURL);
+  tab.script = script;
+//  var browser = this.tabBrowser.getBrowserForTab(tab);
   this.tabBrowser.selectedTab = tab;
 };
 
@@ -245,12 +263,29 @@ GM_BrowserUI.observe = function(subject, topic, data) {
  * Handles the install button getting clicked.
  */
 GM_BrowserUI.installCurrentScript = function() {
-  this.scriptDownloader_.installScript();
+  var tab = this.tabBrowser.selectedTab;
+  if (!tab.script) return;
+  this.installScript(tab.script);
+  tab.script = null;
 };
 
 GM_BrowserUI.installScript = function(script){
-  GM_getConfig().install(script);
-  this.showHorrayMessage(script.name);
+  this.statusImage.src = "chrome://global/skin/throbber/Throbber-small.gif";
+  this.statusImage.style.opacity = "0.5";
+//  this.statusImage.tooltipText = this.bundle.getString("tooltip.loading");
+  this.showStatus("Fetching script dependencies", false);
+  script.fetchDeps(
+    function(script) {
+      GM_BrowserUI.refreshStatus();
+      GM_BrowserUI.hideStatusImmediately();
+      GM_getConfig().install(script);
+      GM_BrowserUI.showHorrayMessage(script.name);
+    },
+    function(source, status, statusText) {
+      GM_BrowserUI.refreshStatus();
+      GM_BrowserUI.hideStatusImmediately();
+      alert("Error");
+    });
 };
 
 /**
@@ -632,16 +667,12 @@ GM_BrowserUI.showHorrayMessage = function(scriptName) {
 };
 
 GM_BrowserUI.installMenuItemClicked = function() {
-  GM_BrowserUI.startInstallScript(
-    gBrowser.currentURI
-  );
+  GM_BrowserUI.installCurrentScript();
 };
 
 GM_BrowserUI.viewContextItemClicked = function() {
   var uri = GM_BrowserUI.getUserScriptLinkUnderPointer();
-
-  this.scriptDownloader_ = new ScriptDownloader(window, uri, this.bundle);
-  this.scriptDownloader_.startViewScript();
+  this.downloadScript(uri, false);
 };
 
 GM_BrowserUI.manageMenuItemClicked = function() {
