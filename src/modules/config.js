@@ -127,6 +127,46 @@ Config.prototype = {
   },
 
   /**
+   * Get the configured text editor. If undefined, ask the user to pick one.
+   * @param aParentWindow   The parent window on behalf of which a file picker
+   *                        is open.
+   * @return {File}         The text editor File.
+   */
+  getEditor: function(/**nsIDOMWindow*/ aParentWindow) {
+    var path = GM_prefRoot.get("editor");
+    if (path) {
+      var editor = File.path(path, true);
+      if (editor.exists() && editor.isExecutable())
+        return editor;
+      GM_prefRoot.remove("editor");
+    }
+
+    // Ask the user to choose a new editor. Sometimes users get confused and
+    // pick a non-executable file, so we set this up in a loop so that if they do
+    // that we can give them an error and try again.
+    while (true) {
+      var bundle = Components.classes["@mozilla.org/intl/stringbundle;1"]
+                   .getService(Components.interfaces.nsIStringBundleService)
+                   .createBundle("chrome://webmonkey/locale/gm-browser.properties");
+      var nsIFilePicker = Components.interfaces.nsIFilePicker;
+      var filePicker = Components.classes["@mozilla.org/filepicker;1"]
+                                 .createInstance(nsIFilePicker);
+      filePicker.init(aParentWindow, bundle.GetStringFromName("editor.prompt"),
+                      nsIFilePicker.modeOpen);
+      if (filePicker.show() != nsIFilePicker.returnOK)
+        return null;
+      if (filePicker.file.isExecutable()) {
+        GM_prefRoot.set("editor", filePicker.file.path);
+        return new File(filePicker.file);
+      }
+      var prompt = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                   .getService(Components.interfaces.nsIPromptService)
+      prompt.alert(null, "Webmonkey alert",
+                   bundle.GetStringFromName("editor.please_pick_executable"));
+    }
+  },
+
+  /**
    * Moves an installed user script to a new position in the array of installed scripts.
    *
    * @param script      The script to be moved.

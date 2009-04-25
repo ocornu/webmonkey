@@ -124,71 +124,20 @@ function openInEditor(script) {
     .classes["@mozilla.org/intl/stringbundle;1"]
     .getService(Components.interfaces.nsIStringBundleService)
     .createBundle("chrome://webmonkey/locale/gm-browser.properties");
-  var editor = getEditor(stringBundle);
+  var editor = GM_getConfig().getEditor(window);
   if (!editor) {
     // The user did not choose an editor.
     return;
   }
 
   try {
-    launchApplicationWithDoc(editor, file);
+    launchApplicationWithDoc(editor._nsIFile, file);
   } catch (e) {
     // Something may be wrong with the editor the user selected. Remove so that
     // next time they can pick a different one.
     alert(stringBundle.GetStringFromName("editor.could_not_launch") + "\n" + e);
     GM_prefRoot.remove("editor");
     throw e;
-  }
-}
-
-function getEditor(stringBundle) {
-  var editorPath = GM_prefRoot.get("editor");
-
-  if (editorPath) {
-    GM_log("Found saved editor preference: " + editorPath);
-
-    var editor = Components.classes["@mozilla.org/file/local;1"]
-                 .createInstance(Components.interfaces.nsILocalFile);
-    editor.followLinks = true;
-    editor.initWithPath(editorPath);
-
-    // make sure the editor preference is still valid
-    if (editor.exists() && editor.isExecutable()) {
-      return editor;
-    } else {
-      GM_log("Editor preference either does not exist or is not executable");
-      GM_prefRoot.remove("editor");
-    }
-  }
-
-  // Ask the user to choose a new editor. Sometimes users get confused and
-  // pick a non-executable file, so we set this up in a loop so that if they do
-  // that we can give them an error and try again.
-  while (true) {
-    GM_log("Asking user to choose editor...");
-    var nsIFilePicker = Components.interfaces.nsIFilePicker;
-    var filePicker = Components.classes["@mozilla.org/filepicker;1"]
-                               .createInstance(nsIFilePicker);
-
-    filePicker.init(window, stringBundle.GetStringFromName("editor.prompt"),
-                    nsIFilePicker.modeOpen);
-    filePicker.appendFilters(nsIFilePicker.filterApplication);
-    filePicker.appendFilters(nsIFilePicker.filterAll);
-
-    if (filePicker.show() != nsIFilePicker.returnOK) {
-      // The user canceled, return null.
-      GM_log("User canceled file picker dialog");
-      return null;
-    }
-
-    GM_log("User selected: " + filePicker.file.path);
-
-    if (filePicker.file.exists() && filePicker.file.isExecutable()) {
-      GM_prefRoot.set("editor", filePicker.file.path);
-      return filePicker.file;
-    } else {
-      alert(stringBundle.GetStringFromName("editor.please_pick_executable"));
-    }
   }
 }
 
