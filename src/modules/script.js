@@ -197,10 +197,9 @@ Script.prototype = {
     return node;
   },
 
-  _parse: function(source, uri) {
-    this._downloadURL = uri ? uri.spec : null;
+  _parse: function(source) {
     this._enabled = true;
-    this._meta.parse(this, source, uri);
+    this._meta.parse(this, source);
   },
 
   /**
@@ -227,12 +226,11 @@ Script.prototype = {
 /**
  * Factory method to create a new {@link Script} instance from its source code.
  * @param aSource   The script source code.
- * @param [aUri]    The script's original URI.
  * @return {Script}
  */
-Script.fromSource = function(/**string*/ aSource, /**nsIURI*/ aUri) {
+Script.fromSource = function(/**string*/ aSource) {
   var script = new Script();
-  script._parse(aSource, aUri);
+  script._parse(aSource);
   // create temp script dir (max name length: 24)
   var name = toFilename(script.name, "script");
   if (name.length > 24) name = name.substring(0, 24);
@@ -276,7 +274,8 @@ Script.fromUri = function(/**nsIURI*/   aUri,
   file.load(aUri, function(channel, status, statusText) {
     if (status)
       return onError(null, status, statusText);
-    var script = Script.fromSource(file.readText(), aUri);
+    var script = Script.fromSource(file.readText());
+    script._downloadURL = aUri;
     file.remove();
     if (noDeps) return onSuccess(script);
     script.fetchDeps(onSuccess, onError);
@@ -391,7 +390,7 @@ Script.MetaData.prototype = {
     }
   },
 
-  parse: function(script, source, uri) {
+  parse: function(script, source) {
     var meta = false;
     for each (var line in source.match(/.+/g)) {
       if (!meta) {
@@ -417,12 +416,12 @@ Script.MetaData.prototype = {
           break;
         case "require":
           var require = new Script.Require(script);
-          require.parse(value, uri);
+          require.parse(value);
           this.require.push(require);
           break;
         case "resource":
           var resource = new Script.Resource(script);
-          resource.parse(value, uri);
+          resource.parse(value);
           this.resource.push(resource);
           break;
         }
@@ -507,8 +506,8 @@ Script.Require.prototype = {
     node.setAttribute("filename", this._filename);
   },
 
-  parse: function(/**string*/ value, /**nsIURI*/ baseUri) {
-    this._downloadURL = File.getUri(value, baseUri).spec;
+  parse: function(/**string*/ value) {
+    this._downloadURL = File.getUri(value).spec;
   },
 
   /**
@@ -649,14 +648,14 @@ Script.Resource.prototype = {
       node.setAttribute("charset", this._charset);
   },
 
-  parse: function(/**string*/ value, /**nsIURI*/ baseUri) {
+  parse: function(/**string*/ value) {
     var res = value.match(/(\S+)\s+(.*)/);
     if (res === null)   // NOTE: Unlocalized strings
       throw new Error("Invalid syntax for @resource declaration '" +
                       value + "'. Resources are declared like this: " +
                       "@resource <name> <URI>");
     this._name = res[1];
-    this._downloadURL = File.getUri(res[2], baseUri).spec;
+    this._downloadURL = File.getUri(res[2]).spec;
   }
 };
 
