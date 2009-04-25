@@ -223,6 +223,30 @@ File.prototype = {
     persist.saveChannel(channel, file);
   },
 
+  /**
+   * Execute this file.
+   * @param [aArguments]        The arguments to execute this file with.
+   * @param [aBlocking=false]   Whether to block until the process terminates.
+   * @returns {nsIProcess}      The corresponding process.
+   * @see <a href="https://developer.mozilla.org/en/NsIProcess" class="symbol">nsIProcess</a>
+   */
+  exec: function(/**string[]*/ aArguments, /**boolean*/ aBlocking) {
+    if (aArguments == undefined) aArguments = [];
+    var app = this._nsIFile;
+    var xulRuntime = Cc["@mozilla.org/xre/app-info;1"]
+                     .getService(Ci.nsIXULRuntime);
+    if (xulRuntime.OS == "Darwin") {
+      // on Mac, wrap with a call to "open".
+      aArguments = ["-a", app.path].concat(aArguments);
+      app = File.path("/usr/bin/open", true)._nsIFile;
+    }
+    var process = Cc["@mozilla.org/process/util;1"]
+                  .createInstance(Ci.nsIProcess);
+    process.init(app);
+    process.run(aBlocking ? true : false, aArguments, aArguments.length);
+    return process;
+  },
+
   /*
    * ============================ nsIFile interface ============================
    *
