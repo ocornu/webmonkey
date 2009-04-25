@@ -16,19 +16,18 @@ Components.utils.import("resource://webmonkey/file.js");
  * This constructor should not be used directly, use the static factory methods
  * instead.
  * @constructor
- * @param [config]  Associated Webmonkey configuration.
  *
  * @class   Implementation of a script.<br>
  *          Provides place-holders for its configuration and status, as well as
  *          facilities to manage its presence in the filesystem.
  */
-function Script(/**Config*/ config) {
+function Script() {
   /**
    * Associated Webmonkey configuration manager.
    * @type Config
    * @private
    */
-  this._config = config;
+  this._config = null;
   /**
    * Script meta-data.
    * @type Script.MetaData
@@ -252,7 +251,8 @@ Script.fromSource = function(/**string*/ aSource) {
  * @return {Script}
  */
 Script.fromConfig = function(/**Config*/ aConfig, /**nsiDOMNode*/ aNode) {
-  var script = new Script(aConfig);
+  var script = new Script();
+  script._config = aConfig;
   script._fromXml(aNode, aConfig._scriptDir);
   return script;
 };
