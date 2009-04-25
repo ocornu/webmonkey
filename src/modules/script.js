@@ -421,7 +421,7 @@ Script.MetaData.prototype = {
           break;
         case "resource":
           var resource = new Script.Resource(script);
-          resource.parse(value);
+          resource.parse(value, this.resource);
           this.resource.push(resource);
           break;
         }
@@ -430,15 +430,6 @@ Script.MetaData.prototype = {
           this.unwrap = true;
     }
     
-    // assert there is no duplicate resource name
-    var tmp = {};
-    for each (var resource in this.resource)
-      if (!tmp[resource._name])
-        tmp[resource._name] = true;
-      else
-        throw new Error("Duplicate resource name '" + resource._name + "' " +
-                        "detected. Each resource must have a unique name.");
-
     // if no meta info, default to reasonable values
     if (this.name == null) this.name = parseScriptName(uri);
     if (this.namespace == null) this.namespace = uri.host;
@@ -616,8 +607,6 @@ Script.Resource = function(/**Script*/ script, /**nsIDOMNode*/ node) {
 Script.Resource.prototype = {
   DEFAULT_FILENAME: "resource",
 
-  get name() { return this._name; },
-
   get dataContent() {
     var appSvc = Components.classes["@mozilla.org/appshell/appShellService;1"]
                  .getService(Components.interfaces.nsIAppShellService);
@@ -648,7 +637,7 @@ Script.Resource.prototype = {
       node.setAttribute("charset", this._charset);
   },
 
-  parse: function(/**string*/ value) {
+  parse: function(/**string*/ value, /**Script.Resource[]*/ existing) {
     var res = value.match(/(\S+)\s+(.*)/);
     if (res === null)   // NOTE: Unlocalized strings
       throw new Error("Invalid syntax for @resource declaration '" +
@@ -656,6 +645,11 @@ Script.Resource.prototype = {
                       "@resource <name> <URI>");
     this._name = res[1];
     this._downloadURL = File.getUri(res[2]).spec;
+    // assert there is no duplicate resource name
+    for each (var resource in existing)
+      if (resource.name == this._name)
+        throw new Error("Duplicate resource name '" + this._name + "' " +
+                        "detected. Each resource must have a unique name.");
   }
 };
 
