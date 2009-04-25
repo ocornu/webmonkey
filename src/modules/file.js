@@ -250,23 +250,9 @@ File.prototype = {
   /*
    * ============================ nsIFile interface ============================
    *
-   * These are shortcut methods to their nsIFile counterparts, with added
+   * These are shortcut methods to their nsIFile counterparts, with some added
    * sensible default values.
    */
-
-  /**
-   * Catch-all method masquerading <code>nsIFile</code> inheritance.
-   * In case of error, file name and line number will show in the command line.
-   */
-   __noSuchMethod__: function(id, args) {
-     try {
-       return this._nsIFile[id].apply(this._nsIFile, args);
-     } catch (e) {
-       var caller = Components.stack.caller;
-       dump(e.message+" ("+caller.filename+":"+caller.lineNumber+")\n");
-       throw e;
-     }
-   },
 
   /**
    * This file's path.
@@ -319,6 +305,20 @@ File.prototype = {
   remove: function(/**boolean*/ aRecursive) {
     if (typeof aRecursive != "boolean") aRecursive = false;
     this._nsIFile.remove(aRecursive);
+  },
+
+  /**
+   * Catch-all method masquerading <code>nsIFile</code> inheritance.
+   * In case of error, file name and line number will show in the command line.
+   */
+  __noSuchMethod__: function(id, args) {
+    try {
+      return this._nsIFile[id].apply(this._nsIFile, args);
+    } catch (e) {
+      var caller = Components.stack.caller;
+      dump(e.message+" ("+caller.filename+":"+caller.lineNumber+")\n");
+      throw e;
+    }
   }
 
 }
