@@ -164,7 +164,7 @@ Script.prototype = {
     this._config = aConfig;
     var dir = new File(aConfig._scriptDir);
     dir.name = this._filename.replace(/\.user\.js$/, "");
-    dir.createUnique(File.DIRECTORY);
+    dir.createUnique(File.DIR);
     dir.remove(true);
     // create script file
     this._directory.moveTo(dir._nsIFile.parent, dir.name);
@@ -235,7 +235,7 @@ Script.fromSource = function(/**string*/ aSource) {
   if (name.length > 24) name = name.substring(0, 24);
   script._directory = File.temp();
   script._directory.name = name;
-  script._directory.createUnique(File.DIRECTORY);
+  script._directory.createUnique(File.DIR);
   // create script file
   script._filename = name + ".user.js";
   var file = script._file;

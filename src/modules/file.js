@@ -247,7 +247,7 @@ File.prototype = {
   /**
    * Create a new file/directory.
    * @param [aType=File.FILE]
-   *        File type: {@link File.FILE} or {@link File.DIRECTORY}.
+   *        File type: {@link File.FILE} or {@link File.DIR}.
    * @param [aPermissions=0644|0755]
    *        Unix permissions (default is 0644 for a file, 0755 for a directory).
    * @see <a href="https://developer.mozilla.org/en/nsIFile/create" class="symbol">nsIFile.create</a>
@@ -255,7 +255,7 @@ File.prototype = {
   create: function(/**int*/ aType, /**int*/ aPermissions) {
     if (typeof aType != "number") aType = File.FILE;
     if (typeof aPermissions != "number")
-      aPermissions = aType==File.DIRECTORY ? 0755 : 0644;
+      aPermissions = aType==File.DIR ? 0755 : 0644;
     this._nsIFile.create(aType, aPermissions);
   },
 
@@ -263,7 +263,7 @@ File.prototype = {
    * Create a new <i>unique</i> file/directory. If the chosen name already
    * exists, variations will be tried until one proves unique.
    * @param [aType=File.FILE]
-   *        File type: {@link File.FILE} or {@link File.DIRECTORY}.
+   *        File type: {@link File.FILE} or {@link File.DIR}.
    * @param [aPermissions=0644|0755]
    *        Unix permissions (default is 0644 for a file, 0755 for a directory).
    * @returns {string}  The name of the created file.
@@ -272,7 +272,7 @@ File.prototype = {
   createUnique: function(/**int*/ aType, /**int*/ aPermissions) {
     if (typeof aType != "number") aType = File.FILE;
     if (typeof aPermissions != "number")
-      aPermissions = aType==File.DIRECTORY ? 0755 : 0644;
+      aPermissions = aType==File.DIR ? 0755 : 0644;
     this._nsIFile.createUnique(aType, aPermissions);
     return this.name;
   },
@@ -301,7 +301,7 @@ File.prototype = {
  * @type int
  * @constant
  */
-File.DIRECTORY = Ci.nsIFile.DIRECTORY_TYPE;
+File.DIR = Ci.nsIFile.DIRECTORY_TYPE;
 /**
  * File type.
  * @type int

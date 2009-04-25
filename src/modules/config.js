@@ -17,7 +17,7 @@ function Config() {
   this._scriptDir = File.profile();
   this._scriptDir.name = "scripts";
   if (!this._scriptDir.exists())
-    this._scriptDir.create(File.DIRECTORY);
+    this._scriptDir.create(File.DIR);
 
   this._configFile = new File(this._scriptDir);
   this._configFile.name = "config.xml";
