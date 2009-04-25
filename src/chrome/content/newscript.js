@@ -21,6 +21,8 @@ function doInstall() {
   var source = createScriptSource();
   if (!source) return false;
   var script = Script.fromSource(source);
+  // persist namespace value
+  GM_prefRoot.set("newscript_namespace", script.namespace);
 
   var config = GM_getConfig();
   // make sure entered details will not ruin an existing file
@@ -29,11 +31,7 @@ function doInstall() {
     if (!overwrite) return false;
   }
   config.install(script);
-  // persist namespace value
-  GM_prefRoot.set("newscript_namespace", script.namespace);
-
-  // and fire up the editor!
-  openInEditor(script);
+  script.edit(window);
   return true;
 }
 

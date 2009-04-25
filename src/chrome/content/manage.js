@@ -106,7 +106,7 @@ function updateDetails() {
 }
 
 function handleEditButton() {
-  openInEditor(selectedScript);
+  selectedScript.edit(window);
 }
 
 function handleUninstallButton() {

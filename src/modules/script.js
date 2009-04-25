@@ -151,7 +151,15 @@ Script.prototype = {
     return file;
   },
 
-  get editFile() { return this._file._nsIFile; },
+  /**
+   * Edit this script source code.
+   * @param aParentWindow  The parent window (in case editor picking is needed).
+   */
+  edit: function(/**nsIDOMWindow*/ aParentWindow) {
+    var editor = this._config.getEditor(aParentWindow);
+    if (!editor) return;
+    editor.exec([this._file.path]);
+  },
 
   get textContent() { return this._file.readText(); },
 

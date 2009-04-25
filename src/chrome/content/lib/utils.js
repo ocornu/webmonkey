@@ -118,50 +118,6 @@ function GM_openUserScriptManager() {
 // TODO: this stuff was copied wholesale and not refactored at all. Lots of
 // the UI and Config rely on it. Needs rethinking.
 
-function openInEditor(script) {
-  var file = script.editFile;
-  var stringBundle = Components
-    .classes["@mozilla.org/intl/stringbundle;1"]
-    .getService(Components.interfaces.nsIStringBundleService)
-    .createBundle("chrome://webmonkey/locale/gm-browser.properties");
-  var editor = GM_getConfig().getEditor(window);
-  if (!editor) {
-    // The user did not choose an editor.
-    return;
-  }
-
-  try {
-    launchApplicationWithDoc(editor._nsIFile, file);
-  } catch (e) {
-    // Something may be wrong with the editor the user selected. Remove so that
-    // next time they can pick a different one.
-    alert(stringBundle.GetStringFromName("editor.could_not_launch") + "\n" + e);
-    GM_prefRoot.remove("editor");
-    throw e;
-  }
-}
-
-function launchApplicationWithDoc(appFile, docFile) {
-  var args=[docFile.path];
-
-  // For the mac, wrap with a call to "open".
-  var xulRuntime = Components.classes["@mozilla.org/xre/app-info;1"]
-                             .getService(Components.interfaces.nsIXULRuntime);
-  if ("Darwin"==xulRuntime.OS) {
-    args=["-a", appFile.path, docFile.path]
-
-    appFile = Components.classes["@mozilla.org/file/local;1"]
-                        .createInstance(Components.interfaces.nsILocalFile);
-    appFile.followLinks = true;
-    appFile.initWithPath("/usr/bin/open");
-  }
-
-  var process = Components.classes["@mozilla.org/process/util;1"]
-                          .createInstance(Components.interfaces.nsIProcess);
-  process.init(appFile);
-  process.run(false, args, args.length);
-}
-
 function alert(msg) {
   Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
     .getService(Components.interfaces.nsIPromptService)

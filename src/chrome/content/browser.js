@@ -544,7 +544,7 @@ function GM_popupClicked(aEvent) {
     if (aEvent.button == 0) // left-click: toggle enabled state
       script.enabled =! script.enabled;
     else // right-click: open in editor
-      openInEditor(script);
+      script.edit(window);
 
     closeMenus(aEvent.target);
   }
