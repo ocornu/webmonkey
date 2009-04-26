@@ -33,10 +33,6 @@ function GM_apiLeakCheck(apiName) {
   return true;
 }
 
-function GM_isDef(thing) {
-  return typeof(thing) != "undefined";
-}
-
 function GM_getConfig() {
   return Components.classes["@webmonkey.info/webmonkey-service;1"]
          .getService().wrappedJSObject.config;
@@ -179,16 +175,6 @@ function GM_isGreasemonkeyable(url) {
           scheme == "ftp" || url.match(/^about:cache/)) &&
           !/hiddenWindow\.html$/.test(url);
 }
-
-/*
-function GM_isFileScheme(url) {
-  var scheme = Components.classes["@mozilla.org/network/io-service;1"]
-               .getService(Components.interfaces.nsIIOService)
-               .extractScheme(url);
-
-  return scheme == "file";
-}
-*/
 
 function GM_getEnabled() {
   return GM_prefRoot.get("enabled", true);
