@@ -19,12 +19,15 @@ const Ci = Components.interfaces;
  *
  * @class   Allow storage and retrieval of (key, value) pairs across tabs,
  *          windows and sessions.
- *          <ul><li>Keys must be of type <code>string</code>. They are organized
+ *          <ul>
+ *          <li>Keys must be of type <code>string</code>. They are organized
  *          in a tree fashion, the leaf/branch separator being a dot (see
  *          <code>about:config</code> for an example).</li>
  *          <li>Values must be of type <code>string</code>, <code>boolean</code>
  *          or integer (<i>i.e.</i> a <code>Number</code> without decimal part,
- *          between {@link #MIN_INT_32} and {@link #MAX_INT_32}).</li></ul>
+ *          between {@link PreferenceManager.MIN_INT_32} and
+ *          {@link PreferenceManager.MAX_INT_32}).</li>
+ *          </ul>
  *          This simple API sits on top of
  *          <a href="https://developer.mozilla.org/En/NsIPrefBranch">
  *          nsIPrefService</a>.
@@ -64,19 +67,6 @@ function PreferenceManager(origin) {
  * Prototype
  */
 PreferenceManager.prototype = {
-
-  /**
-   * Minimum integer value (32 bits).
-   * @type Number
-   * @final
-   */
-  MIN_INT_32: -0x80000000,
-  /**
-   * Maximum integer value (32 bits).
-   * @type Number
-   * @final
-   */
-  MAX_INT_32: 0x7FFFFFFF,
 
   /**
    * Create a new <code>PreferenceManager</code> instance responsible for a
@@ -132,7 +122,8 @@ PreferenceManager.prototype = {
    * @param value
    *        Value for this key. Must be of type <code>string</code>,
    *        <code>boolean</code> or integer (i.e. a <code>Number</code> without
-   *        decimal part, between {@link #MIN_INT_32} and {@link #MAX_INT_32}).
+   *        decimal part, between {@link PreferenceManager.MIN_INT_32} and
+   *        {@link PreferenceManager.MAX_INT_32}).
    * @return    The stored <code>value</code>.
    * @throws    <code>Error</code> if <code>value</code> has an invalid type.
    */
@@ -146,8 +137,8 @@ PreferenceManager.prototype = {
       ok = true;
       break;
     case "number":
-      if (value % 1 == 0 && value >= this.MIN_INT_32 &&
-          value <= this.MAX_INT_32)
+      if (value % 1 == 0 && value >= PreferenceManager.MIN_INT_32 &&
+          value <= PreferenceManager.MAX_INT_32)
         ok = true;
       break;
     }
@@ -250,6 +241,20 @@ PreferenceManager.prototype = {
   }
 
 };
+
+
+/**
+ * Minimum integer value (32 bits).
+ * @type int
+ * @constant
+ */
+PreferenceManager.MIN_INT_32: -0x80000000,
+/**
+ * Maximum integer value (32 bits).
+ * @type int
+ * @constant
+ */
+PreferenceManager.MAX_INT_32: 0x7FFFFFFF,
 
 
 /**
