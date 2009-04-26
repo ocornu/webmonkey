@@ -333,7 +333,8 @@
 							if (member.isInner) output += "&lt;inner&gt; ";
 							if (member.isStatic) output += "&lt;static&gt; ";
 						!}
-			  <if test="member.type"> {+new Link().toSymbol(member.type)+}</if>
+			  <if test="member.type"> {+new Link().toSymbol(member.type)+}
+	          <else/>void</if>
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont"><if test="member.isStatic && member.memberOf != '_global_'">{+member.memberOf+}.</if><b><if test="member.deprecated"><s></if>{+new Link().toSymbol(member.alias).withText(member.name)+}<if test="member.deprecated"></s></if></b>{+makeSignature(member.params)+}
@@ -668,7 +669,7 @@
 						if (member.isInner) output += "&lt;inner&gt; ";
 						if (member.isStatic) output += "&lt;static&gt; ";
 					!}
-					<if test="member.type"><span class="light">{+new Link().toSymbol(member.type)+}</span></if>
+					<span class="light"><if test="member.type">{+new Link().toSymbol(member.type)+}<else/>void</if></span>
 					<if test="member.isStatic && member.memberOf != '_global_'"><span class="light">{+member.memberOf+}.</span></if><b><if test="member.deprecated"><s></if>{+member.name+}<if test="member.deprecated"></s></if></b>{+makeSignature(member.params)+}
 
 					</div>
