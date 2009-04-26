@@ -123,11 +123,6 @@ function gmPrompt(msg, defVal, title) {
   }
 }
 
-function ge(id) {
-  return window.document.getElementById(id);
-}
-
-
 function dbg(o) {
   var s = "";
   var i = 0;

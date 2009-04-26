@@ -356,8 +356,8 @@ GM_BrowserUI.chromeUnload = function() {
  * to show our context items.
  */
 GM_BrowserUI.contextMenuShowing = function() {
-  var contextItem = ge("view-userscript");
-  var contextSep = ge("install-userscript-sep");
+  var contextItem = window.document.getElementById("view-userscript");
+  var contextSep  = window.document.getElementById("install-userscript-sep");
 
   var culprit = document.popupNode;
 
@@ -391,7 +391,7 @@ GM_BrowserUI.getUserScriptLinkUnderPointer = function() {
 };
 
 GM_BrowserUI.toolsMenuShowing = function() {
-  var installItem = ge("userscript-tools-install");
+  var installItem = window.document.getElementById("userscript-tools-install");
   var hidden = true;
 
   if (window._content && window._content.location &&
