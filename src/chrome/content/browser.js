@@ -676,10 +676,14 @@ GM_BrowserUI.viewContextItemClicked = function() {
 };
 
 GM_BrowserUI.manageMenuItemClicked = function() {
-   GM_openUserScriptManager();
+  var manage = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+               .getService(Components.interfaces.nsIWindowMediator)
+               .getMostRecentWindow("Greasemonkey:Manage");
+  if (manage) return manage.focus();
+  var win = (!window.opener || window.opener.closed) ? window : window.opener;
+  win.openDialog("chrome://webmonkey/content/manage.xul",
+                 "_blank", "resizable,dialog=no,centerscreen");
 };
-
-//loggify(GM_BrowserUI, "GM_BrowserUI");
 
 log("calling init...");
 GM_BrowserUI.init();

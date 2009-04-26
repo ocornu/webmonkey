@@ -97,20 +97,6 @@ function GM_log(message, force) {
   }
 }
 
-function GM_openUserScriptManager() {
-  var win = Components.classes["@mozilla.org/appshell/window-mediator;1"]
-                      .getService(Components.interfaces.nsIWindowMediator)
-                      .getMostRecentWindow("Greasemonkey:Manage");
-  if (win) {
-    win.focus();
-  } else {
-    var parentWindow = (!window.opener || window.opener.closed) ?
-      window : window.opener;
-    parentWindow.openDialog("chrome://webmonkey/content/manage.xul",
-      "_blank", "resizable,dialog=no,centerscreen");
-  }
-}
-
 // TODO: this stuff was copied wholesale and not refactored at all. Lots of
 // the UI and Config rely on it. Needs rethinking.
 
