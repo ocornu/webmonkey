@@ -368,13 +368,6 @@ File.temp = function() {
                   .get("TmpD", Ci.nsILocalFile));
 };
 
-
-/*
- * ============================== static methods ==============================
- *
- * Helper functions.
- */
-
 /**
  * Get a file from an arbitrary path.
  * @param aPath                 The target path on the local file system.  
@@ -389,6 +382,11 @@ File.path = function(/**string*/ aPath, /**boolean*/ aFollowLinks) {
 }
 
 
+/*
+ * ============================== static methods ==============================
+ */
+
+
 /**
  * Get a file's URI.
  * @param aTarget       The target file or path.
@@ -399,82 +397,6 @@ File.getUri = function(/**nsIFile|string*/ aTarget, /**nsIURI*/ aBase) {
   if (typeof aTarget == "string")
     return IO.newURI(aTarget, null, aBase);
   return IO.newFileURI(aTarget);
-}
-
-/**
- * Create a temporary file on the local file-system.
- * @param aFileName         Temporary file name.
- * @returns {nsILocalFile}  A temporary local file.
- * @deprecated  Static method deprecated in favor of the File object.
- */
-File.getTempFile = function(/**string*/ aFileName) {
-  var file = Cc["@mozilla.org/file/directory_service;1"]
-             .getService(Ci.nsIProperties)
-             .get("TmpD", Ci.nsILocalFile);
-  file.append(aFileName);
-  file.createUnique(File.FILE, 0640);
-  return file;
-}
-
-/**
- * Get binary file content.
- * @param aFile         The file to read from.
- * @returns {string}    The binary content of <code>aFile</code>.
- * @deprecated  Static method deprecated in favor of the File object.
- */
-File.getBinaryContent = function(/**nsIFile*/ aFile) {
-    var input  = IO.newChannelFromURI(File.getUri(aFile)).open();
-    var stream = Cc["@mozilla.org/binaryinputstream;1"]
-                 .createInstance(Ci.nsIBinaryInputStream);
-    stream.setInputStream(input);
-    var bytes = stream.readBytes(stream.available());
-    stream.close();
-    input.close();
-    return bytes;
-}
-
-/**
- * Get text file content.
- * @param aFile         The file to read from.
- * @param [aCharset]    The charset to use.
- * @returns {string}    The text content of <code>file</code>.
- * @deprecated  Static method deprecated in favor of the File object.
- */
-File.getTextContent = function(/**nsIFile*/ aFile, /**string*/ aCharset) {
-  // read content from file
-  var input  = IO.newChannelFromURI(File.getUri(aFile)).open();
-  var stream = Cc["@mozilla.org/scriptableinputstream;1"]
-               .getService(Ci.nsIScriptableInputStream);
-  stream.init(input);
-  var text = stream.read(input.available());
-  stream.close();
-
-  // convert to target charset
-  if(!aCharset) aCharset = "UTF-8";
-  // http://lxr.mozilla.org/mozilla/source/intl/uconv/idl/nsIScriptableUConv.idl
-  var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
-                  .createInstance(Ci.nsIScriptableUnicodeConverter);
-  converter.charset = aCharset;
-  try {
-    return converter.ConvertToUnicode(text);
-  } catch(e) {
-    // conversion failed, return content as-is
-    return text;
-  }
-}
-
-/**
- * Get an output stream to a file.
- * @param aFile     The target file.
- * @returns {nsIFileOutputStream}   An output stream to <code>file</code>.
- * @deprecated  Static method deprecated in favor of the File object.
- */
-File.getWriteStream = function(/**nsIFile*/ aFile) {
-  var stream = Cc["@mozilla.org/network/file-output-stream;1"]
-               .createInstance(Ci.nsIFileOutputStream);
-  stream.init(aFile, File.IO.WRONLY | File.IO.CREATE | File.IO.TRUNCATE,
-              420, -1);
-  return stream;
 }
 
 
