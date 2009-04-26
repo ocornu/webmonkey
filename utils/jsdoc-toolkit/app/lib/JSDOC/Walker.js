@@ -326,9 +326,7 @@ JSDOC.Walker.prototype.step = function() {
 				else LOG.warn("Mismatched } character. Can't parse code in file " + symbol.srcFile + ".");
 			}
 			// foo: x
-			// get x()
-			// set x()
-			else if (this.ts.look(1).is("COLON") || this.ts.look(-1).is("GET") || this.ts.look(-1).is("SET")) {
+			else if (this.ts.look(1).is("COLON")) {
 				name = (this.namescope.last().alias+"."+name).replace("#.", "#");;
 				
 				if (this.lastDoc) doc = this.lastDoc;
@@ -336,6 +334,19 @@ JSDOC.Walker.prototype.step = function() {
 				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
 				
 			
+				if (doc) JSDOC.Parser.addSymbol(symbol);
+			}
+			// get x()
+			// set x()
+			else if ((name==="get" || name==="set") && this.ts.look(1).is("NAME") && this.ts.look(2).is("LEFT_PAREN")) {
+				name = this.ts.look(1).data;
+				name = (this.namescope.last().alias+"."+name).replace("#.", "#");;
+
+				if (this.lastDoc) doc = this.lastDoc;
+
+				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
+
+
 				if (doc) JSDOC.Parser.addSymbol(symbol);
 			}
 			// foo(...)
