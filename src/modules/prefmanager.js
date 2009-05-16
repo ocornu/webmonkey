@@ -248,13 +248,13 @@ PreferenceManager.prototype = {
  * @type int
  * @constant
  */
-PreferenceManager.MIN_INT_32: -0x80000000,
+PreferenceManager.MIN_INT_32 = -0x80000000;
 /**
  * Maximum integer value (32 bits).
  * @type int
  * @constant
  */
-PreferenceManager.MAX_INT_32: 0x7FFFFFFF,
+PreferenceManager.MAX_INT_32 = 0x7FFFFFFF;
 
 
 /**
