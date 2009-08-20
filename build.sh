@@ -15,7 +15,7 @@ rm -rf build
 mkdir build
 cd src
 cp -r chrome.manifest install.rdf license.txt \
-	defaults components chrome \
+	defaults components chrome modules \
 	../build/
 cd ../build
 
