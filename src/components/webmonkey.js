@@ -250,7 +250,7 @@ function inject(script, safeWin, gmBrowser, fbConsole) {
   sandbox.XPathResult  = Ci.nsIDOMXPathResult;
   // add our own APIs
   var GM = sandbox.GM = {};
-  GM.addStyle            = function(css) { GM_addStyle(safeDoc, css) };
+  GM.addStyle            = function(css) { GM_addStyle(safeWin.document, css) };
   GM.log                 = GM_hitch(logger, "log");
   GM.setValue            = GM_hitch(storage, "setValue");
   GM.getValue            = GM_hitch(storage, "getValue");
