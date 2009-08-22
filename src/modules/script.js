@@ -143,7 +143,18 @@ Script.prototype = {
 
   get requires() { return this._meta.require.concat(); },
   get resources() { return this._meta.resource.concat(); },
-  get unwrap() { return this._meta.unwrap; },
+
+  /**
+   * JS source files for this script. 
+   * @type File[]
+   */
+  get sourceFiles() {
+    var files = [];
+    for each(var require in this._meta.require)
+      files.push(require._file);
+    files.push(this._file);
+    return files;
+  },
 
   get _file() {
     var file = new File(this._directory);
@@ -334,11 +345,6 @@ Script.MetaData = function() {
    * @type Script.Resource[]
    */
   this.resource = [];
-  /**
-   * <code>&#64;unwrap</code> this script before injection.
-   * @type boolean
-   */
-  this.unwrap = false;
 };
 
 Script.MetaData.prototype = {
@@ -359,9 +365,6 @@ Script.MetaData.prototype = {
         break;
       case "Resource":
         this.resource.push(new Script.Resource(script, childNode));
-        break;
-      case "Unwrap":
-        this.unwrap = true;
         break;
       }
   },
@@ -390,8 +393,6 @@ Script.MetaData.prototype = {
       resource.toXml(resourceNode);
       append(resourceNode);
     }
-    if (this.unwrap)
-      append(doc.createElement("Unwrap"));
     
     function append(childNode) {
       node.appendChild(doc.createTextNode("\n\t\t"));
@@ -434,9 +435,6 @@ Script.MetaData.prototype = {
           this.resource.push(resource);
           break;
         }
-      else              // plain @header
-        if (header == "unwrap")
-          this.unwrap = true;
     }
     
     // if no meta info, default to reasonable values

@@ -248,88 +248,39 @@ function inject(script, safeWin, gmBrowser, fbConsole) {
   sandbox.unsafeWindow = unsafeWin;
   sandbox.console      = console;
   sandbox.XPathResult  = Ci.nsIDOMXPathResult;
+  sandbox.importFunction(hasOwnProperty);
+  sandbox.importFunction(__lookupGetter__);
+  sandbox.importFunction(__lookupSetter__);
   // add our own APIs
-  var GM = sandbox.GM = {};
-  GM.addStyle            = function(css) { GM_addStyle(safeWin.document, css) };
-  GM.log                 = GM_hitch(logger, "log");
-  GM.setValue            = GM_hitch(storage, "setValue");
-  GM.getValue            = GM_hitch(storage, "getValue");
-  GM.deleteValue         = GM_hitch(storage, "deleteValue");
-  GM.listValues          = GM_hitch(storage, "listValues");
-  GM.getResourceURL      = GM_hitch(resources, "getResourceURL");
-  GM.getResourceText     = GM_hitch(resources, "getResourceText");
-  GM.xmlhttpRequest      = GM_hitch(xhr, "contentStartRequest");
-  GM.openInTab           = GM_hitch(gmBrowser, "openInTab");
-  GM.registerMenuCommand = GM_hitch(gmBrowser, "registerMenuCommand",
-                                    unsafeWin);
+  sandbox.GM_addStyle            = function(css) { GM_addStyle(safewin.document, css) };
+  sandbox.GM_log                 = GM_hitch(logger, "log");
+  sandbox.GM_getValue            = GM_hitch(storage, "getValue");
+  sandbox.GM_setValue            = GM_hitch(storage, "setValue");
+  sandbox.GM_deleteValue         = GM_hitch(storage, "deleteValue");
+  sandbox.GM_listValues          = GM_hitch(storage, "listValues");
+  sandbox.GM_openInTab           = GM_hitch(gmBrowser, "openInTab");
+  sandbox.GM_xmlhttpRequest      = GM_hitch(xhr, "contentStartRequest");
+  sandbox.GM_registerMenuCommand = GM_hitch(gmBrowser, "registerMenuCommand", unsafeWin);
+  sandbox.GM_getResourceText     = GM_hitch(resources, "getResourceText");
+  sandbox.GM_getResourceURL      = GM_hitch(resources, "getResourceURL");
   sandbox.__proto__ = safeWin;
 
-  // compile @requires
-  var requires = [];
-  var offsets = [];
-  var offset = 0;
-  for each(var req in script.requires) {
-    var contents = req.textContent;
-    var lineCount = contents.split("\n").length;
-    requires.push(contents);
-    offset += lineCount;
-    offsets.push(offset);
-  }
-  script.offsets = offsets;
-
-  // script source (error line-number calculations depend on these \n)
-  var source = "\n" + requires.join("\n") + "\n" +
-               script.textContent + "\n";
-  var api    = "for (var i in GM) eval('var GM_'+i+' = GM[i]');";
-  if (script.unwrap)
-    source = api+source;
-  else {
-    // move API inside script wrapper
-    api = "const GM = this.GM; delete this.GM; "+ api +"\
-           var window = this.window; delete this.window;\
-           var unsafeWindow = this.unsafeWindow; delete this.unsafeWindow;\
-           var document = this.document; delete this.document;\
-           var XPathResult = this.XPathResult; delete this.XPathResult;\
-           var console = this.console; delete this.console;";
-    // wrap script into an anonymous function
-    source = "(function(){"+ api+source +"})()";
-  }
-
-  // eval in sandbox
-  try {
-    // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=307984
-    var lineRef = new Error().lineNumber + 1;
-    Components.utils.evalInSandbox(source, sandbox);
-    return true;
-  } catch (e) {
-    // try to find the line of the actual error line
-    if (!e) return false;   // thrown null
-    var line = e.lineNumber;
-    if (!line || line == 4294967295) { // lineNumber==maxint in edge cases
-      if (!e.location || !e.location.lineNumber) {
-        GM_logError(e, 0, script._file.uri.spec, 0);
-        return false;
-      }
-      // Sometimes the right one is in "location"
-      line = e.location.lineNumber;
+  var jsVersion = "1.6";
+  for each(var source in script.sourceFiles)
+    try {
+      Components.utils.evalInSandbox(source.readText(), sandbox, jsVersion,
+                                     source.uri.spec, 1);
+    } catch (err) {
+      GM_logError(err, 0, err.fileName, err.lineNumber);
     }
-    // find problematic file
-    line -= lineRef;
-    var end, start = 1;
-    var uri   = null;
-    for (var i in script.offsets) {
-      end = script.offsets[i];
-      if (line < end) {
-        uri = script.requires[i]._file.uri.spec;
-        break;
-      }
-      start = end;
-    }
-    line -= start;
-    if (!uri)
-      uri = script._file.uri.spec;
-    // log error
-    GM_logError(e, 0, uri, line);
-    return false;
-  }
 }
+
+/*
+ * These functions are added to scripts sandboxes so that Firebug's DOM module
+ * can properly show the sandbox hierarchy.
+ */
+function hasOwnProperty(prop) {
+  return prop in this;
+}
+function __lookupGetter__() { return null; }
+function __lookupSetter__() { return null; }
