@@ -266,7 +266,7 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/Script.MetaData.html" class="symbol">Script.MetaData</a></b>()
+								<b><a href="../symbols/Script.MetaData.html" class="symbol">Script.MetaData</a></b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script)
 							</div>
 							<div class="description">Construct a new script meta-data object.</div>
 						</td>
@@ -302,11 +302,23 @@ ul.inheritsList
 				
 					<tr>
 						<td class="attributes">
+			   boolean
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont">
+							<b><a href="../symbols/Script.MetaData.html#enabled" class="symbol">enabled</a></b>
+							</div>
+							<div class="description">Enabled/disabled state.</div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">
 			   string[]
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							<b><a href="../symbols/Script.MetaData.html#exclude" class="symbol">exclude</a></b>
+							<b><a href="../symbols/Script.MetaData.html#excludes" class="symbol">excludes</a></b>
 							</div>
 							<div class="description">List of <code>&#64;exclude</code> URL masks.</div>
 						</td>
@@ -318,7 +330,7 @@ ul.inheritsList
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							<b><a href="../symbols/Script.MetaData.html#include" class="symbol">include</a></b>
+							<b><a href="../symbols/Script.MetaData.html#includes" class="symbol">includes</a></b>
 							</div>
 							<div class="description">List of <code>&#64;include</code> URL masks.</div>
 						</td>
@@ -354,7 +366,7 @@ ul.inheritsList
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							<b><a href="../symbols/Script.MetaData.html#require" class="symbol">require</a></b>
+							<b><a href="../symbols/Script.MetaData.html#requires" class="symbol">requires</a></b>
 							</div>
 							<div class="description">List of <code>&#64;require</code> items.</div>
 						</td>
@@ -366,7 +378,7 @@ ul.inheritsList
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							<b><a href="../symbols/Script.MetaData.html#resource" class="symbol">resource</a></b>
+							<b><a href="../symbols/Script.MetaData.html#resources" class="symbol">resources</a></b>
 							</div>
 							<div class="description">List of <code>&#64;resource</code> items.</div>
 						</td>
@@ -396,7 +408,29 @@ ul.inheritsList
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#fromXml" class="symbol">fromXml</a></b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script, <span class="light fixedFont">nsIDOMNode</span>&nbsp;node)
+							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#addExclude" class="symbol">addExclude</a></b>(<span class="light fixedFont">string</span>&nbsp;url)
+							</div>
+							<div class="description">Add an exclude mask.</div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">
+			  void
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#addInclude" class="symbol">addInclude</a></b>(<span class="light fixedFont">string</span>&nbsp;url)
+							</div>
+							<div class="description">Add an include mask.</div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">
+			  void
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#fromXml" class="symbol">fromXml</a></b>(<span class="light fixedFont">nsIDOMNode</span>&nbsp;node)
 							</div>
 							<div class="description"></div>
 						</td>
@@ -419,9 +453,31 @@ ul.inheritsList
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#parse" class="symbol">parse</a></b>(script, source, uri)
+							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#parse" class="symbol">parse</a></b>(source, uri)
 							</div>
 							<div class="description"></div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">
+			  void
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#removeExcludeAt" class="symbol">removeExcludeAt</a></b>(<span class="light fixedFont">int</span>&nbsp;index)
+							</div>
+							<div class="description">Remove an exclude mask.</div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">
+			  void
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#removeIncludeAt" class="symbol">removeIncludeAt</a></b>(<span class="light fixedFont">int</span>&nbsp;index)
+							</div>
+							<div class="description">Remove an include mask.</div>
 						</td>
 					</tr>
 				
@@ -459,7 +515,7 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>Script.MetaData</b>()
+						<b>Script.MetaData</b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script)
 				</div>
 				
 				<div class="description">
@@ -470,6 +526,18 @@ ul.inheritsList
 				
 				
 				
+					
+						<dl class="detailList">
+						<dt class="heading">Parameters:</dt>
+						
+							<dt>
+                <span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;&nbsp;
+                <span class="fixedFont">script</span>
+								
+							</dt>
+								<dd>Parent script.</dd>
+						
+						</dl>
 					
 					
 					
@@ -507,10 +575,30 @@ ul.inheritsList
 						
 					<hr />
 				
-					<a name="exclude"> </a>
+					<a name="enabled"> </a>
+					<div class="fixedFont">
+					<span class="light">boolean</span>
+					<b>enabled</b>
+
+					</div>
+					<div class="description">
+						Enabled/disabled state.
+						
+						
+					</div>
+
+					
+
+						
+						
+						
+						
+					<hr />
+				
+					<a name="excludes"> </a>
 					<div class="fixedFont">
 					<span class="light">string[]</span>
-					<b>exclude</b>
+					<b>excludes</b>
 
 					</div>
 					<div class="description">
@@ -527,10 +615,10 @@ ul.inheritsList
 						
 					<hr />
 				
-					<a name="include"> </a>
+					<a name="includes"> </a>
 					<div class="fixedFont">
 					<span class="light">string[]</span>
-					<b>include</b>
+					<b>includes</b>
 
 					</div>
 					<div class="description">
@@ -587,10 +675,10 @@ ul.inheritsList
 						
 					<hr />
 				
-					<a name="require"> </a>
+					<a name="requires"> </a>
 					<div class="fixedFont">
 					<span class="light"><a href="../symbols/Script.Require.html" class="symbol">Script.Require</a>[]</span>
-					<b>require</b>
+					<b>requires</b>
 
 					</div>
 					<div class="description">
@@ -607,10 +695,10 @@ ul.inheritsList
 						
 					<hr />
 				
-					<a name="resource"> </a>
+					<a name="resources"> </a>
 					<div class="fixedFont">
 					<span class="light"><a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a>[]</span>
-					<b>resource</b>
+					<b>resources</b>
 
 					</div>
 					<div class="description">
@@ -636,10 +724,80 @@ ul.inheritsList
 					Method Detail
 				</div>
 				
+					<a name="addExclude"> </a>
+					<div class="fixedFont">
+					<span class="light">void</span>
+					<b>addExclude</b>(<span class="light fixedFont">string</span>&nbsp;url)
+					
+					</div>
+					<div class="description">
+						Add an exclude mask.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+                  <span class="light fixedFont">string</span>&nbsp;&nbsp;
+                  <span class="fixedFont">url</span>
+									
+								</dt>
+								<dd>The URL exclude mask to add.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+					<hr />
+				
+					<a name="addInclude"> </a>
+					<div class="fixedFont">
+					<span class="light">void</span>
+					<b>addInclude</b>(<span class="light fixedFont">string</span>&nbsp;url)
+					
+					</div>
+					<div class="description">
+						Add an include mask.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+                  <span class="light fixedFont">string</span>&nbsp;&nbsp;
+                  <span class="fixedFont">url</span>
+									
+								</dt>
+								<dd>The URL include mask to add.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+					<hr />
+				
 					<a name="fromXml"> </a>
 					<div class="fixedFont">
 					<span class="light">void</span>
-					<b>fromXml</b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script, <span class="light fixedFont">nsIDOMNode</span>&nbsp;node)
+					<b>fromXml</b>(<span class="light fixedFont">nsIDOMNode</span>&nbsp;node)
 					
 					</div>
 					<div class="description">
@@ -654,13 +812,6 @@ ul.inheritsList
 						
 							<dl class="detailList">
 							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-                  <span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;&nbsp;
-                  <span class="fixedFont">script</span>
-									
-								</dt>
-								<dd></dd>
 							
 								<dt>
                   <span class="light fixedFont">nsIDOMNode</span>&nbsp;&nbsp;
@@ -736,7 +887,7 @@ ul.inheritsList
 					<a name="parse"> </a>
 					<div class="fixedFont">
 					<span class="light">void</span>
-					<b>parse</b>(script, source, uri)
+					<b>parse</b>(source, uri)
 					
 					</div>
 					<div class="description">
@@ -754,13 +905,6 @@ ul.inheritsList
 							
 								<dt>
                   
-                  <span class="fixedFont">script</span>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-                  
                   <span class="fixedFont">source</span>
 									
 								</dt>
@@ -772,6 +916,76 @@ ul.inheritsList
 									
 								</dt>
 								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+					<hr />
+				
+					<a name="removeExcludeAt"> </a>
+					<div class="fixedFont">
+					<span class="light">void</span>
+					<b>removeExcludeAt</b>(<span class="light fixedFont">int</span>&nbsp;index)
+					
+					</div>
+					<div class="description">
+						Remove an exclude mask.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+                  <span class="light fixedFont">int</span>&nbsp;&nbsp;
+                  <span class="fixedFont">index</span>
+									
+								</dt>
+								<dd>The index of the exclude mask to remove.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+					<hr />
+				
+					<a name="removeIncludeAt"> </a>
+					<div class="fixedFont">
+					<span class="light">void</span>
+					<b>removeIncludeAt</b>(<span class="light fixedFont">int</span>&nbsp;index)
+					
+					</div>
+					<div class="description">
+						Remove an include mask.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+                  <span class="light fixedFont">int</span>&nbsp;&nbsp;
+                  <span class="fixedFont">index</span>
+									
+								</dt>
+								<dd>The index of the include mask to remove.</dd>
 							
 							</dl>
 						
@@ -837,7 +1051,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Aug 24 2009 12:31:23 GMT+0200 (CEST)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Aug 24 2009 19:09:00 GMT+0200 (CEST)
 		</div>
 	</body>
 </html>

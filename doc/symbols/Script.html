@@ -270,7 +270,7 @@ ul.inheritsList
 							<div class="fixedFont">
 								<b><a href="../symbols/Script.html" class="symbol">Script</a></b>()
 							</div>
-							<div class="description">Construct a new script object.</div>
+							<div class="description">Construct a new script object (private use only).</div>
 						</td>
 					</tr>
 				</tbody>
@@ -279,6 +279,43 @@ ul.inheritsList
 
 <!-- ============================== properties summary ===================== -->
 		
+			
+			<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class Script.">
+				<caption>Field Summary</caption>
+				<thead>
+					<tr>
+						<th scope="col">Field Attributes</th>
+						<th scope="col">Field Name and Description</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+					<tr>
+						<td class="attributes">
+			   <a href="../symbols/File.html" class="symbol">File</a>
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont">
+							<b><a href="../symbols/Script.html#file" class="symbol">file</a></b>
+							</div>
+							<div class="description">This script source file.</div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">
+			   <a href="../symbols/Script.MetaData.html" class="symbol">Script.MetaData</a>
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont">
+							<b><a href="../symbols/Script.html#meta" class="symbol">meta</a></b>
+							</div>
+							<div class="description">Script meta-data.</div>
+						</td>
+					</tr>
+				
+				</tbody>
+			</table>
 			
 
 			
@@ -295,28 +332,6 @@ ul.inheritsList
 					</tr>
 				</thead>
 				<tbody>
-				
-					<tr>
-						<td class="attributes">
-			  void
-            </td>
-						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.html#addExclude" class="symbol">addExclude</a></b>(<span class="light fixedFont">string</span>&nbsp;url)
-							</div>
-							<div class="description">Add an exclude mask.</div>
-						</td>
-					</tr>
-				
-					<tr>
-						<td class="attributes">
-			  void
-            </td>
-						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.html#addInclude" class="symbol">addInclude</a></b>(<span class="light fixedFont">string</span>&nbsp;url)
-							</div>
-							<div class="description">Add an include mask.</div>
-						</td>
-					</tr>
 				
 					<tr>
 						<td class="attributes">
@@ -358,7 +373,7 @@ ul.inheritsList
 						<td class="nameDescription">
 							<div class="fixedFont"><b><a href="../symbols/Script.html#install" class="symbol">install</a></b>(<span class="light fixedFont"><a href="../symbols/Config.html" class="symbol">Config</a></span>&nbsp;aConfig)
 							</div>
-							<div class="description">Install a script.</div>
+							<div class="description">Install this script in the specified <a href="../symbols/Config.html" class="symbol">Config</a>.</div>
 						</td>
 					</tr>
 				
@@ -368,31 +383,9 @@ ul.inheritsList
             
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.html#matchesURL" class="symbol">matchesURL</a></b>(<span class="light fixedFont">string</span>&nbsp;url)
+							<div class="fixedFont"><b><a href="../symbols/Script.html#isRunnable" class="symbol">isRunnable</a></b>(<span class="light fixedFont">string</span>&nbsp;url)
 							</div>
-							<div class="description">Whether this script can run at a specified universal location.</div>
-						</td>
-					</tr>
-				
-					<tr>
-						<td class="attributes">
-			  void
-            </td>
-						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.html#removeExcludeAt" class="symbol">removeExcludeAt</a></b>(<span class="light fixedFont">int</span>&nbsp;index)
-							</div>
-							<div class="description">Remove an exclude mask.</div>
-						</td>
-					</tr>
-				
-					<tr>
-						<td class="attributes">
-			  void
-            </td>
-						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.html#removeIncludeAt" class="symbol">removeIncludeAt</a></b>(<span class="light fixedFont">int</span>&nbsp;index)
-							</div>
-							<div class="description">Remove an include mask.</div>
+							<div class="description">Whether this script may run at a specified URL.</div>
 						</td>
 					</tr>
 				
@@ -483,7 +476,7 @@ ul.inheritsList
 				</div>
 				
 				<div class="description">
-					Construct a new script object.<br>
+					Construct a new script object (private use only).<br>
 This constructor should not be used directly, use the static factory methods
 instead.
 					
@@ -505,82 +498,58 @@ instead.
 
 <!-- ============================== field details ========================== -->		
 			
+				<div class="sectionTitle">
+					Field Detail
+				</div>
+				
+					<a name="file"> </a>
+					<div class="fixedFont">
+					<span class="light"><a href="../symbols/File.html" class="symbol">File</a></span>
+					<b>file</b>
+
+					</div>
+					<div class="description">
+						This script source file.
+						
+						
+					</div>
+
+					
+
+						
+						
+						
+						
+					<hr />
+				
+					<a name="meta"> </a>
+					<div class="fixedFont">
+					<span class="light"><a href="../symbols/Script.MetaData.html" class="symbol">Script.MetaData</a></span>
+					<b>meta</b>
+
+					</div>
+					<div class="description">
+						Script meta-data.
+						
+						
+					</div>
+
+					
+
+						
+						
+						
+						
+					<hr />
+				
+				
+			
 
 <!-- ============================== method details ========================= -->		
 			
 				<div class="sectionTitle">
 					Method Detail
 				</div>
-				
-					<a name="addExclude"> </a>
-					<div class="fixedFont">
-					<span class="light">void</span>
-					<b>addExclude</b>(<span class="light fixedFont">string</span>&nbsp;url)
-					
-					</div>
-					<div class="description">
-						Add an exclude mask.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-                  <span class="light fixedFont">string</span>&nbsp;&nbsp;
-                  <span class="fixedFont">url</span>
-									
-								</dt>
-								<dd>The URL exclude mask to add.</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-					<hr />
-				
-					<a name="addInclude"> </a>
-					<div class="fixedFont">
-					<span class="light">void</span>
-					<b>addInclude</b>(<span class="light fixedFont">string</span>&nbsp;url)
-					
-					</div>
-					<div class="description">
-						Add an include mask.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-                  <span class="light fixedFont">string</span>&nbsp;&nbsp;
-                  <span class="fixedFont">url</span>
-									
-								</dt>
-								<dd>The URL include mask to add.</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-					<hr />
 				
 					<a name="edit"> </a>
 					<div class="fixedFont">
@@ -724,7 +693,7 @@ remaining dependencies as <code>fetchDeps</code> is recursively called.
 					
 					</div>
 					<div class="description">
-						Install a script.<br>
+						Install this script in the specified <a href="../symbols/Config.html" class="symbol">Config</a>.<br>
 Moves its directory from the temp folder to the scripts folder.
 						
 						
@@ -753,16 +722,15 @@ Moves its directory from the temp folder to the scripts folder.
 						
 					<hr />
 				
-					<a name="matchesURL"> </a>
+					<a name="isRunnable"> </a>
 					<div class="fixedFont">
 					<span class="light">boolean</span>
-					<b>matchesURL</b>(<span class="light fixedFont">string</span>&nbsp;url)
+					<b>isRunnable</b>(<span class="light fixedFont">string</span>&nbsp;url)
 					
 					</div>
 					<div class="description">
-						Whether this script can run at a specified universal location.
-<code>url</code> is checked against its sets of <a href="#_includes" class="symbol">_includes</a> and
-<a href="#_excludes" class="symbol">_excludes</a>.
+						Whether this script may run at a specified URL.
+<code>url</code> is checked against the script sets of includes/excludes.
 						
 						
 					</div>
@@ -796,76 +764,6 @@ Moves its directory from the temp folder to the scripts folder.
                 </dd>
 							
 							</dl>
-						
-						
-						
-					<hr />
-				
-					<a name="removeExcludeAt"> </a>
-					<div class="fixedFont">
-					<span class="light">void</span>
-					<b>removeExcludeAt</b>(<span class="light fixedFont">int</span>&nbsp;index)
-					
-					</div>
-					<div class="description">
-						Remove an exclude mask.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-                  <span class="light fixedFont">int</span>&nbsp;&nbsp;
-                  <span class="fixedFont">index</span>
-									
-								</dt>
-								<dd>The index of the exclude mask to remove.</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-					<hr />
-				
-					<a name="removeIncludeAt"> </a>
-					<div class="fixedFont">
-					<span class="light">void</span>
-					<b>removeIncludeAt</b>(<span class="light fixedFont">int</span>&nbsp;index)
-					
-					</div>
-					<div class="description">
-						Remove an include mask.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-                  <span class="light fixedFont">int</span>&nbsp;&nbsp;
-                  <span class="fixedFont">index</span>
-									
-								</dt>
-								<dd>The index of the include mask to remove.</dd>
-							
-							</dl>
-						
-						
-						
 						
 						
 						
@@ -1089,7 +987,7 @@ Moves its directory from the temp folder to the scripts folder.
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Aug 24 2009 12:31:23 GMT+0200 (CEST)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Aug 24 2009 19:09:00 GMT+0200 (CEST)
 		</div>
 	</body>
 </html>
