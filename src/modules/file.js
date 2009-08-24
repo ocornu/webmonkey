@@ -408,7 +408,6 @@ File.getUri = function(/**nsIFile|string*/ aTarget, /**nsIURI*/ aBase) {
 /**
  * @namespace   File input/output flags.<br>
  *              See: <a href="https://developer.mozilla.org/en/PR_Open#Parameters">MDC documentation</a>.
- * @private
  */
 File.IO = {};
 /**
