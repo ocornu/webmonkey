@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - Script.Resource</title>
+		<title>JsDoc Reference - File.IO</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -237,26 +237,25 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class Script.Resource
+				Namespace File.IO
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
 			<p class="description">
-				<br />Extends
-					<a href="../symbols/Script.Require.html" class="symbol">Script.Require</a>.<br />
 				
 			
-				Implementation of some <code>&#64;resource</code> functionalities.
+				File input/output flags.<br>
+             See: <a href="https://developer.mozilla.org/en/PR_Open#Parameters">MDC documentation</a>.
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_script.js.html">script.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_file.js.html">file.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class Script.Resource.">
-				<caption>Class Summary</caption>
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class File.IO.">
+				<caption>Namespace Summary</caption>
 				<thead>
 					<tr>
 						<th scope="col">Constructor Attributes</th>
@@ -268,9 +267,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a></b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script, [<span class="light fixedFont">nsIDOMNode</span>&nbsp;node])
+								<b><a href="../symbols/File.IO.html" class="symbol">File.IO</a></b>
 							</div>
-							<div class="description">Construct a new resource object.</div>
+							<div class="description"></div>
 						</td>
 					</tr>
 				</tbody>
@@ -282,60 +281,102 @@ ul.inheritsList
 			
 
 			
-			<dl class="inheritsList">
-			
-			</dl>
-			
 
 <!-- ============================== methods summary ======================== -->
 			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class Script.Resource.">
-				<caption>Method Summary</caption>
-				<thead>
-					<tr>
-						<th scope="col">Method Attributes</th>
-						<th scope="col">Method Name and Description</th>
-					</tr>
-				</thead>
-				<tbody>
-				
-					<tr>
-						<td class="attributes">
-			  void
-            </td>
-						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Resource.html#parse" class="symbol">parse</a></b>(<span class="light fixedFont">string</span>&nbsp;value, <span class="light fixedFont">nsIURI</span>&nbsp;baseUri)
-							</div>
-							<div class="description"></div>
-						</td>
-					</tr>
-				
-					<tr>
-						<td class="attributes">
-			  void
-            </td>
-						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Resource.html#toXml" class="symbol">toXml</a></b>(<span class="light fixedFont">nsIDOMNode</span>&nbsp;node)
-							</div>
-							<div class="description"></div>
-						</td>
-					</tr>
-				
-				</tbody>
-			</table>
-			
 
-			
-			<dl class="inheritsList">
-			<dt>Methods borrowed from class <a href="../symbols/Script.Require.html" class="symbol">Script.Require</a>: </dt><dd><a href="../symbols/Script.Require.html#fetch" class="symbol">fetch</a></dd>
-			</dl>
 			
 
 <!-- ============================== events summary ======================== -->
 			
 
 <!-- ========================= static properties summary ===================== -->
+			
+			<table class="summaryTable" cellspacing="0" summary="A summary of the static fields documented in the class File.IO.">
+				<caption>Static Field Summary</caption>
+				<thead>
+					<tr>
+						<th scope="col">Field Attributes</th>
+						<th scope="col">Field Name and Description</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+					<tr>
+						<td class="attributes">&lt;static&gt; &lt;constant&gt; 
+			   int
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont">
+							File.IO.<b><a href="../symbols/File.IO.html#.APPEND" class="symbol">APPEND</a></b>
+							</div>
+							<div class="description">Append to end of file.</div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">&lt;static&gt; &lt;constant&gt; 
+			   int
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont">
+							File.IO.<b><a href="../symbols/File.IO.html#.CREATE" class="symbol">CREATE</a></b>
+							</div>
+							<div class="description">Create file if needed.</div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">&lt;static&gt; &lt;constant&gt; 
+			   int
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont">
+							File.IO.<b><a href="../symbols/File.IO.html#.RDONLY" class="symbol">RDONLY</a></b>
+							</div>
+							<div class="description">Open for reading only.</div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">&lt;static&gt; &lt;constant&gt; 
+			   int
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont">
+							File.IO.<b><a href="../symbols/File.IO.html#.RDWR" class="symbol">RDWR</a></b>
+							</div>
+							<div class="description">Open for reading and writing.</div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">&lt;static&gt; &lt;constant&gt; 
+			   int
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont">
+							File.IO.<b><a href="../symbols/File.IO.html#.TRUNCATE" class="symbol">TRUNCATE</a></b>
+							</div>
+							<div class="description">Reset file size to zero.</div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">&lt;static&gt; &lt;constant&gt; 
+			   int
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont">
+							File.IO.<b><a href="../symbols/File.IO.html#.WRONLY" class="symbol">WRONLY</a></b>
+							</div>
+							<div class="description">Open for writing only.</div>
+						</td>
+					</tr>
+				
+				</tbody>
+			</table>
 			
 
 <!-- ====================== static methods summary ======================== -->
@@ -345,40 +386,21 @@ ul.inheritsList
 			
 			<div class="details"><a name="constructor"> </a>
 				<div class="sectionTitle">
-					Class Detail
+					Namespace Detail
 				</div>
 				
 				<div class="fixedFont">
-						<b>Script.Resource</b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script, [<span class="light fixedFont">nsIDOMNode</span>&nbsp;node])
+						<b>File.IO</b>
 				</div>
 				
 				<div class="description">
-					Construct a new resource object.
+					
 					
 				</div>
 				
 				
 				
 				
-					
-						<dl class="detailList">
-						<dt class="heading">Parameters:</dt>
-						
-							<dt>
-                <span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;&nbsp;
-                <span class="fixedFont">script</span>
-								
-							</dt>
-								<dd>Parent script.</dd>
-						
-							<dt>
-                <span class="light fixedFont">nsIDOMNode</span>&nbsp;&nbsp;
-                <span class="fixedFont">node</span>
-								&nbsp;&nbsp;<i>Optional</i>
-							</dt>
-								<dd>XML node from config file.</dd>
-						
-						</dl>
 					
 					
 					
@@ -392,91 +414,140 @@ ul.inheritsList
 
 <!-- ============================== field details ========================== -->		
 			
-
-<!-- ============================== method details ========================= -->		
-			
 				<div class="sectionTitle">
-					Method Detail
+					Field Detail
 				</div>
 				
-					<a name="parse"> </a>
-					<div class="fixedFont">
-					<span class="light">void</span>
-					<b>parse</b>(<span class="light fixedFont">string</span>&nbsp;value, <span class="light fixedFont">nsIURI</span>&nbsp;baseUri)
+				
+					<a name=".APPEND"> </a>
+					<div class="fixedFont">&lt;static&gt; &lt;constant&gt; 
+					
+					<span class="light">int</span>
+					<span class="light">File.IO.</span><b>APPEND</b>
 					
 					</div>
 					<div class="description">
-						
+						Append to end of file.
 						
 						
 					</div>
 					
 					
-					
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-                  <span class="light fixedFont">string</span>&nbsp;&nbsp;
-                  <span class="fixedFont">value</span>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-                  <span class="light fixedFont">nsIURI</span>&nbsp;&nbsp;
-                  <span class="fixedFont">baseUri</span>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
+
 						
 						
 						
 						
 					<hr />
 				
-					<a name="toXml"> </a>
-					<div class="fixedFont">
-					<span class="light">void</span>
-					<b>toXml</b>(<span class="light fixedFont">nsIDOMNode</span>&nbsp;node)
+					<a name=".CREATE"> </a>
+					<div class="fixedFont">&lt;static&gt; &lt;constant&gt; 
+					
+					<span class="light">int</span>
+					<span class="light">File.IO.</span><b>CREATE</b>
 					
 					</div>
 					<div class="description">
-						
+						Create file if needed.
 						
 						
 					</div>
 					
 					
-					
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-                  <span class="light fixedFont">nsIDOMNode</span>&nbsp;&nbsp;
-                  <span class="fixedFont">node</span>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
+
 						
 						
 						
 						
 					<hr />
 				
+					<a name=".RDONLY"> </a>
+					<div class="fixedFont">&lt;static&gt; &lt;constant&gt; 
+					
+					<span class="light">int</span>
+					<span class="light">File.IO.</span><b>RDONLY</b>
+					
+					</div>
+					<div class="description">
+						Open for reading only.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+					<hr />
 				
+					<a name=".RDWR"> </a>
+					<div class="fixedFont">&lt;static&gt; &lt;constant&gt; 
+					
+					<span class="light">int</span>
+					<span class="light">File.IO.</span><b>RDWR</b>
+					
+					</div>
+					<div class="description">
+						Open for reading and writing.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+					<hr />
+				
+					<a name=".TRUNCATE"> </a>
+					<div class="fixedFont">&lt;static&gt; &lt;constant&gt; 
+					
+					<span class="light">int</span>
+					<span class="light">File.IO.</span><b>TRUNCATE</b>
+					
+					</div>
+					<div class="description">
+						Reset file size to zero.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+					<hr />
+				
+					<a name=".WRONLY"> </a>
+					<div class="fixedFont">&lt;static&gt; &lt;constant&gt; 
+					
+					<span class="light">int</span>
+					<span class="light">File.IO.</span><b>WRONLY</b>
+					
+					</div>
+					<div class="description">
+						Open for writing only.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+					<hr />
+				
+			
+
+<!-- ============================== method details ========================= -->		
 			
 			
 <!-- ============================== event details ========================= -->		
@@ -489,7 +560,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Aug 24 2009 12:31:23 GMT+0200 (CEST)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Aug 24 2009 12:31:22 GMT+0200 (CEST)
 		</div>
 	</body>
 </html>

@@ -415,43 +415,42 @@
 <span class='line'>408</span> </span><span class="COMM">/**
 <span class='line'>409</span>  * @namespace   File input/output flags.&lt;br>
 <span class='line'>410</span>  *              See: &lt;a href="https://developer.mozilla.org/en/PR_Open#Parameters">MDC documentation&lt;/a>.
-<span class='line'>411</span>  * @private
-<span class='line'>412</span>  */</span><span class="WHIT">
-<span class='line'>413</span> </span><span class="NAME">File.IO</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>414</span> </span><span class="COMM">/**
-<span class='line'>415</span>  * Open for reading only.
-<span class='line'>416</span>  * @type int
-<span class='line'>417</span>  * @constant
-<span class='line'>418</span>  */</span><span class="WHIT">
-<span class='line'>419</span> </span><span class="NAME">File.IO.RDONLY</span><span class="WHIT">      </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0x01</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>420</span> </span><span class="COMM">/**
-<span class='line'>421</span>  * Open for writing only.
-<span class='line'>422</span>  * @type int
-<span class='line'>423</span>  * @constant
-<span class='line'>424</span>  */</span><span class="WHIT">
-<span class='line'>425</span> </span><span class="NAME">File.IO.WRONLY</span><span class="WHIT">      </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0x02</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>426</span> </span><span class="COMM">/**
-<span class='line'>427</span>  * Open for reading and writing.
-<span class='line'>428</span>  * @type int
-<span class='line'>429</span>  * @constant
-<span class='line'>430</span>  */</span><span class="WHIT">
-<span class='line'>431</span> </span><span class="NAME">File.IO.RDWR</span><span class="WHIT">        </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0x04</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>432</span> </span><span class="COMM">/**
-<span class='line'>433</span>  * Create file if needed.
-<span class='line'>434</span>  * @type int
-<span class='line'>435</span>  * @constant
-<span class='line'>436</span>  */</span><span class="WHIT">
-<span class='line'>437</span> </span><span class="NAME">File.IO.CREATE</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0x08</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>438</span> </span><span class="COMM">/**
-<span class='line'>439</span>  * Append to end of file.
-<span class='line'>440</span>  * @type int
-<span class='line'>441</span>  * @constant
-<span class='line'>442</span>  */</span><span class="WHIT">
-<span class='line'>443</span> </span><span class="NAME">File.IO.APPEND</span><span class="WHIT">      </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0x10</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>444</span> </span><span class="COMM">/**
-<span class='line'>445</span>  * Reset file size to zero.
-<span class='line'>446</span>  * @type int
-<span class='line'>447</span>  * @constant
-<span class='line'>448</span>  */</span><span class="WHIT">
-<span class='line'>449</span> </span><span class="NAME">File.IO.TRUNCATE</span><span class="WHIT">    </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0x20</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>450</span> </span></pre></body></html>
+<span class='line'>411</span>  */</span><span class="WHIT">
+<span class='line'>412</span> </span><span class="NAME">File.IO</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>413</span> </span><span class="COMM">/**
+<span class='line'>414</span>  * Open for reading only.
+<span class='line'>415</span>  * @type int
+<span class='line'>416</span>  * @constant
+<span class='line'>417</span>  */</span><span class="WHIT">
+<span class='line'>418</span> </span><span class="NAME">File.IO.RDONLY</span><span class="WHIT">      </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0x01</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>419</span> </span><span class="COMM">/**
+<span class='line'>420</span>  * Open for writing only.
+<span class='line'>421</span>  * @type int
+<span class='line'>422</span>  * @constant
+<span class='line'>423</span>  */</span><span class="WHIT">
+<span class='line'>424</span> </span><span class="NAME">File.IO.WRONLY</span><span class="WHIT">      </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0x02</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>425</span> </span><span class="COMM">/**
+<span class='line'>426</span>  * Open for reading and writing.
+<span class='line'>427</span>  * @type int
+<span class='line'>428</span>  * @constant
+<span class='line'>429</span>  */</span><span class="WHIT">
+<span class='line'>430</span> </span><span class="NAME">File.IO.RDWR</span><span class="WHIT">        </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0x04</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>431</span> </span><span class="COMM">/**
+<span class='line'>432</span>  * Create file if needed.
+<span class='line'>433</span>  * @type int
+<span class='line'>434</span>  * @constant
+<span class='line'>435</span>  */</span><span class="WHIT">
+<span class='line'>436</span> </span><span class="NAME">File.IO.CREATE</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0x08</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>437</span> </span><span class="COMM">/**
+<span class='line'>438</span>  * Append to end of file.
+<span class='line'>439</span>  * @type int
+<span class='line'>440</span>  * @constant
+<span class='line'>441</span>  */</span><span class="WHIT">
+<span class='line'>442</span> </span><span class="NAME">File.IO.APPEND</span><span class="WHIT">      </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0x10</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>443</span> </span><span class="COMM">/**
+<span class='line'>444</span>  * Reset file size to zero.
+<span class='line'>445</span>  * @type int
+<span class='line'>446</span>  * @constant
+<span class='line'>447</span>  */</span><span class="WHIT">
+<span class='line'>448</span> </span><span class="NAME">File.IO.TRUNCATE</span><span class="WHIT">    </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0x20</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>449</span> </span></pre></body></html>

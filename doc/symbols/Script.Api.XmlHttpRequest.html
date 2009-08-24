@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - Script.Resource</title>
+		<title>JsDoc Reference - Script.Api.XmlHttpRequest</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -237,16 +237,14 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class Script.Resource
+				Class Script.Api.XmlHttpRequest
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
 			<p class="description">
-				<br />Extends
-					<a href="../symbols/Script.Require.html" class="symbol">Script.Require</a>.<br />
 				
 			
-				Implementation of some <code>&#64;resource</code> functionalities.
+				Implementation of the GM_xmlhttpRequest logic.
 				
 				
 					<br /><i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_script.js.html">script.js</a>.
@@ -255,7 +253,7 @@ ul.inheritsList
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class Script.Resource.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class Script.Api.XmlHttpRequest.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -268,9 +266,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a></b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script, [<span class="light fixedFont">nsIDOMNode</span>&nbsp;node])
+								<b><a href="../symbols/Script.Api.XmlHttpRequest.html" class="symbol">Script.Api.XmlHttpRequest</a></b>(<span class="light fixedFont">nsIDOMWindow</span>&nbsp;unsafeWin)
 							</div>
-							<div class="description">Construct a new resource object.</div>
+							<div class="description">Construct a new XMLHttpRequest object.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -282,15 +280,11 @@ ul.inheritsList
 			
 
 			
-			<dl class="inheritsList">
-			
-			</dl>
-			
 
 <!-- ============================== methods summary ======================== -->
 			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class Script.Resource.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class Script.Api.XmlHttpRequest.">
 				<caption>Method Summary</caption>
 				<thead>
 					<tr>
@@ -305,18 +299,7 @@ ul.inheritsList
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Resource.html#parse" class="symbol">parse</a></b>(<span class="light fixedFont">string</span>&nbsp;value, <span class="light fixedFont">nsIURI</span>&nbsp;baseUri)
-							</div>
-							<div class="description"></div>
-						</td>
-					</tr>
-				
-					<tr>
-						<td class="attributes">
-			  void
-            </td>
-						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Resource.html#toXml" class="symbol">toXml</a></b>(<span class="light fixedFont">nsIDOMNode</span>&nbsp;node)
+							<div class="fixedFont"><b><a href="../symbols/Script.Api.XmlHttpRequest.html#contentStartRequest" class="symbol">contentStartRequest</a></b>(details)
 							</div>
 							<div class="description"></div>
 						</td>
@@ -326,10 +309,6 @@ ul.inheritsList
 			</table>
 			
 
-			
-			<dl class="inheritsList">
-			<dt>Methods borrowed from class <a href="../symbols/Script.Require.html" class="symbol">Script.Require</a>: </dt><dd><a href="../symbols/Script.Require.html#fetch" class="symbol">fetch</a></dd>
-			</dl>
 			
 
 <!-- ============================== events summary ======================== -->
@@ -349,11 +328,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>Script.Resource</b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script, [<span class="light fixedFont">nsIDOMNode</span>&nbsp;node])
+						<b>Script.Api.XmlHttpRequest</b>(<span class="light fixedFont">nsIDOMWindow</span>&nbsp;unsafeWin)
 				</div>
 				
 				<div class="description">
-					Construct a new resource object.
+					Construct a new XMLHttpRequest object.
 					
 				</div>
 				
@@ -365,18 +344,11 @@ ul.inheritsList
 						<dt class="heading">Parameters:</dt>
 						
 							<dt>
-                <span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;&nbsp;
-                <span class="fixedFont">script</span>
+                <span class="light fixedFont">nsIDOMWindow</span>&nbsp;&nbsp;
+                <span class="fixedFont">unsafeWin</span>
 								
 							</dt>
-								<dd>Parent script.</dd>
-						
-							<dt>
-                <span class="light fixedFont">nsIDOMNode</span>&nbsp;&nbsp;
-                <span class="fixedFont">node</span>
-								&nbsp;&nbsp;<i>Optional</i>
-							</dt>
-								<dd>XML node from config file.</dd>
+								<dd>Parent window.</dd>
 						
 						</dl>
 					
@@ -399,10 +371,10 @@ ul.inheritsList
 					Method Detail
 				</div>
 				
-					<a name="parse"> </a>
+					<a name="contentStartRequest"> </a>
 					<div class="fixedFont">
 					<span class="light">void</span>
-					<b>parse</b>(<span class="light fixedFont">string</span>&nbsp;value, <span class="light fixedFont">nsIURI</span>&nbsp;baseUri)
+					<b>contentStartRequest</b>(details)
 					
 					</div>
 					<div class="description">
@@ -419,50 +391,8 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-                  <span class="light fixedFont">string</span>&nbsp;&nbsp;
-                  <span class="fixedFont">value</span>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-                  <span class="light fixedFont">nsIURI</span>&nbsp;&nbsp;
-                  <span class="fixedFont">baseUri</span>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-					<hr />
-				
-					<a name="toXml"> </a>
-					<div class="fixedFont">
-					<span class="light">void</span>
-					<b>toXml</b>(<span class="light fixedFont">nsIDOMNode</span>&nbsp;node)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-                  <span class="light fixedFont">nsIDOMNode</span>&nbsp;&nbsp;
-                  <span class="fixedFont">node</span>
+                  
+                  <span class="fixedFont">details</span>
 									
 								</dt>
 								<dd></dd>
