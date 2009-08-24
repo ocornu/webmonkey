@@ -91,24 +91,6 @@ GM_BrowserUI.chromeLoad = function(e) {
 };
 
 /**
- * registerMenuCommand
- */
-GM_BrowserUI.registerMenuCommand = function(unsafeWin, commandName, callback,
-                                            accelKey, accelModifiers,
-                                            accessKey) {
-  var commander = this.getCommander(unsafeWinw);
-  commander.registerMenuCommand(commandName, callback, accelKey,
-                                accelModifiers, accessKey);
-};
-
-/**
- * openInTab
- */
-GM_BrowserUI.openInTab = function(url) {
-  this.tabBrowser.addTab(url);
-};
-
-/**
  * Gets called when a DOMContentLoaded event occurs somewhere in the browser.
  * If that document is in in the top-level window of the focused tab, find
  * it's menu items and activate them.

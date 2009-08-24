@@ -16,6 +16,16 @@ Cc["@mozilla.org/moz/jssubscript-loader;1"]
 Cu.import("resource://webmonkey/file.js");
 Cu.import("resource://webmonkey/prefmanager.js");
 
+
+const IO      = Cc["@mozilla.org/network/io-service;1"]
+                   .getService(Ci.nsIIOService);
+const SHELL   = Cc["@mozilla.org/appshell/appShellService;1"]
+                   .getService(Ci.nsIAppShellService);
+const CONSOLE = Cc["@mozilla.org/consoleservice;1"]
+                  .getService(Ci.nsIConsoleService);
+const FILE    = Components.stack.filename;
+
+
 /**
  * Construct a new script object.<br>
  * This constructor should not be used directly, use the static factory methods
@@ -147,18 +157,6 @@ Script.prototype = {
   get requires() { return this._meta.require.concat(); },
   get resources() { return this._meta.resource.concat(); },
 
-  /**
-   * JS source files for this script. 
-   * @type File[]
-   */
-  get sourceFiles() {
-    var files = [];
-    for each(var require in this._meta.require)
-      files.push(require._file);
-    files.push(this._file);
-    return files;
-  },
-
   get _file() {
     var file = new File(this._directory);
     file.name = this._filename;
@@ -191,6 +189,37 @@ Script.prototype = {
     // create script file
     this._directory.moveTo(dir._nsIFile.parent, dir.name);
     this._directory = dir;
+  },
+
+  /**
+   * Inject this script into a DOM window/frame.
+   * @param unsafeWin   Target window.
+   * @param gmBrowser   <code>GM_BrowserUI</code> responsible for this window.
+   * @param [console]   Firebug console, if any.
+   */
+  inject: function(/**nsIDOMWindow*/    unsafeWin,
+                   /**GM_BrowserUI*/    gmBrowser,
+                   /**Firebug.Console*/ console) {
+    if (!this._api)
+      this._api = new Script.Api(this);
+    var sandbox = this._api.sandbox(unsafeWin, gmBrowser, console); 
+    var jsVersion = "1.6";
+    // @requires source files
+    for each(var require in this._meta.require)
+      try {
+        var file = require._file;
+        Components.utils.evalInSandbox(file.readText(), sandbox, jsVersion,
+                                       file.uri.spec, 1);
+      } catch (err) {
+        this._api.logError(err);
+      }
+    // script source file
+    try {
+      Components.utils.evalInSandbox(this._file.readText(), sandbox, jsVersion,
+                                     this._file.uri.spec, 1);
+    } catch (err) {
+      this._api.logError(err);
+    }
   },
 
   get previewURL() {
@@ -450,6 +479,19 @@ Script.MetaData.prototype = {
       name = name.substring(0, name.indexOf(".user.js"));
       return name.substring(name.lastIndexOf("/") + 1);
     }
+  },
+
+  /**
+   * Find the {@link Script.Resource} with the given resource name.
+   * @param aName   The resource name to look for.
+   * @return {Script.Resource}  The resource named <code>aName</code>.
+   * @throws Error            If there is no such resource.
+   */
+  getResource: function(/**string*/ aName) {
+    for each(var resource in this.resource)
+      if (resource.name == aName)
+        return resource;
+    throw new Error("No resource with name: " + aName); // NOTE: Non localised string
   }
 };
 
@@ -664,6 +706,368 @@ Script.Resource.prototype.__proto__ = Script.Require.prototype;
 
 
 /**
+ * Construct a new API object.
+ * @constructor
+ * @param script    Parent script.
+ *
+ * @class   Implementation of the GM script API logic.<br>
+ * This class contains the GM_* API methods and the {@link Script.Api#sandbox}
+ * factory method.
+ */
+Script.Api = function(/**Script*/ script) {
+  /**
+   * Parent script.
+   * @type Script
+   */
+  this._script = script;
+  
+  /**
+   * Script unique identifier.
+   * @type string
+   */
+  this._id = script.namespace;
+  if (this._id.substring(this._id.length-1) != "/")
+    this._id += "/";
+  this._id += script.name;
+  
+  /**
+   * Script values manager.
+   * @type PreferenceManager 
+   */
+  this._prefs = GM_prefRoot.subManager("scriptvals." + this._id);
+  
+  /**
+   * Source files path.
+   * @type string[]
+   */
+  this._files = [];
+  for each(var require in script.requires)
+    this._files.push(require._file.uri.spec);
+  this._files.push(script._file.uri.spec);
+}
+Script.Api.prototype = {
+/*
+ * GM API methods
+ */
+  GM_addStyle: function(/**nsIDOMDocument*/ doc, /**string*/ aCss) {
+    var head = doc.getElementsByTagName("head")[0];
+    if (!head)
+      return false;
+    var style = doc.createElement("style");
+    style.type = "text/css";
+    style.innerHTML = aCss;
+    head.appendChild(style);
+  },
+
+  GM_log: function(/**string*/ aMessage) {
+    CONSOLE.logStringMessage(this._id + ":  "+ aMessage);
+  },
+
+  GM_getValue: function(/**string*/ aKey, /**string*/ aDefaultValue) {
+    this._apiLeakCheck("GM_getValue");
+    return this._prefs.get(aKey, aDefaultValue);
+  },
+
+  GM_setValue: function(/**string*/ aKey, /**string*/ aValue) {
+    this._apiLeakCheck("GM_setValue");
+    this._prefs.set(aKey, aValue);
+  },
+
+  GM_deleteValue: function(/**string*/ aKey) {
+    this._apiLeakCheck("GM_deleteValue");
+    return this._prefs.remove(aKey);
+  },
+
+  GM_listValues: function() {
+    this._apiLeakCheck("GM_listValues");
+    return this._prefs.list();
+  },
+  
+  GM_openInTab: function(/**GM_BrowserUI*/ gmBrowser, /**string*/ aUrl) {
+    gmBrowser.tabBrowser.addTab(aUrl);
+  },
+
+  GM_xmlhttpRequest: function(/**Script.Api.XMLHttpRequester*/ xhr,
+                              /**Object**/ aDetails) {
+    this._apiLeakCheck("GM_xmlhttpRequest");
+    xhr.contentStartRequest(aDetails);
+  },
+  
+  GM_registerMenuCommand: function(/**GM_BrowserUI*/ gmBrowser,
+                                   /**nsiDOMWindow*/ unsafeWin,
+                                   /**string*/   aCommandName,
+                                   /**Function*/ aCallback,
+                                   /**string*/   aAccelKey,
+                                   /**string*/   aAccelModifiers,
+                                   /**string*/   aAccessKey) {
+    this._apiLeakCheck("GM_registerMenuCommand");
+    var commander = gmBrowser.getCommander(unsafeWin);
+    commander.registerMenuCommand(aCommandName, aCallback, aAccelKey,
+                                  aAccelModifiers, aAccessKey);
+  },
+
+  GM_getResourceText: function(/**string*/ aName) {
+    this._apiLeakCheck("GM_getResourceText");
+    return this.script._meta.getResource(aName).textContent;
+  },
+
+  GM_getResourceURL: function(/**string*/ aName) {
+    this._apiLeakCheck("GM_getResourceURL");
+    return this.script._meta.getResource(aName).dataContent;
+  },
+/*
+ * Internal use methods
+ */
+  /**
+   * Protect sensitive API methods from page-land leaks.<br>
+   * Examines the stack to detect page-land calls.
+   * @param apiName     The API method name we are protecting.
+   * @throws Error    If the call-stack is stained.
+   */
+  _apiLeakCheck: function(/**string*/ apiName) {
+    var stack = Components.stack;
+    do {
+      // Valid stack frames for GM api calls are: native and js when coming from
+      // chrome:// URLs and the greasemonkey.js component's file:// URL.
+      if (stack.language == 2
+          && stack.filename != null
+          && stack.filename.substr(0, 6) != "chrome" 
+          && stack.filename != FILE 
+          && this._files.indexOf(stack.filename) == -1)
+        throw this.logError(new Error("Webmonkey access violation: "+stack.filename+
+                                      " cannot call "+apiName+"()."));
+      stack = stack.caller;
+    } while (stack);
+  },
+  
+  /**
+   * Sandbox factory method: creates a sandbox and populates it with our API.
+   * @param unsafeWin   Target window.
+   * @param gmBrowser   <code>GM_BrowserUI</code> responsible for this window.
+   * @param [console]     Firebug console, if any.
+   */
+  sandbox: function(/**nsIDOMWindow*/   unsafeWin,
+                   /**GM_BrowserUI*/    gmBrowser,
+                   /**Firebug.Console*/ console) {
+    var safeWin = new XPCNativeWrapper(unsafeWin);
+    var sandbox = new Components.utils.Sandbox(safeWin);
+    sandbox.window       = safeWin;
+    sandbox.document     = safeWin.document;
+    sandbox.unsafeWindow = unsafeWin;
+    sandbox.XPathResult  = Ci.nsIDOMXPathResult;
+    // firebug debugging
+    sandbox.console      = console ? console : new Script.Api.Console(this);
+    sandbox.importFunction(hasOwnProperty);
+    sandbox.importFunction(__lookupGetter__);
+    sandbox.importFunction(__lookupSetter__);
+    // bind GM api
+    this._bind(sandbox, "GM_addStyle", safeWin.document);
+    this._bind(sandbox, "GM_log");
+    this._bind(sandbox, "GM_getValue");
+    this._bind(sandbox, "GM_setValue");
+    this._bind(sandbox, "GM_deleteValue");
+    this._bind(sandbox, "GM_listValues");
+    this._bind(sandbox, "GM_openInTab", gmBrowser);
+    this._bind(sandbox, "GM_xmlhttpRequest",
+               new Script.Api.XmlHttpRequest(unsafeWin));
+    this._bind(sandbox, "GM_registerMenuCommand", gmBrowser, unsafeWin);
+    this._bind(sandbox, "GM_getResourceText");
+    this._bind(sandbox, "GM_getResourceURL");
+    // run in safe-window land
+    sandbox.__proto__ = safeWin;
+    return sandbox;
+  },
+  
+  /**
+   * Bind a GM API method to the a sandbox.<br>
+   * Additional arguments are passed to the target method on every call.
+   * @param sandbox     The sandbox to bind this API method to.
+   * @param method      The API method being binded.
+   */
+  _bind: function(/**Components.utils.Sandbox*/ sandbox, /**string*/ method) {
+    var staticArgs = Array.prototype.splice.call(arguments, 2, arguments.length);
+    var self = this;
+    sandbox[method] = function() {
+      var args = staticArgs.concat();
+      for (var i = 0; i < arguments.length; i++)
+        args.push(arguments[i]);
+        return self[method].apply(self, args);
+    };
+  },
+  
+  /**
+   * Log an error to the JS console without throwing an actual error.<br>
+   * Will attempt to find a relevant source for this error in the script source
+   * files and update the <code>Error</code> object accordingly. 
+   * @param error       The error to log.
+   * @return {Error}    The error logged.
+   */
+  logError: function (/**Error*/ error) {
+    // Search the first occurrence of one of our source files in the call stack
+    var stack = Components.stack;
+    while (stack && this._files.indexOf(stack.filename)==-1)
+      stack = stack.caller;
+    if (stack) {
+      error.fileName = stack.filename;
+      error.lineNumber = stack.lineNumber;
+      error.columNumber = 0;
+    }
+    // log it
+    var consoleError = Cc["@mozilla.org/scripterror;1"]
+                         .createInstance(Ci.nsIScriptError);
+    consoleError.init(error.message, error.fileName, null,
+                      error.lineNumber, error.columnNumber, 0, null);
+    CONSOLE.logMessage(consoleError);
+    return err;
+  }
+};
+
+
+/**
+ * Construct a new Console object.
+ * @constructor
+ * @param api    Parent script API.
+ *
+ * @class   Dummy implementation of the Firebug console in order to prevent
+ * scripts from breaking when Firebug is not installed. Messages are logged
+ * in the JS console.
+ */
+Script.Api.Console = function(/**Script.Api*/ api) {
+  /**
+   * Log a message to the JS console.<br>
+   * Accepts additional arguments that will be logged on individual lines.
+   * @param aMessage    The message to log.
+   */
+  this.log = function(/**string*/ aMessage) {
+    api.GM_log( Array.prototype.slice.apply(arguments).join("\n") );
+  };
+}
+Script.Api.Console.prototype = {
+  /**
+   * Never break on other Firebug.Console API calls.
+   */
+  __noSuchMethod__: function() {}
+};
+
+
+/**
+ * Construct a new XMLHttpRequest object.
+ * @constructor
+ * @param unsafeWin    Parent window.
+ *
+ * @class   Implementation of the GM_xmlhttpRequest logic.
+ */
+
+Script.Api.XmlHttpRequest = function(/**nsIDOMWindow*/ unsafeWin) {
+  this.unsafeWin = unsafeWin;
+  this.chromeWin = SHELL.hiddenDOMWindow;
+}
+Script.Api.XmlHttpRequest.prototype = {
+  //this function gets called by user scripts in content security scope to
+  //start a cross-domain xmlhttp request.
+  //
+  //details should look like:
+  //{method,url,onload,onerror,onreadystatechange,headers,data}
+  //headers should be in the form {name:value,name:value,etc}
+  //can't support mimetype because i think it's only used for forcing
+  //text/xml and we can't support that
+  contentStartRequest: function(details) {
+    // important to store this locally so that content cannot trick us up with
+    // a fancy getter that checks the number of times it has been accessed,
+    // returning a dangerous URL the time that we actually use it.
+    var url = details.url;
+    if (typeof url != "string")
+      throw new Error("Invalid url: url must be of type string");
+    var scheme = IO.extractScheme(url);
+    switch (scheme) {
+      case "http":
+      case "https":
+      case "ftp":
+        this.chromeWin.setTimeout(
+          bind(this, "_chromeStartRequest", url, details), 0);
+        break;
+      default:
+        throw new Error("Invalid url: " + url);
+    }
+  },
+
+  // this function is intended to be called in chrome's security context, so
+  // that it can access other domains without security warning
+  _chromeStartRequest: function(safeUrl, details) {
+    var req = new this.chromeWin.XMLHttpRequest();
+    this._setupRequestEvent(this.unsafeWin, req, "onload", details);
+    this._setupRequestEvent(this.unsafeWin, req, "onerror", details);
+    this._setupRequestEvent(this.unsafeWin, req, "onreadystatechange", details);
+    req.open(details.method, safeUrl);
+    if (details.overrideMimeType)
+      req.overrideMimeType(details.overrideMimeType);
+  
+    if (details.headers)
+      for (var prop in details.headers)
+        req.setRequestHeader(prop, details.headers[prop]);
+  
+    if (details.nocache)
+      try {
+        req.channel.loadFlags |= Ci.nsIRequest.LOAD_BYPASS_CACHE;
+      } catch (e) {
+        throw new Error("Could not set 'bypass cache' option");
+      }
+  
+    var body = details.data ? details.data : null;
+    if (details.binary)
+      req.sendAsBinary(body);
+    else
+      req.send(body);
+  },
+
+  // arranges for the specified 'event' on xmlhttprequest 'req' to call the
+  // method by the same name which is a property of 'details' in the content
+  // window's security context.
+  _setupRequestEvent: function(unsafeWin, req, event, details) {
+    if (!details[event])
+      return;
+    req[event] = function() {
+      var responseState = {
+        // can't support responseXML because security won't
+        // let the browser call properties on it
+        responseText:    req.responseText,
+        readyState:      req.readyState,
+        responseHeaders:(req.readyState == 4 && event != "onerror" ?
+                         req.getAllResponseHeaders() :
+                         ""),
+        status:         (req.readyState == 4 ? req.status : 0),
+        statusText:     (req.readyState == 4 && event != "onerror" ?
+                        req.statusText : ""),
+        finalUrl:       (req.readyState == 4 ? req.channel.URI.spec : "")
+      }
+      // Pop back onto browser thread and call event handler.
+      // Have to use nested function here instead of GM_hitch because
+      // otherwise details[event].apply can point to window.setTimeout, which
+      // can be abused to get increased priveleges.
+      new XPCNativeWrapper(unsafeWin, "setTimeout()")
+        .setTimeout(function() { details[event](responseState); }, 0);
+    }
+  }
+}
+
+
+/*
+ * Helper functions
+ */
+
+
+function bind(/**Object*/ object, /**string*/ method) {
+  var staticArgs = Array.prototype.splice.call(arguments, 2, arguments.length);
+  return function() {
+    var args = staticArgs.concat();
+    for (var i = 0; i < arguments.length; i++)
+      args.push(arguments[i]);
+    return object[method].apply(object, args);
+  };
+}
+
+
+/**
  * Transform a script name or a URI into a file name.<br>
  * A set of spaces/tabs becomes an underscore, non-Latin chars are removed.
  * Latin letters are lower-cased. Numbers, dots and minus sign are allowed. 
@@ -683,3 +1087,14 @@ function toFilename(/**string|nsIURI*/ aOrigin, /**string*/ aDefault) {
   if (name.length == 0) name = aDefault ? aDefault : "noname";
   return name;
 };
+
+
+/*
+ * These functions are added to scripts sandbox so that Firebug's DOM module
+ * can properly show the sandbox object hierarchy.
+ */
+function hasOwnProperty(prop) {
+  return prop in this;
+}
+function __lookupGetter__() { return null; }
+function __lookupSetter__() { return null; }

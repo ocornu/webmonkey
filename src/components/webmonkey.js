@@ -12,10 +12,6 @@ const CONTRACT_ID = "@webmonkey.info/webmonkey-service;1";
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-const appSvc = Cc["@mozilla.org/appshell/appShellService;1"]
-               .getService(Ci.nsIAppShellService);
-const gmSvcFilename = Components.stack.filename;
-
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
 
@@ -28,7 +24,6 @@ Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 function WebmonkeyService() {
   this.wrappedJSObject = this;
 }
-
 WebmonkeyService.prototype = {
   /**
    * Standard XPCOM class description.
@@ -79,8 +74,6 @@ WebmonkeyService.prototype = {
                  .getService(Ci.mozIJSSubScriptLoader);
     loader.loadSubScript("chrome://global/content/XPCNativeWrapper.js");
     loader.loadSubScript("chrome://webmonkey/content/lib/utils.js");
-    loader.loadSubScript("chrome://webmonkey/content/lib/miscapis.js");
-    loader.loadSubScript("chrome://webmonkey/content/lib/xmlhttprequester.js");
   },
 
   /**
@@ -162,50 +155,7 @@ WebmonkeyService.prototype = {
 
     var firebug = getFirebugConsole(safeWin, unsafeWin, chromeWin);
     for each (var script in scripts)
-      inject(script, safeWin, gmBrowser, firebug);
-
-    /* FireBug 1.2+ console support */
-    function getFirebugConsole(safeWin, unsafeWin, chromeWin) {
-      try {
-        chromeWin = chromeWin.top;
-        // assert FB is installed
-        if (!chromeWin.Firebug)
-          return null;
-        var fbVersion = parseFloat(chromeWin.Firebug.version);
-        var fbConsole = chromeWin.Firebug.Console;
-        var fbContext = chromeWin.TabWatcher &&
-                        chromeWin.TabWatcher.getContextByWindow(unsafeWin);
-        // assert FB is enabled
-        if (!fbConsole.isEnabled(fbContext))
-          return null;
-
-        if (fbVersion == 1.2) {
-          // search console handler
-          if (fbContext.consoleHandler)
-            for (var i = 0; i < fbContext.consoleHandler.length; i++)
-              if (fbContext.consoleHandler[i].window == safeWin)
-                return fbContext.consoleHandler[i].handler;
-          var dummyElm = safeWin.document.createElement("div");
-          dummyElm.setAttribute("id", "_firebugConsole");
-          safeWin.document.documentElement.appendChild(dummyElm);
-          chromeWin.Firebug.Console.injector.addConsoleListener(fbContext, safeWin);
-          dummyElm.parentNode.removeChild(dummyElm);
-          return fbContext.consoleHandler.pop().handler;
-        }
-
-        if (fbVersion == 1.3 || fbVersion == 1.4) {
-          fbConsole.injector.attachIfNeeded(fbContext, unsafeWin);
-          // find active context
-          for (var i=0; i<fbContext.activeConsoleHandlers.length; i++)
-            if (fbContext.activeConsoleHandlers[i].window == unsafeWin)
-              return fbContext.activeConsoleHandlers[i];
-          return null;
-        }
-      } catch (e) {
-        dump('Webmonkey getFirebugConsole() error:\n'+uneval(e)+'\n');
-      }
-      return null;
-    }
+      script.inject(unsafeWin, gmBrowser, firebug);
   }
 
 };
@@ -220,67 +170,45 @@ function NSGetModule(compMgr, fileSpec) {
 }
 
 
-/**
- * Inject a script into a DOM window.
- * @param {Script} script
- *        <code>Script</code> to be injected.
- * @param {XPCNativeWrapper} safeWin
- *        Target <code>Window</code> to inject script into.
- * @param {GM_BrowserUI} gmBrowser
- *        <code>GM_BrowserUI</code> responsible for this window.
- * @param fbConsole
- *        Firebug console.
- * @return  <code>true</code> if script succeeds, <code>false</code> otherwise.
- * @type    boolean
- */
-function inject(script, safeWin, gmBrowser, fbConsole) {
-  var sandbox   = new Components.utils.Sandbox(safeWin);
-  var logger    = new GM_ScriptLogger(script);
-  var console   = fbConsole ? fbConsole : new GM_console(script);
-  var storage   = new GM_ScriptStorage(script);
-  var unsafeWin = safeWin.wrappedJSObject;
-  var xhr       = new GM_xmlhttpRequester(unsafeWin, appSvc.hiddenDOMWindow);
-  var resources = new GM_Resources(script);
+/* FireBug 1.2+ console support */
+function getFirebugConsole(safeWin, unsafeWin, chromeWin) {
+  try {
+    chromeWin = chromeWin.top;
+    // assert FB is installed
+    if (!chromeWin.Firebug)
+      return null;
+    var fbVersion = parseFloat(chromeWin.Firebug.version);
+    var fbConsole = chromeWin.Firebug.Console;
+    var fbContext = chromeWin.TabWatcher &&
+                    chromeWin.TabWatcher.getContextByWindow(unsafeWin);
+    // assert FB is enabled
+    if (!fbConsole.isEnabled(fbContext))
+      return null;
 
-  // populate sandbox
-  sandbox.window       = safeWin;
-  sandbox.document     = safeWin.document;
-  sandbox.unsafeWindow = unsafeWin;
-  sandbox.console      = console;
-  sandbox.XPathResult  = Ci.nsIDOMXPathResult;
-  sandbox.importFunction(hasOwnProperty);
-  sandbox.importFunction(__lookupGetter__);
-  sandbox.importFunction(__lookupSetter__);
-  // add our own APIs
-  sandbox.GM_addStyle            = function(css) { GM_addStyle(safewin.document, css) };
-  sandbox.GM_log                 = GM_hitch(logger, "log");
-  sandbox.GM_getValue            = GM_hitch(storage, "getValue");
-  sandbox.GM_setValue            = GM_hitch(storage, "setValue");
-  sandbox.GM_deleteValue         = GM_hitch(storage, "deleteValue");
-  sandbox.GM_listValues          = GM_hitch(storage, "listValues");
-  sandbox.GM_openInTab           = GM_hitch(gmBrowser, "openInTab");
-  sandbox.GM_xmlhttpRequest      = GM_hitch(xhr, "contentStartRequest");
-  sandbox.GM_registerMenuCommand = GM_hitch(gmBrowser, "registerMenuCommand", unsafeWin);
-  sandbox.GM_getResourceText     = GM_hitch(resources, "getResourceText");
-  sandbox.GM_getResourceURL      = GM_hitch(resources, "getResourceURL");
-  sandbox.__proto__ = safeWin;
-
-  var jsVersion = "1.6";
-  for each(var source in script.sourceFiles)
-    try {
-      Components.utils.evalInSandbox(source.readText(), sandbox, jsVersion,
-                                     source.uri.spec, 1);
-    } catch (err) {
-      GM_logError(err, 0, err.fileName, err.lineNumber);
+    if (fbVersion == 1.2) {
+      // search console handler
+      if (fbContext.consoleHandler)
+        for (var i = 0; i < fbContext.consoleHandler.length; i++)
+          if (fbContext.consoleHandler[i].window == safeWin)
+            return fbContext.consoleHandler[i].handler;
+      var dummyElm = safeWin.document.createElement("div");
+      dummyElm.setAttribute("id", "_firebugConsole");
+      safeWin.document.documentElement.appendChild(dummyElm);
+      chromeWin.Firebug.Console.injector.addConsoleListener(fbContext, safeWin);
+      dummyElm.parentNode.removeChild(dummyElm);
+      return fbContext.consoleHandler.pop().handler;
     }
-}
 
-/*
- * These functions are added to scripts sandboxes so that Firebug's DOM module
- * can properly show the sandbox hierarchy.
- */
-function hasOwnProperty(prop) {
-  return prop in this;
+    if (fbVersion == 1.3 || fbVersion == 1.4) {
+      fbConsole.injector.attachIfNeeded(fbContext, unsafeWin);
+      // find active context
+      for (var i=0; i<fbContext.activeConsoleHandlers.length; i++)
+        if (fbContext.activeConsoleHandlers[i].window == unsafeWin)
+          return fbContext.activeConsoleHandlers[i];
+      return null;
+    }
+  } catch (e) {
+    dump('Webmonkey getFirebugConsole() error:\n'+uneval(e)+'\n');
+  }
+  return null;
 }
-function __lookupGetter__() { return null; }
-function __lookupSetter__() { return null; }

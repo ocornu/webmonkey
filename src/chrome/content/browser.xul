@@ -9,8 +9,6 @@
 
   <script type="application/x-javascript" src="chrome://webmonkey/content/lib/utils.js" />
   <script type="application/x-javascript" src="chrome://webmonkey/content/lib/menucommander.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/lib/xmlhttprequester.js" />
-  <script type="application/x-javascript" src="chrome://webmonkey/content/lib/miscapis.js" />
   <script type="application/x-javascript" src="chrome://webmonkey/content/browser.js" />
   <script type="application/x-javascript" src="chrome://webmonkey/content/lib/accelimation.js" />
 

@@ -5,34 +5,6 @@ Components.utils.import("resource://webmonkey/prefmanager.js");
 Components.utils.import("resource://webmonkey/script.js");
 Components.utils.import("resource://webmonkey/file.js");
 
-/**
- * Examines the stack to determine if an API should be callable.
- */
-function GM_apiLeakCheck(apiName) {
-  var stack = Components.stack;
-
-  do {
-    // Valid stack frames for GM api calls are: native and js when coming from
-    // chrome:// URLs and the greasemonkey.js component's file:// URL.
-    if (2 == stack.language) {
-      // NOTE: In FF 2.0.0.0, I saw that stack.filename can be null for JS/XPCOM
-      // services. This didn't happen in FF 2.0.0.11; I'm not sure when it
-      // changed.
-      if (stack.filename != null &&
-          stack.filename != gmSvcFilename &&
-          stack.filename.substr(0, 6) != "chrome") {
-        GM_logError(new Error("Webmonkey access violation: unsafeWindow " +
-                    "cannot call " + apiName + "."));
-        return false;
-      }
-    }
-
-    stack = stack.caller;
-  } while (stack);
-
-  return true;
-}
-
 function GM_getConfig() {
   return Components.classes["@webmonkey.info/webmonkey-service;1"]
          .getService().wrappedJSObject.config;
@@ -69,26 +41,6 @@ function GM_listen(source, event, listener, opt_capture) {
 function GM_unlisten(source, event, listener, opt_capture) {
   Components.lookupMethod(source, "removeEventListener")(
     event, listener, opt_capture);
-}
-
-/**
- * Utility to create an error message in the log without throwing an error.
- */
-function GM_logError(e, opt_warn, fileName, lineNumber) {
-  var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-    .getService(Components.interfaces.nsIConsoleService);
-
-  var consoleError = Components.classes["@mozilla.org/scripterror;1"]
-    .createInstance(Components.interfaces.nsIScriptError);
-
-  var flags = opt_warn ? 1 : 0;
-
-  // third parameter "sourceLine" is supposed to be the line, of the source,
-  // on which the error happened.  we don't know it. (directly...)
-  consoleError.init(e.message, fileName, null, lineNumber,
-                    e.columnNumber, flags, null);
-
-  consoleService.logMessage(consoleError);
 }
 
 function GM_log(message, force) {
