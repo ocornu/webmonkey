@@ -489,7 +489,7 @@ Script.MetaData.prototype = {
    */
   getResource: function(/**string*/ aName) {
     for each(var resource in this.resource)
-      if (resource.name == aName)
+      if (resource._name == aName)
         return resource;
     throw new Error("No resource with name: " + aName); // NOTE: Non localised string
   }
@@ -693,7 +693,7 @@ Script.Resource.prototype = {
                       value + "'. Resources are declared like this: " +
                       "@resource <name> <URI>");
     this._name = res[1];
-    this._downloadURL = File.getUri(res[2], baseURI).spec;
+    this._downloadURL = File.getUri(res[2], baseUri).spec;
     // assert there is no duplicate resource name
     var existing = this._script._meta.resource;
     for each (var resource in existing)
@@ -808,12 +808,12 @@ Script.Api.prototype = {
 
   GM_getResourceText: function(/**string*/ aName) {
     this._apiLeakCheck("GM_getResourceText");
-    return this.script._meta.getResource(aName).textContent;
+    return this._script._meta.getResource(aName).textContent;
   },
 
   GM_getResourceURL: function(/**string*/ aName) {
     this._apiLeakCheck("GM_getResourceURL");
-    return this.script._meta.getResource(aName).dataContent;
+    return this._script._meta.getResource(aName).dataContent;
   },
 /*
  * Internal use methods
@@ -918,7 +918,7 @@ Script.Api.prototype = {
     consoleError.init(error.message, error.fileName, null,
                       error.lineNumber, error.columnNumber, 0, null);
     CONSOLE.logMessage(consoleError);
-    return err;
+    return error;
   }
 };
 
