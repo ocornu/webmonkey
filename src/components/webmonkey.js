@@ -148,7 +148,7 @@ WebmonkeyService.prototype = {
     var safeWin   = new XPCNativeWrapper(unsafeWin);
     var href      = safeWin.location.href;
     var scripts   = this.config.getMatchingScripts(
-      function(script) { return script.enabled && script.matchesURL(href); }
+      function(script) { return script.meta.enabled && script.isRunnable(href); }
     );
     // assert there are scripts to inject
     if (!scripts.length) return;

@@ -71,7 +71,7 @@ function loadControls() {
   btnUninstall.addEventListener("command", function() { handleUninstallButton(); }, false);
   chkEnabled.addEventListener("command", function() {
      if (selectedScript)
-       selectedScript.enabled = chkEnabled.checked;
+       selectedScript.meta.enabled = chkEnabled.checked;
   }, false);
 }
 
@@ -88,7 +88,7 @@ function updateDetails() {
     // make sure one word isn't too long to fit ... a too-long word
     // will bump the interface out wider than the window
     var wordLen = 50;
-    var desc = selectedScript.description.split(/\s+/);
+    var desc = selectedScript.meta.description.split(/\s+/);
     for (var i = 0; i < desc.length; i++) {
       if (desc[i].length > wordLen) {
         for (var j = desc[i].length; j > 0; j -= wordLen) {
@@ -98,9 +98,9 @@ function updateDetails() {
     }
     desc = desc.join(" ");
 
-    header.textContent = selectedScript.name;
+    header.textContent = selectedScript.meta.name;
     description.textContent = desc;
-    chkEnabled.checked = selectedScript.enabled;
+    chkEnabled.checked = selectedScript.meta.enabled;
     pagesControl.populate(selectedScript);
   }
 }
@@ -123,12 +123,12 @@ function populateChooser() {
 function addListitem(script, i) {
   var listitem = document.createElement("listitem");
 
-  listitem.setAttribute("label", script.name);
+  listitem.setAttribute("label", script.meta.name);
   listitem.setAttribute("crop", "end");
   listitem.script = script;
   listitem.index = i;
 
-  if (!script.enabled) {
+  if (!script.meta.enabled) {
     listitem.style.color = "gray";
   }
 

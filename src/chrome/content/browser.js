@@ -221,7 +221,7 @@ GM_BrowserUI.showInstallDialog = function(script, timer) {
  * the user install it.
  */
 GM_BrowserUI.showScriptView = function(script) {
-  var tab = this.tabBrowser.addTab(script.previewURL);
+  var tab = this.tabBrowser.addTab("view-source:" + script.file.uri.spec);
   tab.script = script;
 //  var browser = this.tabBrowser.getBrowserForTab(tab);
   this.tabBrowser.selectedTab = tab;
@@ -261,7 +261,7 @@ GM_BrowserUI.installScript = function(script){
       GM_BrowserUI.refreshStatus();
       GM_BrowserUI.hideStatusImmediately();
       GM_getConfig().install(script);
-      GM_BrowserUI.showHorrayMessage(script.name);
+      GM_BrowserUI.showHorrayMessage(script.meta.name);
     },
     function(source, status, statusText) {
       GM_BrowserUI.refreshStatus();
@@ -451,7 +451,7 @@ function GM_showPopup(aEvent) {
     function testMatchURLs(script) {
 
       function testMatchURL(url) {
-        return script.matchesURL(url);
+        return script.isRunnable(url);
       }
 
       return urls.some(testMatchURL);
@@ -462,10 +462,10 @@ function GM_showPopup(aEvent) {
 
   function appendScriptToPopup(script) {
     var mi = document.createElement("menuitem");
-    mi.setAttribute("label", script.name);
+    mi.setAttribute("label", script.meta.name);
     mi.script = script;
     mi.setAttribute("type", "checkbox");
-    mi.setAttribute("checked", script.enabled.toString());
+    mi.setAttribute("checked", script.meta.enabled.toString());
     popup.insertBefore(mi, tail);
   }
 
@@ -524,7 +524,7 @@ function GM_popupClicked(aEvent) {
     if (!script) return;
 
     if (aEvent.button == 0) // left-click: toggle enabled state
-      script.enabled =! script.enabled;
+      script.meta.enabled =! script.meta.enabled;
     else // right-click: open in editor
       script.edit(window);
 

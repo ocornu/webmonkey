@@ -8,8 +8,8 @@ var GMInstall = {
     this.gmui_ = window.arguments[0];
     this.script_ = window.arguments[1];
 
-    this.setupIncludes("includes", "includes-desc", this.script_.includes);
-    this.setupIncludes("excludes", "excludes-desc", this.script_.excludes);
+    this.setupIncludes("includes", "includes-desc", this.script_.meta.includes);
+    this.setupIncludes("excludes", "excludes-desc", this.script_.meta.excludes);
 
     this.dialog_ = document.documentElement;
     this.extraButton_ = this.dialog_.getButton("extra1");
@@ -36,9 +36,9 @@ var GMInstall = {
 
     var desc = document.getElementById("scriptDescription");
     desc.appendChild(document.createElementNS(this.htmlNs_, "strong"));
-    desc.firstChild.appendChild(document.createTextNode(this.script_.name));
+    desc.firstChild.appendChild(document.createTextNode(this.script_.meta.name));
     desc.appendChild(document.createElementNS(this.htmlNs_, "br"));
-    desc.appendChild(document.createTextNode(this.script_.description));
+    desc.appendChild(document.createTextNode(this.script_.meta.description));
   },
 
   onFocus: function(e) {

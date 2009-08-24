@@ -27,7 +27,7 @@ const FILE    = Components.stack.filename;
 
 
 /**
- * Construct a new script object.<br>
+ * Construct a new script object (private use only).<br>
  * This constructor should not be used directly, use the static factory methods
  * instead.
  * @constructor
@@ -46,9 +46,8 @@ function Script() {
   /**
    * Script meta-data.
    * @type Script.MetaData
-   * @private
    */
-  this._meta = new Script.MetaData();
+  this.meta = new Script.MetaData(this);
   /**
    * Registered handlers for events originating from this script.
    * @type Array
@@ -74,29 +73,21 @@ function Script() {
    * @private
    */
   this._directory = null;
-
-  /**
-   * Enabled/disabled state.
-   * @type boolean
-   * @private
-   */
-  this._enabled = true;
 }
 Script.prototype = {
   /**
-   * Whether this script can run at a specified universal location.
-   * <code>url</code> is checked against its sets of {@link #_includes} and
-   * {@link #_excludes}.
+   * Whether this script may run at a specified URL.
+   * <code>url</code> is checked against the script sets of includes/excludes.
    * @param url         The URL to test.
    * @return {boolean}  <code>true</code> if this script can run,
    *                    <code>false</code> otherwise.
    */
-  matchesURL: function(/**string*/ url) {
-    function test(page) {
-      return convert2RegExp(page).test(url);
-    }
+  isRunnable: function(/**string*/ url) {
+    return this.meta.includes.some(match) && !this.meta.excludes.some(match);
 
-    return this._meta.include.some(test) && !this._meta.exclude.some(test);
+    function match(rule) {
+      return convert2RegExp(rule).test(url);
+    }
   },
 
   /**
@@ -109,55 +100,11 @@ Script.prototype = {
      this._config._changed(this, event, data);
   },
 
-  get name() { return this._meta.name; },
-  get namespace() { return this._meta.namespace; },
-  get description() { return this._meta.description; },
-  get enabled() { return this._enabled; },
-  set enabled(enabled) {
-    this._enabled = enabled;
-    this._changed("edit-enabled", enabled);
-  },
-
-  get includes() { return this._meta.include.concat(); },
   /**
-   * Add an include mask.
-   * @param url    The URL include mask to add.
+   * This script source file.
+   * @type File
    */
-  addInclude: function(/**string*/ url) {
-    this._meta.include.push(url);
-    this._changed("edit-include-add", url);
-  },
-  /**
-   * Remove an include mask.
-   * @param index  The index of the include mask to remove.
-   */
-  removeIncludeAt: function(/**int*/ index) {
-    this._meta.include.splice(index, 1);
-    this._changed("edit-include-remove", index);
-  },
-
-  get excludes() { return this._meta.exclude.concat(); },
-  /**
-   * Add an exclude mask.
-   * @param url     The URL exclude mask to add.
-   */
-  addExclude: function(/**string*/ url) {
-    this._meta.exclude.push(url);
-    this._changed("edit-exclude-add", url);
-  },
-  /**
-   * Remove an exclude mask.
-   * @param index   The index of the exclude mask to remove.
-   */
-  removeExcludeAt: function(/**int*/ index) {
-    this._meta.exclude.splice(index, 1);
-    this._changed("edit-exclude-remove", index);
-  },
-
-  get requires() { return this._meta.require.concat(); },
-  get resources() { return this._meta.resource.concat(); },
-
-  get _file() {
+  get file() {
     var file = new File(this._directory);
     file.name = this._filename;
     return file;
@@ -170,13 +117,11 @@ Script.prototype = {
   edit: function(/**nsIDOMWindow*/ aParentWindow) {
     var editor = this._config.getEditor(aParentWindow);
     if (!editor) return;
-    editor.exec([this._file.path]);
+    editor.exec([this.file.path]);
   },
 
-  get textContent() { return this._file.readText(); },
-
   /**
-   * Install a script.<br>
+   * Install this script in the specified {@link Config}.<br>
    * Moves its directory from the temp folder to the scripts folder.
    * @param aConfig  Associated Webmonkey configuration manager.
    */
@@ -205,9 +150,9 @@ Script.prototype = {
     var sandbox = this._api.sandbox(unsafeWin, gmBrowser, console); 
     var jsVersion = "1.6";
     // @requires source files
-    for each(var require in this._meta.require)
+    for each(var require in this.meta.requires)
       try {
-        var file = require._file;
+        var file = require.file;
         Components.utils.evalInSandbox(file.readText(), sandbox, jsVersion,
                                        file.uri.spec, 1);
       } catch (err) {
@@ -215,23 +160,18 @@ Script.prototype = {
       }
     // script source file
     try {
-      Components.utils.evalInSandbox(this._file.readText(), sandbox, jsVersion,
-                                     this._file.uri.spec, 1);
+      Components.utils.evalInSandbox(this.file.readText(), sandbox, jsVersion,
+                                     this.file.uri.spec, 1);
     } catch (err) {
       this._api.logError(err);
     }
   },
 
-  get previewURL() {
-    return "view-source:" + this._file.uri.spec;
-  },
-  
   _fromXml: function(/**nsIDOMNode*/ node, /**File*/ dir) {
     this._directory = new File(dir);
     this._directory.name = node.getAttribute("basedir");
     this._filename = node.getAttribute("filename");
-    this._enabled = node.getAttribute("enabled") == true.toString();
-    this._meta.fromXml(this, node);
+    this.meta.fromXml(node);
   },
 
   /**
@@ -241,16 +181,14 @@ Script.prototype = {
     var node = doc.createElement("Script");
     node.setAttribute("basedir", this._directory.name);
     node.setAttribute("filename", this._filename);
-    node.setAttribute("enabled", this._enabled);
-    this._meta.toXml(doc, node);
+    this.meta.toXml(doc, node);
     node.appendChild(doc.createTextNode("\n\t"));
     return node;
   },
 
   _parse: function(source, uri) {
     this._downloadURL = uri ? uri.spec : null;
-    this._enabled = true;
-    this._meta.parse(this, source, uri);
+    this.meta.parse(source, uri);
   },
 
   /**
@@ -265,7 +203,7 @@ Script.prototype = {
                       /**Function*/ onError,
                       /**boolean*/  deps) {
     if (deps == undefined)
-      deps = this._meta.require.concat(this._meta.resource);
+      deps = this.meta.requires.concat(this.meta.resources);
     if (deps.length == 0)
       onSuccess(this);
     else
@@ -284,14 +222,14 @@ Script.fromSource = function(/**string*/ aSource, /**nsIURI*/ aUri) {
   var script = new Script();
   script._parse(aSource, aUri);
   // create temp script dir (max name length: 24)
-  var name = toFilename(script.name, "script");
+  var name = toFilename(script.meta.name, "script");
   if (name.length > 24) name = name.substring(0, 24);
   script._directory = File.temp();
   script._directory.name = name;
   script._directory.createUnique(File.DIR);
   // create script file
   script._filename = name + ".user.js";
-  var file = script._file;
+  var file = script.file;
   file.create();
   file.write(aSource);
   return script;
@@ -338,10 +276,17 @@ Script.fromUri = function(/**nsIURI*/   aUri,
 /**
  * Construct a new script meta-data object.
  * @constructor
+ * @param script    Parent script.
  *
  * @class Implementation of scripts meta-data.
  */
-Script.MetaData = function() {
+Script.MetaData = function(/**Script*/ script) {
+  /**
+   * Parent Script.
+   * @type Script
+   * @private
+   */
+  this._script = script;
   /**
    * Script <code>&#64;name</code>.
    * @type string
@@ -361,41 +306,113 @@ Script.MetaData = function() {
    * List of <code>&#64;include</code> URL masks.
    * @type string[]
    */
-  this.include = [];
+  this.includes = [];
   /**
    * List of <code>&#64;exclude</code> URL masks.
    * @type string[]
    */
-  this.exclude = [];
+  this.excludes = [];
   /**
    * List of <code>&#64;require</code> items.
    * @type Script.Require[]
    */
-  this.require = [];
+  this.requires = [];
   /**
    * List of <code>&#64;resource</code> items.
    * @type Script.Resource[]
    */
-  this.resource = [];
+  this.resources = [];
+  /**
+   * Enabled/disabled state.
+   * @type boolean
+   * @private
+   */
+  this._enabled = false;
 };
 Script.MetaData.prototype = {
-  fromXml: function(/**Script*/ script, /**nsIDOMNode*/ node) {
+  /**
+   * Enabled/disabled state.
+   * @type boolean
+   */
+  get enabled() { return this._enabled; },
+  set enabled(enabled) {
+    this._enabled = enabled;
+    this._script._changed("edit-enabled", enabled);
+  },
+
+  get sourceFiles() {
+    var files = [];
+    for each(var require in this.requires)
+      files.push(require.file.uri.spec);
+    files.push(this._script.file.uri.spec);
+    return files;
+  },
+  
+  /**
+   * Add an include mask.
+   * @param url    The URL include mask to add.
+   */
+  addInclude: function(/**string*/ url) {
+    this.includes.push(url);
+    this._script._changed("edit-include-add", url);
+  },
+  /**
+   * Remove an include mask.
+   * @param index  The index of the include mask to remove.
+   */
+  removeIncludeAt: function(/**int*/ index) {
+    this.includes.splice(index, 1);
+    this._script._changed("edit-include-remove", index);
+  },
+
+  /**
+   * Add an exclude mask.
+   * @param url     The URL exclude mask to add.
+   */
+  addExclude: function(/**string*/ url) {
+    this.excludes.push(url);
+    this._script._changed("edit-exclude-add", url);
+  },
+  /**
+   * Remove an exclude mask.
+   * @param index   The index of the exclude mask to remove.
+   */
+  removeExcludeAt: function(/**int*/ index) {
+    this.excludes.splice(index, 1);
+    this._script._changed("edit-exclude-remove", index);
+  },
+
+  /**
+   * Find the {@link Script.Resource} with the given resource name.
+   * @param aName   The resource name to look for.
+   * @return {Script.Resource}  The resource named <code>aName</code>.
+   * @throws Error            If there is no such resource.
+   */
+  getResource: function(/**string*/ aName) {
+    for each(var resource in this.resources)
+      if (resource._name == aName)
+        return resource;
+    throw new Error("No resource with name: " + aName); // NOTE: Non localised string
+  },
+
+  fromXml: function(/**nsIDOMNode*/ node) {
     this.name        = node.getAttribute("name");
     this.namespace   = node.getAttribute("namespace");
     this.description = node.getAttribute("description");
+    this._enabled    = node.getAttribute("enabled") == true.toString();
     for (var i = 0, childNode; childNode = node.childNodes[i]; i++)
       switch (childNode.nodeName) {
       case "Include":
-        this.include.push(childNode.firstChild.nodeValue);
+        this.includes.push(childNode.firstChild.nodeValue);
         break;
       case "Exclude":
-        this.exclude.push(childNode.firstChild.nodeValue);
+        this.excludes.push(childNode.firstChild.nodeValue);
         break;
       case "Require":
-        this.require.push(new Script.Require(script, childNode));
+        this.requires.push(new Script.Require(this._script, childNode));
         break;
       case "Resource":
-        this.resource.push(new Script.Resource(script, childNode));
+        this.resources.push(new Script.Resource(this._script, childNode));
         break;
       }
   },
@@ -404,22 +421,23 @@ Script.MetaData.prototype = {
     node.setAttribute("name", this.name);
     node.setAttribute("namespace", this.namespace);
     node.setAttribute("description", this.description);
-    for each (var include in this.include) {
+    node.setAttribute("enabled", this._enabled);
+    for each (var include in this.includes) {
       var includeNode = doc.createElement("Include");
       includeNode.appendChild(doc.createTextNode(include));
       append(includeNode);
     }
-    for each (var exclude in this.exclude) {
+    for each (var exclude in this.excludes) {
       var excludeNode = doc.createElement("Exclude");
       excludeNode.appendChild(doc.createTextNode(exclude));
       append(excludeNode);
     }
-    for each (var require in this.require) {
+    for each (var require in this.requires) {
       var requireNode = doc.createElement("Require");
       require.toXml(requireNode);
       append(requireNode);
     }
-    for each (var resource in this.resource) {
+    for each (var resource in this.resources) {
       var resourceNode = doc.createElement("Resource");
       resource.toXml(resourceNode);
       append(resourceNode);
@@ -431,7 +449,7 @@ Script.MetaData.prototype = {
     }
   },
 
-  parse: function(script, source, uri) {
+  parse: function(source, uri) {
     var meta = false;
     for each (var line in source.match(/.+/g)) {
       if (!meta) {
@@ -452,18 +470,20 @@ Script.MetaData.prototype = {
           this[header] = value;
           break;
         case "include":
+          this.includes.push(value);
+          break;
         case "exclude":
-          this[header].push(value);
+          this.excludes.push(value);
           break;
         case "require":
-          var require = new Script.Require(script);
+          var require = new Script.Require(this._script);
           require.parse(value, uri);
-          this.require.push(require);
+          this.requires.push(require);
           break;
         case "resource":
-          var resource = new Script.Resource(script);
+          var resource = new Script.Resource(this._script);
           resource.parse(value, uri);
-          this.resource.push(resource);
+          this.resources.push(resource);
           break;
         }
     }
@@ -472,26 +492,14 @@ Script.MetaData.prototype = {
     if (this.name == null) this.name = parseScriptName(uri);
     if (this.namespace == null) this.namespace = uri.host;
     if (!this.description) this.description = "";
-    if (!this.include.length) this.include.push("*");
+    if (!this.includes.length) this.includes.push("*");
+    this._enabled = true;
 
     function parseScriptName(sourceUri) {
       var name = sourceUri.spec;
       name = name.substring(0, name.indexOf(".user.js"));
       return name.substring(name.lastIndexOf("/") + 1);
     }
-  },
-
-  /**
-   * Find the {@link Script.Resource} with the given resource name.
-   * @param aName   The resource name to look for.
-   * @return {Script.Resource}  The resource named <code>aName</code>.
-   * @throws Error            If there is no such resource.
-   */
-  getResource: function(/**string*/ aName) {
-    for each(var resource in this.resource)
-      if (resource._name == aName)
-        return resource;
-    throw new Error("No resource with name: " + aName); // NOTE: Non localised string
   }
 };
 
@@ -531,13 +539,15 @@ Script.Require = function(/**Script*/ script, /**nsIDOMNode*/ node) {
 Script.Require.prototype = {
   DEFAULT_FILENAME: "require.js",
   
-  get _file() {
+  /**
+   * Source file.
+   * @type File
+   */
+  get file() {
     var file = new File(this._script._directory);
     file.name = this._filename;
     return file;
   },
-
-  get textContent() { return this._file.readText(); },
 
   _fromXml: function(/**nsIDOMNode*/ node) {
     this._filename = node.getAttribute("filename");
@@ -656,11 +666,19 @@ Script.Resource = function(/**Script*/ script, /**nsIDOMNode*/ node) {
 Script.Resource.prototype = {
   DEFAULT_FILENAME: "resource",
 
+  /**
+   * File text content.
+   * @type string
+   */
+  get textContent() { return this.file.readText(); },
+
+  /**
+   * File <code>data:*</code> content.
+   * @type string
+   */
   get dataContent() {
-    var appSvc = Components.classes["@mozilla.org/appshell/appShellService;1"]
-                 .getService(Components.interfaces.nsIAppShellService);
-    var window = appSvc.hiddenDOMWindow;
-    var binaryContents = this._file.readBytes();
+    var window = SHELL.hiddenDOMWindow;
+    var binaryContents = this.file.readBytes();
 
     var mimetype = this._mimetype;
     if (this._charset && this._charset.length > 0) {
@@ -695,9 +713,9 @@ Script.Resource.prototype = {
     this._name = res[1];
     this._downloadURL = File.getUri(res[2], baseUri).spec;
     // assert there is no duplicate resource name
-    var existing = this._script._meta.resource;
+    var existing = this._script.meta.resources;
     for each (var resource in existing)
-      if (resource.name == this._name)
+      if (resource._name == this._name)
         throw new Error("Duplicate resource name '" + this._name + "' " +
                         "detected. Each resource must have a unique name.");
   }
@@ -706,7 +724,7 @@ Script.Resource.prototype.__proto__ = Script.Require.prototype;
 
 
 /**
- * Construct a new API object.
+ * Construct a new script API object.
  * @constructor
  * @param script    Parent script.
  *
@@ -725,10 +743,10 @@ Script.Api = function(/**Script*/ script) {
    * Script unique identifier.
    * @type string
    */
-  this._id = script.namespace;
+  this._id = script.meta.namespace;
   if (this._id.substring(this._id.length-1) != "/")
     this._id += "/";
-  this._id += script.name;
+  this._id += script.meta.name;
   
   /**
    * Script values manager.
@@ -740,15 +758,15 @@ Script.Api = function(/**Script*/ script) {
    * Source files path.
    * @type string[]
    */
-  this._files = [];
-  for each(var require in script.requires)
-    this._files.push(require._file.uri.spec);
-  this._files.push(script._file.uri.spec);
+  this._files = script.meta.sourceFiles;
 }
 Script.Api.prototype = {
 /*
  * GM API methods
  */
+  /**
+   * See <a href="http://wiki.greasespot.net/GM_addStyle">GM wiki definition</a>.
+   */
   GM_addStyle: function(/**nsIDOMDocument*/ doc, /**string*/ aCss) {
     var head = doc.getElementsByTagName("head")[0];
     if (!head)
@@ -759,40 +777,63 @@ Script.Api.prototype = {
     head.appendChild(style);
   },
 
+  /**
+   * See <a href="http://wiki.greasespot.net/GM_log">GM wiki definition</a>.
+   */
   GM_log: function(/**string*/ aMessage) {
     CONSOLE.logStringMessage(this._id + ":  "+ aMessage);
   },
 
-  GM_getValue: function(/**string*/ aKey, /**string*/ aDefaultValue) {
+  /**
+   * See <a href="http://wiki.greasespot.net/GM_getValue">GM wiki definition</a>.
+   * @return {object}
+   */
+  GM_getValue: function(/**string*/ aKey, /**object*/ aDefaultValue) {
     this._apiLeakCheck("GM_getValue");
     return this._prefs.get(aKey, aDefaultValue);
   },
-
-  GM_setValue: function(/**string*/ aKey, /**string*/ aValue) {
+  /**
+   * See <a href="http://wiki.greasespot.net/GM_setValue">GM wiki definition</a>.
+   */
+  GM_setValue: function(/**string*/ aKey, /**object*/ aValue) {
     this._apiLeakCheck("GM_setValue");
     this._prefs.set(aKey, aValue);
   },
-
+  /**
+   * See <a href="http://wiki.greasespot.net/GM_deleteValue">GM wiki definition</a>.
+   */
   GM_deleteValue: function(/**string*/ aKey) {
     this._apiLeakCheck("GM_deleteValue");
-    return this._prefs.remove(aKey);
+    this._prefs.remove(aKey);
   },
-
+  /**
+   * See <a href="http://wiki.greasespot.net/GM_listValues">GM wiki definition</a>.
+   * @return {string[]}
+   */
   GM_listValues: function() {
     this._apiLeakCheck("GM_listValues");
     return this._prefs.list();
   },
   
+  /**
+   * See <a href="http://wiki.greasespot.net/GM_openInTab">GM wiki definition</a>.
+   */
   GM_openInTab: function(/**GM_BrowserUI*/ gmBrowser, /**string*/ aUrl) {
     gmBrowser.tabBrowser.addTab(aUrl);
   },
 
+  /**
+   * See <a href="http://wiki.greasespot.net/GM_xmlhttpRequest">GM wiki definition</a>.
+   */
   GM_xmlhttpRequest: function(/**Script.Api.XMLHttpRequester*/ xhr,
                               /**Object**/ aDetails) {
     this._apiLeakCheck("GM_xmlhttpRequest");
     xhr.contentStartRequest(aDetails);
   },
   
+  /**
+   * See <a href="http://wiki.greasespot.net/GM_registerMenuCommand">GM wiki definition</a>.
+   */
   GM_registerMenuCommand: function(/**GM_BrowserUI*/ gmBrowser,
                                    /**nsiDOMWindow*/ unsafeWin,
                                    /**string*/   aCommandName,
@@ -806,14 +847,21 @@ Script.Api.prototype = {
                                   aAccelModifiers, aAccessKey);
   },
 
+  /**
+   * See <a href="http://wiki.greasespot.net/GM_getResourceText">GM wiki definition</a>.
+   * @return {string}
+   */
   GM_getResourceText: function(/**string*/ aName) {
     this._apiLeakCheck("GM_getResourceText");
-    return this._script._meta.getResource(aName).textContent;
+    return this._script.meta.getResource(aName).textContent;
   },
-
+  /**
+   * See <a href="http://wiki.greasespot.net/GM_getResourceURL">GM wiki definition</a>.
+   * @return {string}
+   */
   GM_getResourceURL: function(/**string*/ aName) {
     this._apiLeakCheck("GM_getResourceURL");
-    return this._script._meta.getResource(aName).dataContent;
+    return this._script.meta.getResource(aName).dataContent;
   },
 /*
  * Internal use methods
@@ -845,6 +893,7 @@ Script.Api.prototype = {
    * @param unsafeWin   Target window.
    * @param gmBrowser   <code>GM_BrowserUI</code> responsible for this window.
    * @param [console]     Firebug console, if any.
+   * @return {Components.utils.Sandbox}
    */
   sandbox: function(/**nsIDOMWindow*/   unsafeWin,
                    /**GM_BrowserUI*/    gmBrowser,
@@ -957,7 +1006,6 @@ Script.Api.Console.prototype = {
  *
  * @class   Implementation of the GM_xmlhttpRequest logic.
  */
-
 Script.Api.XmlHttpRequest = function(/**nsIDOMWindow*/ unsafeWin) {
   this.unsafeWin = unsafeWin;
   this.chromeWin = SHELL.hiddenDOMWindow;

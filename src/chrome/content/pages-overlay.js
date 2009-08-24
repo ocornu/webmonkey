@@ -14,8 +14,8 @@ function PagesControl(ctlPages) {
   this.script = null;
   this.populate = function(script) {
     this.clear();
-    includesBox.populate(script, "includes", script.includes);
-    excludesBox.populate(script, "excludes", script.excludes);
+    includesBox.populate(script, "includes", script.meta.includes);
+    excludesBox.populate(script, "excludes", script.meta.excludes);
     this.script = script;
     GM_getConfig().addObserver(this, this.script);
   };
@@ -88,8 +88,8 @@ function PagesControl(ctlPages) {
 
       if (val && val != "") {
         self.type == "includes" ?
-          self.script.addInclude(val):
-          self.script.addExclude(val);
+          self.script.meta.addInclude(val):
+          self.script.meta.addExclude(val);
         dirty = true;
       }
     }
@@ -103,11 +103,11 @@ function PagesControl(ctlPages) {
  
       if (val && val != "") {
         self.type == "includes" ?
-          self.script.removeIncludeAt(self.listbox.selectedIndex):
-          self.script.removeExcludeAt(self.listbox.selectedIndex);
+          self.script.meta.removeIncludeAt(self.listbox.selectedIndex):
+          self.script.meta.removeExcludeAt(self.listbox.selectedIndex);
         self.type == "includes" ?
-          self.script.addInclude(val):
-          self.script.addExclude(val);
+          self.script.meta.addInclude(val):
+          self.script.meta.addExclude(val);
  
         dirty = true; 
       }
@@ -119,8 +119,8 @@ function PagesControl(ctlPages) {
 
     function remove(ev) {
       self.type == "includes" ?
-        self.script.removeIncludeAt(self.listbox.selectedIndex):
-        self.script.removeExcludeAt(self.listbox.selectedIndex);
+        self.script.meta.removeIncludeAt(self.listbox.selectedIndex):
+        self.script.meta.removeExcludeAt(self.listbox.selectedIndex);
 
       // it's sorta wierd that the button stays focused when it is disabled because nothing is selected
       if (self.listbox.length == 0) {

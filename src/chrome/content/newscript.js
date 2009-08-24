@@ -22,7 +22,7 @@ function doInstall() {
   if (!source) return false;
   var script = Script.fromSource(source);
   // persist namespace value
-  GM_prefRoot.set("newscript_namespace", script.namespace);
+  GM_prefRoot.set("newscript_namespace", script.meta.namespace);
 
   var config = GM_getConfig();
   // make sure entered details will not ruin an existing file

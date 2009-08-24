@@ -62,12 +62,12 @@ Config.prototype = {
   },
 
   _find: function(aScript) {
-    var namespace = aScript.namespace.toLowerCase();
-    var name = aScript.name.toLowerCase();
+    var namespace = aScript.meta.namespace.toLowerCase();
+    var name = aScript.meta.name.toLowerCase();
 
     for (var i = 0, script; script = this._scripts[i]; i++) {
-      if (script.namespace.toLowerCase() == namespace
-        && script.name.toLowerCase() == name) {
+      if (script.meta.namespace.toLowerCase() == namespace
+        && script.meta.name.toLowerCase() == name) {
         return i;
       }
     }
@@ -122,7 +122,8 @@ Config.prototype = {
 
     if (uninstallPrefs) {
       // Remove saved preferences
-      GM_prefRoot.remove("scriptvals." + script.namespace + "/" + script.name + ".");
+      GM_prefRoot.remove("scriptvals." + script.meta.namespace + "/" +
+                         script.meta.name + ".");
     }
   },
 
