@@ -5,11 +5,16 @@
 var EXPORTED_SYMBOLS = ["Script"];
 
 
-Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-                   .getService(Components.interfaces.mozIJSSubScriptLoader)
-                   .loadSubScript("resource://webmonkey/lib/convert2RegExp.js");
-Components.utils.import("resource://webmonkey/file.js");
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cu = Components.utils;
 
+// import dependencies
+Cc["@mozilla.org/moz/jssubscript-loader;1"]
+  .getService(Ci.mozIJSSubScriptLoader)
+  .loadSubScript("resource://webmonkey/lib/convert2RegExp.js");
+Cu.import("resource://webmonkey/file.js");
+Cu.import("resource://webmonkey/prefmanager.js");
 
 /**
  * Construct a new script object.<br>
@@ -67,8 +72,6 @@ function Script() {
    */
   this._enabled = true;
 }
-
-
 Script.prototype = {
   /**
    * Whether this script can run at a specified universal location.
@@ -346,7 +349,6 @@ Script.MetaData = function() {
    */
   this.resource = [];
 };
-
 Script.MetaData.prototype = {
   fromXml: function(/**Script*/ script, /**nsIDOMNode*/ node) {
     this.name        = node.getAttribute("name");
@@ -484,7 +486,6 @@ Script.Require = function(/**Script*/ script, /**nsIDOMNode*/ node) {
   if (node)
     this._fromXml(node);
 };
-
 Script.Require.prototype = {
   DEFAULT_FILENAME: "require.js",
   
@@ -610,7 +611,6 @@ Script.Resource = function(/**Script*/ script, /**nsIDOMNode*/ node) {
   if (node)
     this._fromXml(node);
 };
-
 Script.Resource.prototype = {
   DEFAULT_FILENAME: "resource",
 
@@ -660,7 +660,6 @@ Script.Resource.prototype = {
                         "detected. Each resource must have a unique name.");
   }
 };
-
 Script.Resource.prototype.__proto__ = Script.Require.prototype;
 
 
