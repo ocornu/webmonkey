@@ -38,7 +38,7 @@
       GM_openInTab("http://www.google.com/");
       GM_log(">< test9: Enough google?");
 
-      GM_addStyle("body { color:white; background-color:black }");
+      GM_addStyle("body { color:white; background-color:red }");
       GM_log(">< test10: body inversion");
 
       GM_registerMenuCommand(
@@ -79,15 +79,10 @@
       var fooCon2 = GM_getResourceURL("fooCon2");
       var fooCon3 = GM_getResourceURL("fooCon3");
 
-      if (confirm "Are you sure you want to continue to run these tests?")) {
-        document.open();
-        document.write("<html>" +
-                         "<h1>It's as easy as</h1>" +
-                           "<body>" +
-                             "<img src=" + fooCon1 + " /><img src=" + fooCon2 + " /><img src=" + fooCon3 + " />" +
-                           "</body>" +
-                       "</html>");
-        document.close();
+      if (confirm("Are you sure you want to continue to run these tests?")) {
+        var div = document.createElement("div");
+        div.innerHTML = "<img src=" + fooCon1 + " /><img src=" + fooCon2 + " /><img src=" + fooCon3 + " />";
+        document.getElementsByTagName("body")[0].appendChild(div);
       }
 
     GM_log("< " + scriptName);
