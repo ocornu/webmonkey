@@ -7,7 +7,7 @@
 
     <em:id>webmonkey@webmonkey.info</em:id>
     <!-- NOTE : build.sh will correct the em:version, if applicable -->
-    <em:version>0.1alpha</em:version>
+    <em:version>0.1a1</em:version>
     <em:creator>Olivier Cornu</em:creator>
     <em:homepageURL>http://webmonkey.info</em:homepageURL>
     <em:optionsURL>chrome://webmonkey/content/manage.xul</em:optionsURL>
@@ -30,3 +30,4 @@
   </Description>
 
 </RDF>
+
