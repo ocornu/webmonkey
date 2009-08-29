@@ -1,12 +1,10 @@
 #!/bin/sh
 
 # Set up variables
-GMMAX=${1-0}
-GMMIN=${2-1}
-GMREL=${3-0}
+GMBASE=`grep "<em:version>" src/install.rdf | sed -r "s/^\s*<em:version>(.+)<\/em:version>\s*$/\\1/"`
 GMBUILD=`date +"%Y%m%d"`
 GMNAME=webmonkey
-GMVER="$GMMAX.$GMMIN.$GMBUILD.$GMREL"
+GMVER="$GMBASE.$GMBUILD.${1-0}"
 GMXPI="$GMNAME-$GMVER.xpi"
 
 # Copy base structure to a temporary build directory and change to it
