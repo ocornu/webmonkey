@@ -17,6 +17,8 @@
     <em:description>Customize web sites with user-scripts</em:description>
 
     <em:contributor>Greasemonkey; http://www.greasespot.net</em:contributor>
+    <em:updateURL>http://cloud.github.com/downloads/ocornu/webmonkey/update.rdf</em:updateURL>
+    <em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDGHfiFS01Agik+LQkgp7DkLYFtwVoIf9yAldHtB6wkcb8EfSWBRrQRoonT1dAGQTDCBGus55tRdX6sCQazTAHo2AbjnKilIcae4n1BbvRC0h9aPO+45McGcrbIvQTV4BfFNQ2gP8ZsinaEUIw9zOGguyjqt7cuZmydg5Ct0SQkfQIDAQAB</em:updateKey>
 
     <!-- Firefox -->
     <em:targetApplication>
