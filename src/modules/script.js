@@ -156,14 +156,14 @@ Script.prototype = {
         Components.utils.evalInSandbox(file.readText(), sandbox, jsVersion,
                                        file.uri.spec, 1);
       } catch (err) {
-        this._api.logError(err);
+        this._api.logError(new Error(err.message, file.uri.spec, err.lineNumber));
       }
     // script source file
     try {
       Components.utils.evalInSandbox(this.file.readText(), sandbox, jsVersion,
                                      this.file.uri.spec, 1);
     } catch (err) {
-      this._api.logError(err);
+      this._api.logError(new Error(err.message, this.file.uri.spec, err.lineNumber));
     }
   },
 
@@ -952,16 +952,17 @@ Script.Api.prototype = {
    * @return {Error}    The error logged.
    */
   logError: function (/**Error*/ error) {
-    // Search the first occurrence of one of our source files in the call stack
-    var stack = Components.stack;
-    while (stack && this._files.indexOf(stack.filename)==-1)
-      stack = stack.caller;
-    if (stack) {
-      error.fileName = stack.filename;
-      error.lineNumber = stack.lineNumber;
-      error.columNumber = 0;
+    if (this._files.indexOf(error.fileName)==-1) {
+      // Search the first occurrence of one of our source files in the call stack
+      var stack = Components.stack;
+      while (stack && this._files.indexOf(stack.filename)==-1)
+        stack = stack.caller;
+      if (stack) {
+        error.fileName = stack.filename;
+        error.lineNumber = stack.lineNumber;
+        error.columnNumber = 0;
+      }
     }
-    // log it
     var consoleError = Cc["@mozilla.org/scripterror;1"]
                          .createInstance(Ci.nsIScriptError);
     consoleError.init(error.message, error.fileName, null,
