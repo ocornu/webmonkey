@@ -899,7 +899,7 @@ Script.Api.prototype = {
                    /**GM_BrowserUI*/    gmBrowser,
                    /**Firebug.Console*/ console) {
     var safeWin = new XPCNativeWrapper(unsafeWin);
-    var sandbox = new Components.utils.Sandbox(safeWin);
+    var sandbox = new Cu.Sandbox(safeWin);
     sandbox.window       = safeWin;
     sandbox.document     = safeWin.document;
     sandbox.unsafeWindow = unsafeWin;
