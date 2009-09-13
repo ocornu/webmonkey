@@ -151,19 +151,19 @@ Script.prototype = {
     var jsVersion = "1.6";
     // @requires source files
     for each(var require in this.meta.requires)
-      try {
-        var file = require.file;
-        Components.utils.evalInSandbox(file.readText(), sandbox, jsVersion,
-                                       file.uri.spec, 1);
-      } catch (err) {
-        this._api.logError(new Error(err.message, file.uri.spec, err.lineNumber));
-      }
+      this._inject(require, sandbox, jsVersion);
     // script source file
+    this._inject(this, sandbox, jsVersion);
+  },
+
+  _inject: function(/**Script|Script.Require*/    source,
+                    /**Components.utils.Sandbox*/ sandbox,
+                    /**string*/                   jsVersion) {
+    var file = source.file;
     try {
-      Components.utils.evalInSandbox(this.file.readText(), sandbox, jsVersion,
-                                     this.file.uri.spec, 1);
+      Cu.evalInSandbox(file.readText(), sandbox, jsVersion, file.uri.spec, 1);
     } catch (err) {
-      this._api.logError(new Error(err.message, this.file.uri.spec, err.lineNumber));
+      this._api.logError(new Error(err.message, file.uri.spec, err.lineNumber));
     }
   },
 
