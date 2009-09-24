@@ -3,6 +3,7 @@
 // @namespace     http://www.greasespot.net/
 // @description   Foo'in around
 // @include       http://wiki.greasespot.net/*
+// @include       file:///*/webmonkey/test/test.html
 // @resource      fooCon1 foo1.png
 // @resource      fooCon2 Foo2.png
 // @resource      fooCon3 foo3.jpg
