@@ -2,11 +2,16 @@
 var EXPORTED_SYMBOLS = ["Config"];
 
 
-const GM_GUID = "webmonkey@webmonkey.info";
+const Cu = Components.utils;
 
-Components.utils.import("resource://webmonkey/script.jsm");
-Components.utils.import("resource://webmonkey/lib/prefs.jsm");
-Components.utils.import("resource://webmonkey/lib/file.jsm");
+Cu.import("resource://webmonkey/script.jsm");
+Cu.import("resource://webmonkey/lib/prefs.jsm");
+Cu.import("resource://webmonkey/lib/file.jsm");
+
+const GM_GUID        = "webmonkey@webmonkey.info";
+const REPOSITORY_DIR = "userscripts";
+const CONFIG_FILE    = "config.xml";
+
 
 /**
  * @class
@@ -15,12 +20,12 @@ function Config() {
   this._scripts = null;
 
   this._scriptDir = File.profile();
-  this._scriptDir.name = "scripts";
+  this._scriptDir.name = REPOSITORY_DIR;
   if (!this._scriptDir.exists())
     this._scriptDir.create(File.DIR);
 
   this._configFile = new File(this._scriptDir);
-  this._configFile.name = "config.xml";
+  this._configFile.name = CONFIG_FILE;
   if (!this._configFile.exists()) {
     this._configFile.create(File.FILE);
     this._configFile.write("<UserScriptConfig/>");
