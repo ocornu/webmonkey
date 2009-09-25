@@ -64,7 +64,13 @@ Config.prototype = {
     }
   },
 
-  _changed: function(script, event, data) {
+  /**
+   * Save configuration and notify observers of a change.
+   * @param script  The changed script, if any.
+   * @param event   A label defining what has changed.
+   * @param data    An associated payload.
+   */
+  notify: function(/**Script*/ script, /**string*/ event, /**Object*/ data) {
     this._saveToXml();
     this._notifyObservers(script, event, data);
   },
@@ -120,7 +126,7 @@ Config.prototype = {
 
     script.install(this);
     this._scripts.push(script);
-    this._changed(script, "install", null);
+    this.notify(script, "install", null);
 
 //    GM_log("< Config.install");
   },
@@ -128,7 +134,7 @@ Config.prototype = {
   uninstall: function(script, uninstallPrefs) {
     var idx = this._find(script);
     this._scripts.splice(idx, 1);
-    this._changed(script, "uninstall", null);
+    this.notify(script, "uninstall", null);
 
     script._directory.remove(true);
 
@@ -205,7 +211,7 @@ Config.prototype = {
 
     var tmp = this._scripts.splice(from, 1)[0];
     this._scripts.splice(to, 0, tmp);
-    this._changed(script, "move", to);
+    this.notify(script, "move", to);
   },
 
   get scripts() { return this._scripts.concat(); },

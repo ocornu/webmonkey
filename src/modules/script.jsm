@@ -88,10 +88,9 @@ Script.prototype = {
    * Notify observers of a change in this script's configuration.
    * @param event  A label defining what has changed.
    * @param data   An associated payload.
-   * @private
    */
-  _changed: function(/**string*/ event, /**Object*/ data) {
-     this._config._changed(this, event, data);
+  notify: function(/**string*/ event, /**Object*/ data) {
+     this._config.notify(this, event, data);
   },
 
   /**

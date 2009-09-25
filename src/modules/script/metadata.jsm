@@ -77,7 +77,7 @@ ScriptMetadata.prototype = {
   get enabled() { return this._enabled; },
   set enabled(enabled) {
     this._enabled = enabled;
-    this._script._changed("edit-enabled", enabled);
+    this._script.notify("edit-enabled", enabled);
   },
 
   get sourceFiles() {
@@ -94,7 +94,7 @@ ScriptMetadata.prototype = {
    */
   addInclude: function(/**string*/ url) {
     this.includes.push(url);
-    this._script._changed("edit-include-add", url);
+    this._script.notify("edit-include-add", url);
   },
   /**
    * Remove an include mask.
@@ -102,7 +102,7 @@ ScriptMetadata.prototype = {
    */
   removeIncludeAt: function(/**int*/ index) {
     this.includes.splice(index, 1);
-    this._script._changed("edit-include-remove", index);
+    this._script.notify("edit-include-remove", index);
   },
 
   /**
@@ -111,7 +111,7 @@ ScriptMetadata.prototype = {
    */
   addExclude: function(/**string*/ url) {
     this.excludes.push(url);
-    this._script._changed("edit-exclude-add", url);
+    this._script.notify("edit-exclude-add", url);
   },
   /**
    * Remove an exclude mask.
@@ -119,7 +119,7 @@ ScriptMetadata.prototype = {
    */
   removeExcludeAt: function(/**int*/ index) {
     this.excludes.splice(index, 1);
-    this._script._changed("edit-exclude-remove", index);
+    this._script.notify("edit-exclude-remove", index);
   },
 
   /**
