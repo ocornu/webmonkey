@@ -69,6 +69,7 @@ _______________________________________________________________________________
       convert2RegExp.js URI mask parser
       file.jsm          File management
       prefs.jsm         Preferences management
+      uriset.jsm        URI sets management
     script/           Userscript internals
       api.jsm           Sandbox API
       console.jsm       Dummy Firebug console

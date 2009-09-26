@@ -5,8 +5,6 @@
 var EXPORTED_SYMBOLS = ["Script"];
 
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 // import dependencies
@@ -14,9 +12,6 @@ Cu.import("resource://webmonkey/script/metadata.jsm");
 Cu.import("resource://webmonkey/script/api.jsm");
 Cu.import("resource://webmonkey/lib/file.jsm");
 Cu.import("resource://webmonkey/lib/prefs.jsm");
-Cc["@mozilla.org/moz/jssubscript-loader;1"]
-  .getService(Ci.mozIJSSubScriptLoader)
-  .loadSubScript("resource://webmonkey/lib/convert2RegExp.js");
 
 
 /**
@@ -77,11 +72,7 @@ Script.prototype = {
    *                    <code>false</code> otherwise.
    */
   isRunnable: function(/**string*/ url) {
-    return this.meta.includes.some(match) && !this.meta.excludes.some(match);
-
-    function match(rule) {
-      return convert2RegExp(rule).test(url);
-    }
+    return this.meta.domain.contains(url);
   },
 
   /**

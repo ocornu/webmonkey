@@ -10,6 +10,7 @@ const Cu = Components.utils;
 // import dependencies
 Cu.import("resource://webmonkey/script/require.jsm");
 Cu.import("resource://webmonkey/script/resource.jsm");
+Cu.import("resource://webmonkey/lib/uriset.jsm");
 
 
 /**
@@ -42,15 +43,10 @@ ScriptMetadata = function(/**Script*/ script) {
    */
   this.description = null;
   /**
-   * List of <code>&#64;include</code> URL masks.
-   * @type string[]
+   * Script domain (see: <code>&#64;include</code>/<code>&#64;exclude</code>).
+   * @type UriSet
    */
-  this.includes = [];
-  /**
-   * List of <code>&#64;exclude</code> URL masks.
-   * @type string[]
-   */
-  this.excludes = [];
+  this.domain = new UriSet();
   /**
    * List of <code>&#64;require</code> items.
    * @type ScriptRequire[]
@@ -93,16 +89,16 @@ ScriptMetadata.prototype = {
    * @param url    The URL include mask to add.
    */
   addInclude: function(/**string*/ url) {
-    this.includes.push(url);
-    this._script.notify("edit-include-add", url);
+    if (this.domain.addInclude(url))
+      this._script.notify("edit-include-add", url);
   },
   /**
    * Remove an include mask.
    * @param index  The index of the include mask to remove.
    */
   removeIncludeAt: function(/**int*/ index) {
-    this.includes.splice(index, 1);
-    this._script.notify("edit-include-remove", index);
+    if (this.domain.removeIncludeAt(index))
+      this._script.notify("edit-include-remove", index);
   },
 
   /**
@@ -110,16 +106,16 @@ ScriptMetadata.prototype = {
    * @param url     The URL exclude mask to add.
    */
   addExclude: function(/**string*/ url) {
-    this.excludes.push(url);
-    this._script.notify("edit-exclude-add", url);
+    if (this.domain.addExclude(url))
+      this._script.notify("edit-exclude-add", url);
   },
   /**
    * Remove an exclude mask.
    * @param index   The index of the exclude mask to remove.
    */
   removeExcludeAt: function(/**int*/ index) {
-    this.excludes.splice(index, 1);
-    this._script.notify("edit-exclude-remove", index);
+    if (this.domain.removeExcludeAt(index))
+      this._script.notify("edit-exclude-remove", index);
   },
 
   /**
@@ -143,10 +139,10 @@ ScriptMetadata.prototype = {
     for (var i = 0, childNode; childNode = node.childNodes[i]; i++)
       switch (childNode.nodeName) {
       case "Include":
-        this.includes.push(childNode.firstChild.nodeValue);
+        this.domain.addInclude(childNode.firstChild.nodeValue);
         break;
       case "Exclude":
-        this.excludes.push(childNode.firstChild.nodeValue);
+        this.domain.addExclude(childNode.firstChild.nodeValue);
         break;
       case "Require":
         this.requires.push(new ScriptRequire(this._script, childNode));
@@ -162,12 +158,12 @@ ScriptMetadata.prototype = {
     node.setAttribute("namespace", this.namespace);
     node.setAttribute("description", this.description);
     node.setAttribute("enabled", this._enabled);
-    for each (var include in this.includes) {
+    for each (var include in this.domain.includes) {
       var includeNode = doc.createElement("Include");
       includeNode.appendChild(doc.createTextNode(include));
       append(includeNode);
     }
-    for each (var exclude in this.excludes) {
+    for each (var exclude in this.domain.excludes) {
       var excludeNode = doc.createElement("Exclude");
       excludeNode.appendChild(doc.createTextNode(exclude));
       append(excludeNode);
@@ -210,10 +206,10 @@ ScriptMetadata.prototype = {
           this[header] = value;
           break;
         case "include":
-          this.includes.push(value);
+          this.domain.addInclude(value);
           break;
         case "exclude":
-          this.excludes.push(value);
+          this.domain.addExclude(value);
           break;
         case "require":
           var require = new ScriptRequire(this._script);
@@ -232,7 +228,7 @@ ScriptMetadata.prototype = {
     if (this.name == null) this.name = parseScriptName(uri);
     if (this.namespace == null) this.namespace = uri.host;
     if (!this.description) this.description = "";
-    if (!this.includes.length) this.includes.push("*");
+    if (!this.domain.includes.length) this.domain.addInclude("*");
     this._enabled = true;
   }
 };

@@ -14,8 +14,8 @@ function PagesControl(ctlPages) {
   this.script = null;
   this.populate = function(script) {
     this.clear();
-    includesBox.populate(script, "includes", script.meta.includes);
-    excludesBox.populate(script, "excludes", script.meta.excludes);
+    includesBox.populate(script, "includes", script.meta.domain.includes);
+    excludesBox.populate(script, "excludes", script.meta.domain.excludes);
     this.script = script;
     GM_getConfig().addObserver(this, this.script);
   };
