@@ -2,6 +2,8 @@
 var EXPORTED_SYMBOLS = ["Config"];
 
 
+const Cc = Components.classes;
+const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import("resource://webmonkey/script.jsm");
@@ -96,8 +98,8 @@ Config.prototype = {
   },
 
   _saveToXml: function() {
-    var doc = Components.classes["@mozilla.org/xmlextras/domparser;1"]
-              .createInstance(Components.interfaces.nsIDOMParser)
+    var doc = Cc["@mozilla.org/xmlextras/domparser;1"]
+              .createInstance(Ci.nsIDOMParser)
               .parseFromString("<UserScriptConfig></UserScriptConfig>",
                                "text/xml");
     var config = doc.firstChild; 
@@ -158,22 +160,21 @@ Config.prototype = {
     // pick a non-executable file, so we set this up in a loop so that if they do
     // that we can give them an error and try again.
     while (true) {
-      var bundle = Components.classes["@mozilla.org/intl/stringbundle;1"]
-                   .getService(Components.interfaces.nsIStringBundleService)
+      var bundle = Cc["@mozilla.org/intl/stringbundle;1"]
+                   .getService(Ci.nsIStringBundleService)
                    .createBundle("chrome://webmonkey/locale/gm-browser.properties");
-      var nsIFilePicker = Components.interfaces.nsIFilePicker;
-      var filePicker = Components.classes["@mozilla.org/filepicker;1"]
-                                 .createInstance(nsIFilePicker);
+      var filePicker = Cc["@mozilla.org/filepicker;1"]
+                       .createInstance(Ci.nsIFilePicker);
       filePicker.init(aParentWindow, bundle.GetStringFromName("editor.prompt"),
-                      nsIFilePicker.modeOpen);
-      if (filePicker.show() != nsIFilePicker.returnOK)
+                      Ci.nsIFilePicker.modeOpen);
+      if (filePicker.show() != Ci.nsIFilePicker.returnOK)
         return null;
       if (filePicker.file.isExecutable()) {
         GM_prefRoot.set("editor", filePicker.file.path);
         return new File(filePicker.file);
       }
-      var prompt = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                   .getService(Components.interfaces.nsIPromptService)
+      var prompt = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+                   .getService(Ci.nsIPromptService)
       prompt.alert(null, "Webmonkey alert",
                    bundle.GetStringFromName("editor.please_pick_executable"));
     }
@@ -223,8 +224,8 @@ Config.prototype = {
     var initialized = GM_prefRoot.get("version", "0.0");
 
     // update the currently initialized version so we don't do this work again.
-    var extMan = Components.classes["@mozilla.org/extensions/manager;1"]
-      .getService(Components.interfaces.nsIExtensionManager);
+    var extMan = Cc["@mozilla.org/extensions/manager;1"]
+                 .getService(Ci.nsIExtensionManager);
 
     var item = extMan.getItemForID(GM_GUID);
     GM_prefRoot.set("version", item.version);
