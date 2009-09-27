@@ -43,16 +43,24 @@ UriSet.prototype = {
   _init: function() {
     /**
      * Included URI masks.
-     * @type string[]
+     * @type UriMask[]
      */
-    this.includes = [];
+    this._includes = [];
     /**
      * Excluded URI masks.
-     * @type string[]
+     * @type UriMask[]
      */
-    this.excludes = [];
+    this._excludes = [];
   },
 
+  get includes() {
+    return this._includes.map(UriMask.toString);
+  },
+
+  get excludes() {
+    return this._excludes.map(UriMask.toString);
+  },
+  
   /**
    * Add an include mask.
    * @param aMask       The include mask to add.
@@ -60,7 +68,7 @@ UriSet.prototype = {
    *                    <code>false</code> otherwise.
    */
   addInclude: function(/**string*/ aMask) {
-    return add(this.includes, aMask);
+    return add(this._includes, aMask);
   },
   /**
    * Remove an include mask.
@@ -69,16 +77,17 @@ UriSet.prototype = {
    *                    <code>false</code> otherwise.
    */
   removeInclude: function(/**string*/ aMask) {
-    return remove(this.includes, aMask);
+    return remove(this._includes, aMask);
   },
   /**
    * Remove an include mask.
    * @param aIndex      The include mask index to remove.
    * @return {boolean}  <code>true</code> if it was removed,
    *                    <code>false</code> otherwise.
+   * @deprecated
    */
   removeIncludeAt: function(/**int*/ aIndex) {
-    return removeAt(this.includes, aIndex);
+    return removeAt(this._includes, aIndex);
   },
 
   /**
@@ -88,7 +97,7 @@ UriSet.prototype = {
    *                    <code>false</code> otherwise.
    */
   addExclude: function(/**string*/ aMask) {
-    return add(this.excludes, aMask);
+    return add(this._excludes, aMask);
   },
   /**
    * Remove an exclude mask.
@@ -97,16 +106,17 @@ UriSet.prototype = {
    *                    <code>false</code> otherwise.
    */
   removeExclude: function(/**string*/ aMask) {
-    return remove(this.excludes, aMask);
+    return remove(this._excludes, aMask);
   },
   /**
    * Remove an exclude mask.
    * @param aIndex      The exclude mask index to remove.
    * @return {boolean}  <code>true</code> if it was removed,
    *                    <code>false</code> otherwise.
+   * @deprecated
    */
   removeExcludeAt: function(/**int*/ aIndex) {
-    return removeAt(this.excludes, aIndex);
+    return removeAt(this._excludes, aIndex);
   },
 
   /**
@@ -118,7 +128,7 @@ UriSet.prototype = {
   addRule: function(/**string*/ aRule) {
     var mask = getMask(aRule);
     if (mask=="") return false;
-    var target = isInclude(aRule) ? this.includes : this.excludes;
+    var target = isInclude(aRule) ? this._includes : this._excludes;
     return add(target, mask);
   },
   /**
@@ -130,7 +140,7 @@ UriSet.prototype = {
   removeRule: function(/**string*/ aRule) {
     var mask = getMask(aRule);
     if (mask=="") return false;
-    var target = isInclude(aRule) ? this.includes : this.excludes;
+    var target = isInclude(aRule) ? this._includes : this._excludes;
     return remove(target, mask);
   },
   /**
@@ -143,14 +153,15 @@ UriSet.prototype = {
   replaceRule: function(/**string*/ oldRule, /**string*/ newRule) {
     var oldMask = getMask(oldRule);
     if (oldMask=="") return false;
-    var oldTarget = isInclude(oldRule) ? this.includes : this.excludes;
-    var index = oldTarget.indexOf(oldMask);
+    var oldTarget = isInclude(oldRule) ? this._includes : this._excludes;
+    var index = indexOf(oldTarget, oldMask);
     if (index<0) return false;
 
     var newMask = getMask(newRule);
     if (newMask=="") return false;
-    var newTarget = isInclude(newRule) ? this.includes : this.excludes;
-    if (newTarget.indexOf(newMask)>=0) return false;
+    var newTarget = isInclude(newRule) ? this._includes : this._excludes;
+    if (indexOf(newTarget, newMask)>=0) return false;
+    newMask = new UriMask(newMask);
 
     if (oldTarget==newTarget)
       oldTarget[index] = newMask;
@@ -170,20 +181,61 @@ UriSet.prototype = {
     if (aUri instanceof Ci.nsIURI)
       aUri = aUri.spec;
     // Do we forbid this URI?
-    if (this.excludes.some(match))
+    if (this._excludes.some(match))
       return false;
     // If not, do we allow this URI?
-    if (this.includes.some(match))
+    if (this._includes.some(match))
       return true;
     return false;
 
     // URI mask tester
     function match(mask) {
-      return convert2RegExp(mask).test(aUri);
+      return mask.regexp.test(aUri);
     }
   }
 };
 
+
+/**
+ * Construct a new <code>UriMask</code> object.
+ * @constructor
+ * @param aMask   The string expression of this mask.
+ *
+ * @class Implementation of a URI mask.
+ * @private
+ */
+function UriMask(/**string*/ aMask) {
+  /**
+   * String value of this mask.
+   * @type string
+   */
+  this.string = aMask;
+  /**
+   * Regular expression value of this mask.
+   * @type RegExp
+   */
+  this.regexp = convert2RegExp(aMask);
+}
+/**
+ * @private
+ */
+UriMask.toString = function(uriMask) { return uriMask.string; };
+
+
+/**
+ * Find the index of a mask in a target list.
+ * @param target    The target masks list.
+ * @param mask      The mask to find.
+ * @return {int}    The index of this mask if it exists in the target list,
+ *                  <code>-1</code> otherwise.
+ * @private
+ */
+function indexOf(/**UriMask[]*/ target, /**string*/ mask) {
+  for (var i in target)
+    if (target[i].string==mask)
+      return i;
+  return -1;
+}
 
 /**
  * Add a mask to a target list, if it does not exist yet.
@@ -193,9 +245,9 @@ UriSet.prototype = {
  *                    <code>false</code> otherwise.
  * @private
  */
-function add(/**string[]*/ target, /**string*/ mask) {
-  if (target.indexOf(mask)>=0) return false;
-  target.push(mask);
+function add(/**UriMask[]*/ target, /**string*/ mask) {
+  if (indexOf(target, mask)>=0) return false;
+  target.push(new UriMask(mask));
   return true;
 }
 
@@ -207,8 +259,8 @@ function add(/**string[]*/ target, /**string*/ mask) {
  *                    <code>false</code> otherwise.
  * @private
  */
-function remove(/**string[]*/ target, /**string*/ mask) {
-  var index = target.indexOf(mask);
+function remove(/**UriMask[]*/ target, /**string*/ mask) {
+  var index = indexOf(target, mask);
   if (index<0) return false;
   target.splice(index, 1);
   return true;
@@ -221,8 +273,9 @@ function remove(/**string[]*/ target, /**string*/ mask) {
  * @return {boolean}  <code>true</code> if it was removed,
  *                    <code>false</code> otherwise.
  * @private
+ * @deprecated
  */
-function removeAt(/**string[]*/ target, /**int*/ index) {
+function removeAt(/**UriMask[]*/ target, /**int*/ index) {
   if (!(index>=0 && index<target.length)) return false;
   target.splice(index, 1);
   return true;
