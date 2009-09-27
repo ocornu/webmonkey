@@ -16,16 +16,16 @@ rm -rf build
 mkdir build
 cd src
 cp -r chrome.manifest install.rdf license.txt \
-	defaults components chrome modules \
+	defaults components content locale modules \
 	../build/
 cd ../build
 
 echo "Gathering all locales into chrome.manifest ..."
 LOCALES=\"en-US\"
-for entry in chrome/locale/*; do
+for entry in locale/*; do
   entry=`basename $entry`
   if [ $entry != en-US ]; then
-    echo "locale  $NAME  $entry  chrome/locale/$entry/" >> chrome.manifest
+    echo "locale  $NAME  $entry  locale/$entry/" >> chrome.manifest
     LOCALES=$LOCALES,\ \"$entry\"
   fi
 done

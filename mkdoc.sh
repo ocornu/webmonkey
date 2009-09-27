@@ -10,8 +10,8 @@ make() {
 	java -jar jsrun.jar app/run.js -a -t=templates/webmonkey -d=$DOC \
 		$SRC/modules/lib/*.js \
 		$SRC/modules/*.js \
-		$SRC/chrome/content/lib/*.js \
-		$SRC/chrome/content/*.js \
+		$SRC/content/lib/*.js \
+		$SRC/content/*.js \
 		$SRC/components/*.js
 }
 
