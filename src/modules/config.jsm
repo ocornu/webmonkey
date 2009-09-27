@@ -10,7 +10,6 @@ Cu.import("resource://webmonkey/script.jsm");
 Cu.import("resource://webmonkey/lib/prefs.jsm");
 Cu.import("resource://webmonkey/lib/file.jsm");
 
-const GM_GUID        = "webmonkey@webmonkey.info";
 const REPOSITORY_DIR = "userscripts";
 const CONFIG_FILE    = "config.xml";
 
@@ -32,7 +31,6 @@ function Config() {
 
   this._observers = [];
 
-  this._updateVersion();
   this._loadFromXml();
 }
 
@@ -211,59 +209,6 @@ Config.prototype = {
   },
 
   get scripts() { return this._scripts.concat(); },
-  getMatchingScripts: function(testFunc) { return this._scripts.filter(testFunc); },
-
-  /**
-   * Checks whether the version has changed since the last run and performs
-   * any necessary upgrades.
-   */
-  _updateVersion: function() {
-//    log("> GM_updateVersion");
-
-    // this is the last version which has been run at least once
-    var initialized = GM_prefRoot.get("version", "0.0");
-
-    // update the currently initialized version so we don't do this work again.
-    var extMan = Cc["@mozilla.org/extensions/manager;1"]
-                 .getService(Ci.nsIExtensionManager);
-
-    var item = extMan.getItemForID(GM_GUID);
-    GM_prefRoot.set("version", item.version);
-
-//    log("< GM_updateVersion");
-  }
-
+  getMatchingScripts: function(testFunc) { return this._scripts.filter(testFunc); }
 };
 
-
-/**
- * Compares two version numbers.
- * @param aV1   Version of first item in 1.2.3.4..9. format.
- * @param aV2   Version of second item in 1.2.3.4..9. format.
- * @returns {int}  1 if first argument is higher, 0 if arguments are equal,
- *                 -1 if second argument is higher.
- */
-function GM_compareVersions(/**string*/ aV1, /**string*/ aV2) {
-  var v1 = aV1.split(".");
-  var v2 = aV2.split(".");
-  var numSubversions = (v1.length > v2.length) ? v1.length : v2.length;
-
-  for (var i = 0; i < numSubversions; i++) {
-    if (typeof v2[i] == "undefined") {
-      return 1;
-    }
-
-    if (typeof v1[i] == "undefined") {
-      return -1;
-    }
-
-    if (parseInt(v2[i], 10) > parseInt(v1[i], 10)) {
-      return -1;
-    } else if (parseInt(v2[i], 10) < parseInt(v1[i], 10)) {
-      return 1;
-    }
-  }
-
-  // v2 was never higher or lower than v1
-  return 0;
-}
