@@ -1,0 +1,118 @@
+Webmonkey is a userscript manager for Firefox.
+
+
+Requirements
+============
+
+  * Run Webmonkey:            Firefox version 3.5+
+  * Build a XPI:              Unix shell
+  * Build the documentation:  Java Runtime Engine
+  * Play with the code:       git
+
+
+Install
+=======
+
+You can install the XPI file (see below): simply open it with Firefox.
+
+You can also run Webmonkey from the sources.
+  1. Close Firefox.
+  2. In your Firefox profile's "extensions" folder, add a text file called
+     "webmonkey@webmonkey.info", containing the path to the WM sources folder:
+        $ cd /path/to/firefox/profile
+        $ echo /path/to/webmonkey/src > extensions/webmonkey@webmonkey.info
+
+
+Build a XPI
+===========
+
+  $ cd /path/to/webmonkey
+  $ ./build.sh
+
+
+Build the documentation
+=======================
+
+  $ cd /path/to/webmonkey
+  $ ./mkdoc.sh
+
+
+File structure
+==============
+
+Path              Description               Chrome
+_______________________________________________________________________________
+
+/doc/             Documentation (auto-generated)
+  index.html        HTML root page
+  ...
+/src/             Source files
+  components/       XPCOM service
+    webmonkey-service.js                    @webmonkey.info/webmonkey-service;1
+  content/          XUL overlays            chrome://webmonkey/content
+    lib/              Libraries
+      accelimation.js   Visual effects
+      menucommander.js  Menu logic
+      utils.js          Misc. utilities
+    browser.*         Browser window
+    install.*         Userscript install dialog
+    manage.*          WM management window
+    newscript.*       Userscript creation dialog
+    pages-overlay.*   Include/exclude management
+  default/          Add-on preferences
+    preferences/
+      webmonkey.js
+  locale/           Language files          chrome://webmonkey/locale
+    ...
+  modules/          JSM core classes        resource://webmonkey
+    lib/              Libraries
+      convert2RegExp.js URI mask parser
+      file.jsm          File management
+      prefs.jsm         Preferences management
+    script/           Userscript internals
+      api.jsm           Sandbox API
+      console.jsm       Dummy Firebug console
+      metadata.jsm      Meta-data management
+      require.jsm       @require logic
+      resource.jsm      @resource logic
+      xhr.jsm           GM_xmlhttpRequest logic
+    config.jsm        WM runtime configuration
+    script.jsm        Userscript interface
+  skin/             classic/1.0 skin        chrome://webmonkey/skin
+    icon_medium.png   32x32 icon
+    icon_small.png    16x16 icons
+    icon_small_disabled.png
+    manage.css        CSS style sheet
+  chrome.manifest   Chrome configuration
+  install.rdf       Add-on definition
+  LICENCE           FOSS licence
+/test/            Test suite (limited!)
+  foo.user.js       Test userscript
+  foo1.js           @require
+  foo1.png          PNG @resource
+  foo3.jpg          JPG @resource
+  Foo2.js           @require (capital)
+  Foo2.png          @resource (capital)
+  README            Description
+  test.html         Test page
+/utils/           Utilities
+  jsdoc-toolkit/    Documentation engine
+    ...
+  tld/              TLDs list generation
+    ...
+/build.sh         Add-on XPI build script
+/mkdoc.sh         Documentation build script
+/README           This file
+/update.rdf       Mozilla update file (unsigned)
+_______________________________________________________________________________
+
+
+Links
+=====
+
+  * Homepage:         http://webmonkey.info
+  * Bug tracker:      http://webmonkey.info
+  * Sources:          http://github.com/ocornu/webmonkey
+  * Userscripts:      http;//userscripts.org
+  * All things git:   http://git-scm.com
+
