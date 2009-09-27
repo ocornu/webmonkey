@@ -8,11 +8,13 @@ cd utils/jsdoc-toolkit
 
 make() {
 	java -jar jsrun.jar app/run.js -a -t=templates/webmonkey -d=$DOC \
-		$SRC/modules/lib/*.js \
-		$SRC/modules/*.js \
-		$SRC/content/lib/*.js \
+		-x=js,jsm \
+		$SRC/modules/lib \
+		$SRC/modules/script \
+		$SRC/modules \
+		$SRC/content/lib \
 		$SRC/content/*.js \
-		$SRC/components/*.js
+		$SRC/components
 }
 
 if [ "$1" == "-v" ]; then

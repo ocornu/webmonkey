@@ -11,8 +11,9 @@ const CONTRACT_ID = "@webmonkey.info/webmonkey-service;1";
 // shortcuts
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const Cu = Components.utils;
 
-Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
 
 /**
@@ -69,7 +70,7 @@ WebmonkeyService.prototype = {
    */
   observe: function(aSubject, aTopic, aData) {
     if (aTopic != "app-startup") return;
-    Components.utils.import("resource://webmonkey/config.js");
+    Cu.import("resource://webmonkey/config.jsm");
     var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
                  .getService(Ci.mozIJSSubScriptLoader);
     loader.loadSubScript("chrome://global/content/XPCNativeWrapper.js");

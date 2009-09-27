@@ -4,9 +4,9 @@ var EXPORTED_SYMBOLS = ["Config"];
 
 const GM_GUID = "webmonkey@webmonkey.info";
 
-Components.utils.import("resource://webmonkey/prefmanager.js");
-Components.utils.import("resource://webmonkey/script.js");
-Components.utils.import("resource://webmonkey/file.js");
+Components.utils.import("resource://webmonkey/script.jsm");
+Components.utils.import("resource://webmonkey/lib/prefs.jsm");
+Components.utils.import("resource://webmonkey/lib/file.jsm");
 
 /**
  * @class
