@@ -145,7 +145,7 @@ GM_BrowserUI.showInstallBanner = function(browser) {
     // Firefox 1.5 and lower
     this.tabBrowser.showMessage(
       browser,
-      "chrome://webmonkey/content/icons/icon_small.png",
+      "chrome://webmonkey/skin/icon_small.png",
       greeting,
       this.bundle.getString("greeting.btn"),
       null /* default doc shell */,
@@ -170,7 +170,7 @@ GM_BrowserUI.showInstallBanner = function(browser) {
     var notification = notificationBox.appendNotification(
       greeting,
       "install-userscript",
-      "chrome://webmonkey/content/icons/icon_small.png",
+      "chrome://webmonkey/skin/icon_small.png",
       notificationBox.PRIORITY_WARNING_MEDIUM,
       [{
         label: this.bundle.getString("greeting.btn"),
@@ -541,10 +541,10 @@ function GM_popupClicked(aEvent) {
  */
 GM_BrowserUI.refreshStatus = function() {
   if (GM_getEnabled()) {
-    this.statusImage.src = "chrome://webmonkey/content/icons/icon_small.png";
+    this.statusImage.src = "chrome://webmonkey/skin/icon_small.png";
     this.statusImage.tooltipText = this.bundle.getString("tooltip.enabled");
   } else {
-    this.statusImage.src = "chrome://webmonkey/content/icons/icon_small_disabled.png";
+    this.statusImage.src = "chrome://webmonkey/skin/icon_small_disabled.png";
     this.statusImage.tooltipText = this.bundle.getString("tooltip.disabled");
   }
 

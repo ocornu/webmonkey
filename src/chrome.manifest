@@ -2,3 +2,4 @@ content  webmonkey content/
 resource webmonkey modules/
 locale   webmonkey en-US locale/en-US/
 overlay  chrome://browser/content/browser.xul chrome://webmonkey/content/browser.xul
+skin	   webmonkey classic/1.0 skin/
