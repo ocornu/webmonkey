@@ -121,7 +121,7 @@ Script.prototype = {
    */
   install: function(/**Config*/ aConfig) {
     this._config = aConfig;
-    var dir = new File(aConfig._scriptDir);
+    var dir = new File(aConfig.dir);
     dir.name = this._filename.replace(/\.user\.js$/, "");
     dir.createUnique(File.DIR);
     dir.remove(true);
@@ -238,7 +238,7 @@ Script.fromSource = function(/**string*/ aSource, /**nsIURI*/ aUri) {
 Script.fromConfig = function(/**Config*/ aConfig, /**nsiDOMNode*/ aNode) {
   var script = new Script();
   script._config = aConfig;
-  script._fromXml(aNode, aConfig._scriptDir);
+  script._fromXml(aNode, aConfig.dir);
   return script;
 };
 

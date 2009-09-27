@@ -19,17 +19,14 @@ const CONFIG_FILE    = "config.xml";
 function Config() {
   this._scripts = null;
 
-  this._scriptDir = File.profile();
-  this._scriptDir.name = REPOSITORY_DIR;
-  if (!this._scriptDir.exists())
-    this._scriptDir.create(File.DIR);
-
-  this._configFile = new File(this._scriptDir);
-  this._configFile.name = CONFIG_FILE;
-  if (!this._configFile.exists()) {
-    this._configFile.create(File.FILE);
-    this._configFile.write("<UserScriptConfig/>");
-  }
+  var dir = File.profile();
+  dir.name = REPOSITORY_DIR;
+  if (!dir.exists())
+    dir.create(File.DIR);
+  /**
+   * @type File
+   */
+  this.dir = dir;
 
   this._observers = [];
 
@@ -38,6 +35,16 @@ function Config() {
 }
 
 Config.prototype = {
+  get _file() {
+    var file = new File(this.dir);
+    file.name = CONFIG_FILE;
+    if (!file.exists()) {
+      file.create(File.FILE);
+      file.write("<UserScriptConfig/>");
+    }
+    return file;
+  },
+
   addObserver: function(observer, script) {
     var observers = script ? script._observers : this._observers;
     observers.push(observer);
@@ -81,7 +88,7 @@ Config.prototype = {
   },
 
   _loadFromXml: function() {
-    var doc = this._configFile.readXML();
+    var doc = this._file.readXML();
     var nodes = doc.evaluate("/UserScriptConfig/Script", doc, null, 0, null);
     this._scripts = [];
     for (var node; node = nodes.iterateNext();)
@@ -100,7 +107,7 @@ Config.prototype = {
       config.appendChild(scriptNode);
     }
     config.appendChild(doc.createTextNode("\n"));
-    this._configFile.writeXML(doc);
+    this._file.writeXML(doc);
   },
 
   install: function(script) {
