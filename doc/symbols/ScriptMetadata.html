@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - Script.MetaData</title>
+		<title>JsDoc Reference - ScriptMetadata</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -202,8 +202,6 @@ ul.inheritsList
 	
 	<li><a href="../symbols/Config.html" class="symbol">Config</a></li>
 	
-	<li><a href="../symbols/ExtensionUpdater.html" class="symbol">ExtensionUpdater</a></li>
-	
 	<li><a href="../symbols/File.html" class="symbol">File</a></li>
 	
 	<li><a href="../symbols/File.IO.html" class="symbol">File.IO</a></li>
@@ -214,17 +212,19 @@ ul.inheritsList
 	
 	<li><a href="../symbols/Script.html" class="symbol">Script</a></li>
 	
-	<li><a href="../symbols/Script.Api.html" class="symbol">Script.Api</a></li>
+	<li><a href="../symbols/ScriptApi.html" class="symbol">ScriptApi</a></li>
 	
-	<li><a href="../symbols/Script.Api.Console.html" class="symbol">Script.Api.Console</a></li>
+	<li><a href="../symbols/ScriptApiConsole.html" class="symbol">ScriptApiConsole</a></li>
 	
-	<li><a href="../symbols/Script.Api.XmlHttpRequest.html" class="symbol">Script.Api.XmlHttpRequest</a></li>
+	<li><a href="../symbols/ScriptApiXmlHttpRequest.html" class="symbol">ScriptApiXmlHttpRequest</a></li>
 	
-	<li><a href="../symbols/Script.MetaData.html" class="symbol">Script.MetaData</a></li>
+	<li><a href="../symbols/ScriptMetadata.html" class="symbol">ScriptMetadata</a></li>
 	
-	<li><a href="../symbols/Script.Require.html" class="symbol">Script.Require</a></li>
+	<li><a href="../symbols/ScriptRequire.html" class="symbol">ScriptRequire</a></li>
 	
-	<li><a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a></li>
+	<li><a href="../symbols/ScriptResource.html" class="symbol">ScriptResource</a></li>
+	
+	<li><a href="../symbols/UriSet.html" class="symbol">UriSet</a></li>
 	
 	<li><a href="../symbols/WebmonkeyService.html" class="symbol">WebmonkeyService</a></li>
 	
@@ -237,7 +237,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class Script.MetaData
+				Class ScriptMetadata
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -247,13 +247,13 @@ ul.inheritsList
 				Implementation of scripts meta-data.
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_script.js.html">script.js</a>.
+					<br /><i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/modules/script/metadata.jsm&gt;.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class Script.MetaData.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ScriptMetadata.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -266,7 +266,7 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/Script.MetaData.html" class="symbol">Script.MetaData</a></b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script)
+								<b><a href="../symbols/ScriptMetadata.html" class="symbol">ScriptMetadata</a></b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script)
 							</div>
 							<div class="description">Construct a new script meta-data object.</div>
 						</td>
@@ -278,7 +278,7 @@ ul.inheritsList
 <!-- ============================== properties summary ===================== -->
 		
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class Script.MetaData.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class ScriptMetadata.">
 				<caption>Field Summary</caption>
 				<thead>
 					<tr>
@@ -294,9 +294,21 @@ ul.inheritsList
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							<b><a href="../symbols/Script.MetaData.html#description" class="symbol">description</a></b>
+							<b><a href="../symbols/ScriptMetadata.html#description" class="symbol">description</a></b>
 							</div>
 							<div class="description">Script <code>&#64;description</code>.</div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">
+			   <a href="../symbols/UriSet.html" class="symbol">UriSet</a>
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont">
+							<b><a href="../symbols/ScriptMetadata.html#domain" class="symbol">domain</a></b>
+							</div>
+							<div class="description">Script domain (see: <code>&#64;include</code>/<code>&#64;exclude</code>).</div>
 						</td>
 					</tr>
 				
@@ -306,33 +318,9 @@ ul.inheritsList
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							<b><a href="../symbols/Script.MetaData.html#enabled" class="symbol">enabled</a></b>
+							<b><a href="../symbols/ScriptMetadata.html#enabled" class="symbol">enabled</a></b>
 							</div>
 							<div class="description">Enabled/disabled state.</div>
-						</td>
-					</tr>
-				
-					<tr>
-						<td class="attributes">
-			   string[]
-            </td>
-						<td class="nameDescription">
-							<div class="fixedFont">
-							<b><a href="../symbols/Script.MetaData.html#excludes" class="symbol">excludes</a></b>
-							</div>
-							<div class="description">List of <code>&#64;exclude</code> URL masks.</div>
-						</td>
-					</tr>
-				
-					<tr>
-						<td class="attributes">
-			   string[]
-            </td>
-						<td class="nameDescription">
-							<div class="fixedFont">
-							<b><a href="../symbols/Script.MetaData.html#includes" class="symbol">includes</a></b>
-							</div>
-							<div class="description">List of <code>&#64;include</code> URL masks.</div>
 						</td>
 					</tr>
 				
@@ -342,7 +330,7 @@ ul.inheritsList
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							<b><a href="../symbols/Script.MetaData.html#name" class="symbol">name</a></b>
+							<b><a href="../symbols/ScriptMetadata.html#name" class="symbol">name</a></b>
 							</div>
 							<div class="description">Script <code>&#64;name</code>.</div>
 						</td>
@@ -354,7 +342,7 @@ ul.inheritsList
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							<b><a href="../symbols/Script.MetaData.html#namespace" class="symbol">namespace</a></b>
+							<b><a href="../symbols/ScriptMetadata.html#namespace" class="symbol">namespace</a></b>
 							</div>
 							<div class="description">Script <code>&#64;namespace</code>.</div>
 						</td>
@@ -362,11 +350,11 @@ ul.inheritsList
 				
 					<tr>
 						<td class="attributes">
-			   <a href="../symbols/Script.Require.html" class="symbol">Script.Require</a>[]
+			   <a href="../symbols/ScriptRequire.html" class="symbol">ScriptRequire</a>[]
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							<b><a href="../symbols/Script.MetaData.html#requires" class="symbol">requires</a></b>
+							<b><a href="../symbols/ScriptMetadata.html#requires" class="symbol">requires</a></b>
 							</div>
 							<div class="description">List of <code>&#64;require</code> items.</div>
 						</td>
@@ -374,11 +362,11 @@ ul.inheritsList
 				
 					<tr>
 						<td class="attributes">
-			   <a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a>[]
+			   <a href="../symbols/ScriptResource.html" class="symbol">ScriptResource</a>[]
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							<b><a href="../symbols/Script.MetaData.html#resources" class="symbol">resources</a></b>
+							<b><a href="../symbols/ScriptMetadata.html#resources" class="symbol">resources</a></b>
 							</div>
 							<div class="description">List of <code>&#64;resource</code> items.</div>
 						</td>
@@ -393,7 +381,7 @@ ul.inheritsList
 <!-- ============================== methods summary ======================== -->
 			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class Script.MetaData.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ScriptMetadata.">
 				<caption>Method Summary</caption>
 				<thead>
 					<tr>
@@ -408,7 +396,7 @@ ul.inheritsList
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#addExclude" class="symbol">addExclude</a></b>(<span class="light fixedFont">string</span>&nbsp;url)
+							<div class="fixedFont"><b><a href="../symbols/ScriptMetadata.html#addExclude" class="symbol">addExclude</a></b>(<span class="light fixedFont">string</span>&nbsp;url)
 							</div>
 							<div class="description">Add an exclude mask.</div>
 						</td>
@@ -419,7 +407,7 @@ ul.inheritsList
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#addInclude" class="symbol">addInclude</a></b>(<span class="light fixedFont">string</span>&nbsp;url)
+							<div class="fixedFont"><b><a href="../symbols/ScriptMetadata.html#addInclude" class="symbol">addInclude</a></b>(<span class="light fixedFont">string</span>&nbsp;url)
 							</div>
 							<div class="description">Add an include mask.</div>
 						</td>
@@ -430,7 +418,7 @@ ul.inheritsList
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#fromXml" class="symbol">fromXml</a></b>(<span class="light fixedFont">nsIDOMNode</span>&nbsp;node)
+							<div class="fixedFont"><b><a href="../symbols/ScriptMetadata.html#fromXml" class="symbol">fromXml</a></b>(<span class="light fixedFont">nsIDOMNode</span>&nbsp;node)
 							</div>
 							<div class="description"></div>
 						</td>
@@ -438,13 +426,13 @@ ul.inheritsList
 				
 					<tr>
 						<td class="attributes">
-			   <a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a>
+			   <a href="../symbols/ScriptResource.html" class="symbol">ScriptResource</a>
             
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#getResource" class="symbol">getResource</a></b>(<span class="light fixedFont">string</span>&nbsp;aName)
+							<div class="fixedFont"><b><a href="../symbols/ScriptMetadata.html#getResource" class="symbol">getResource</a></b>(<span class="light fixedFont">string</span>&nbsp;aName)
 							</div>
-							<div class="description">Find the <a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a> with the given resource name.</div>
+							<div class="description">Find the <a href="../symbols/ScriptResource.html" class="symbol">ScriptResource</a> with the given resource name.</div>
 						</td>
 					</tr>
 				
@@ -453,7 +441,7 @@ ul.inheritsList
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#parse" class="symbol">parse</a></b>(source, uri)
+							<div class="fixedFont"><b><a href="../symbols/ScriptMetadata.html#parse" class="symbol">parse</a></b>(source, uri)
 							</div>
 							<div class="description"></div>
 						</td>
@@ -464,7 +452,7 @@ ul.inheritsList
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#removeExcludeAt" class="symbol">removeExcludeAt</a></b>(<span class="light fixedFont">int</span>&nbsp;index)
+							<div class="fixedFont"><b><a href="../symbols/ScriptMetadata.html#removeExcludeAt" class="symbol">removeExcludeAt</a></b>(<span class="light fixedFont">int</span>&nbsp;index)
 							</div>
 							<div class="description">Remove an exclude mask.</div>
 						</td>
@@ -475,7 +463,7 @@ ul.inheritsList
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#removeIncludeAt" class="symbol">removeIncludeAt</a></b>(<span class="light fixedFont">int</span>&nbsp;index)
+							<div class="fixedFont"><b><a href="../symbols/ScriptMetadata.html#removeIncludeAt" class="symbol">removeIncludeAt</a></b>(<span class="light fixedFont">int</span>&nbsp;index)
 							</div>
 							<div class="description">Remove an include mask.</div>
 						</td>
@@ -486,7 +474,7 @@ ul.inheritsList
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.MetaData.html#toXml" class="symbol">toXml</a></b>(doc, node)
+							<div class="fixedFont"><b><a href="../symbols/ScriptMetadata.html#toXml" class="symbol">toXml</a></b>(doc, node)
 							</div>
 							<div class="description"></div>
 						</td>
@@ -515,7 +503,7 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>Script.MetaData</b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script)
+						<b>ScriptMetadata</b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script)
 				</div>
 				
 				<div class="description">
@@ -575,6 +563,26 @@ ul.inheritsList
 						
 					<hr />
 				
+					<a name="domain"> </a>
+					<div class="fixedFont">
+					<span class="light"><a href="../symbols/UriSet.html" class="symbol">UriSet</a></span>
+					<b>domain</b>
+
+					</div>
+					<div class="description">
+						Script domain (see: <code>&#64;include</code>/<code>&#64;exclude</code>).
+						
+						
+					</div>
+
+					
+
+						
+						
+						
+						
+					<hr />
+				
 					<a name="enabled"> </a>
 					<div class="fixedFont">
 					<span class="light">boolean</span>
@@ -583,46 +591,6 @@ ul.inheritsList
 					</div>
 					<div class="description">
 						Enabled/disabled state.
-						
-						
-					</div>
-
-					
-
-						
-						
-						
-						
-					<hr />
-				
-					<a name="excludes"> </a>
-					<div class="fixedFont">
-					<span class="light">string[]</span>
-					<b>excludes</b>
-
-					</div>
-					<div class="description">
-						List of <code>&#64;exclude</code> URL masks.
-						
-						
-					</div>
-
-					
-
-						
-						
-						
-						
-					<hr />
-				
-					<a name="includes"> </a>
-					<div class="fixedFont">
-					<span class="light">string[]</span>
-					<b>includes</b>
-
-					</div>
-					<div class="description">
-						List of <code>&#64;include</code> URL masks.
 						
 						
 					</div>
@@ -677,7 +645,7 @@ ul.inheritsList
 				
 					<a name="requires"> </a>
 					<div class="fixedFont">
-					<span class="light"><a href="../symbols/Script.Require.html" class="symbol">Script.Require</a>[]</span>
+					<span class="light"><a href="../symbols/ScriptRequire.html" class="symbol">ScriptRequire</a>[]</span>
 					<b>requires</b>
 
 					</div>
@@ -697,7 +665,7 @@ ul.inheritsList
 				
 					<a name="resources"> </a>
 					<div class="fixedFont">
-					<span class="light"><a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a>[]</span>
+					<span class="light"><a href="../symbols/ScriptResource.html" class="symbol">ScriptResource</a>[]</span>
 					<b>resources</b>
 
 					</div>
@@ -831,12 +799,12 @@ ul.inheritsList
 				
 					<a name="getResource"> </a>
 					<div class="fixedFont">
-					<span class="light"><a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a></span>
+					<span class="light"><a href="../symbols/ScriptResource.html" class="symbol">ScriptResource</a></span>
 					<b>getResource</b>(<span class="light fixedFont">string</span>&nbsp;aName)
 					
 					</div>
 					<div class="description">
-						Find the <a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a> with the given resource name.
+						Find the <a href="../symbols/ScriptResource.html" class="symbol">ScriptResource</a> with the given resource name.
 						
 						
 					</div>
@@ -874,7 +842,7 @@ ul.inheritsList
 							<dt class="heading">Returns:</dt>
 							
 								<dd>
-                  <span class="light fixedFont"><a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a></span>&nbsp;&nbsp;
+                  <span class="light fixedFont"><a href="../symbols/ScriptResource.html" class="symbol">ScriptResource</a></span>&nbsp;&nbsp;
                   The resource named <code>aName</code>.
                 </dd>
 							
@@ -1051,7 +1019,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Aug 24 2009 19:09:00 GMT+0200 (CEST)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Sep 28 2009 11:52:53 GMT+0200 (CEST)
 		</div>
 	</body>
 </html>

@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - Script.Api</title>
+		<title>JsDoc Reference - ScriptApi</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -202,8 +202,6 @@ ul.inheritsList
 	
 	<li><a href="../symbols/Config.html" class="symbol">Config</a></li>
 	
-	<li><a href="../symbols/ExtensionUpdater.html" class="symbol">ExtensionUpdater</a></li>
-	
 	<li><a href="../symbols/File.html" class="symbol">File</a></li>
 	
 	<li><a href="../symbols/File.IO.html" class="symbol">File.IO</a></li>
@@ -214,17 +212,19 @@ ul.inheritsList
 	
 	<li><a href="../symbols/Script.html" class="symbol">Script</a></li>
 	
-	<li><a href="../symbols/Script.Api.html" class="symbol">Script.Api</a></li>
+	<li><a href="../symbols/ScriptApi.html" class="symbol">ScriptApi</a></li>
 	
-	<li><a href="../symbols/Script.Api.Console.html" class="symbol">Script.Api.Console</a></li>
+	<li><a href="../symbols/ScriptApiConsole.html" class="symbol">ScriptApiConsole</a></li>
 	
-	<li><a href="../symbols/Script.Api.XmlHttpRequest.html" class="symbol">Script.Api.XmlHttpRequest</a></li>
+	<li><a href="../symbols/ScriptApiXmlHttpRequest.html" class="symbol">ScriptApiXmlHttpRequest</a></li>
 	
-	<li><a href="../symbols/Script.MetaData.html" class="symbol">Script.MetaData</a></li>
+	<li><a href="../symbols/ScriptMetadata.html" class="symbol">ScriptMetadata</a></li>
 	
-	<li><a href="../symbols/Script.Require.html" class="symbol">Script.Require</a></li>
+	<li><a href="../symbols/ScriptRequire.html" class="symbol">ScriptRequire</a></li>
 	
-	<li><a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a></li>
+	<li><a href="../symbols/ScriptResource.html" class="symbol">ScriptResource</a></li>
+	
+	<li><a href="../symbols/UriSet.html" class="symbol">UriSet</a></li>
 	
 	<li><a href="../symbols/WebmonkeyService.html" class="symbol">WebmonkeyService</a></li>
 	
@@ -237,7 +237,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class Script.Api
+				Class ScriptApi
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -245,17 +245,17 @@ ul.inheritsList
 				
 			
 				Implementation of the GM script API logic.<br>
-This class contains the GM_* API methods and the <a href="../symbols/Script.Api.html#sandbox" class="symbol">Script.Api#sandbox</a>
+This class contains the GM_* API methods and the <a href="../symbols/ScriptApi.html#sandbox" class="symbol">ScriptApi#sandbox</a>
 factory method.
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_script.js.html">script.js</a>.
+					<br /><i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/modules/script/api.jsm&gt;.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class Script.Api.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ScriptApi.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -268,7 +268,7 @@ factory method.
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/Script.Api.html" class="symbol">Script.Api</a></b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script)
+								<b><a href="../symbols/ScriptApi.html" class="symbol">ScriptApi</a></b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script)
 							</div>
 							<div class="description">Construct a new script API object.</div>
 						</td>
@@ -286,7 +286,7 @@ factory method.
 <!-- ============================== methods summary ======================== -->
 			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class Script.Api.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ScriptApi.">
 				<caption>Method Summary</caption>
 				<thead>
 					<tr>
@@ -301,7 +301,7 @@ factory method.
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Api.html#GM_addStyle" class="symbol">GM_addStyle</a></b>(<span class="light fixedFont">nsIDOMDocument</span>&nbsp;doc, <span class="light fixedFont">string</span>&nbsp;aCss)
+							<div class="fixedFont"><b><a href="../symbols/ScriptApi.html#GM_addStyle" class="symbol">GM_addStyle</a></b>(<span class="light fixedFont">nsIDOMDocument</span>&nbsp;doc, <span class="light fixedFont">string</span>&nbsp;aCss)
 							</div>
 							<div class="description">See <a href="http://wiki.greasespot.net/GM_addStyle">GM wiki definition</a>.</div>
 						</td>
@@ -312,7 +312,7 @@ factory method.
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Api.html#GM_deleteValue" class="symbol">GM_deleteValue</a></b>(<span class="light fixedFont">string</span>&nbsp;aKey)
+							<div class="fixedFont"><b><a href="../symbols/ScriptApi.html#GM_deleteValue" class="symbol">GM_deleteValue</a></b>(<span class="light fixedFont">string</span>&nbsp;aKey)
 							</div>
 							<div class="description">See <a href="http://wiki.greasespot.net/GM_deleteValue">GM wiki definition</a>.</div>
 						</td>
@@ -324,7 +324,7 @@ factory method.
             
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Api.html#GM_getResourceText" class="symbol">GM_getResourceText</a></b>(<span class="light fixedFont">string</span>&nbsp;aName)
+							<div class="fixedFont"><b><a href="../symbols/ScriptApi.html#GM_getResourceText" class="symbol">GM_getResourceText</a></b>(<span class="light fixedFont">string</span>&nbsp;aName)
 							</div>
 							<div class="description">See <a href="http://wiki.greasespot.net/GM_getResourceText">GM wiki definition</a>.</div>
 						</td>
@@ -336,7 +336,7 @@ factory method.
             
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Api.html#GM_getResourceURL" class="symbol">GM_getResourceURL</a></b>(<span class="light fixedFont">string</span>&nbsp;aName)
+							<div class="fixedFont"><b><a href="../symbols/ScriptApi.html#GM_getResourceURL" class="symbol">GM_getResourceURL</a></b>(<span class="light fixedFont">string</span>&nbsp;aName)
 							</div>
 							<div class="description">See <a href="http://wiki.greasespot.net/GM_getResourceURL">GM wiki definition</a>.</div>
 						</td>
@@ -348,7 +348,7 @@ factory method.
             
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Api.html#GM_getValue" class="symbol">GM_getValue</a></b>(<span class="light fixedFont">string</span>&nbsp;aKey, <span class="light fixedFont">object</span>&nbsp;aDefaultValue)
+							<div class="fixedFont"><b><a href="../symbols/ScriptApi.html#GM_getValue" class="symbol">GM_getValue</a></b>(<span class="light fixedFont">string</span>&nbsp;aKey, <span class="light fixedFont">object</span>&nbsp;aDefaultValue)
 							</div>
 							<div class="description">See <a href="http://wiki.greasespot.net/GM_getValue">GM wiki definition</a>.</div>
 						</td>
@@ -360,7 +360,7 @@ factory method.
             
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Api.html#GM_listValues" class="symbol">GM_listValues</a></b>()
+							<div class="fixedFont"><b><a href="../symbols/ScriptApi.html#GM_listValues" class="symbol">GM_listValues</a></b>()
 							</div>
 							<div class="description">See <a href="http://wiki.greasespot.net/GM_listValues">GM wiki definition</a>.</div>
 						</td>
@@ -371,7 +371,7 @@ factory method.
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Api.html#GM_log" class="symbol">GM_log</a></b>(<span class="light fixedFont">string</span>&nbsp;aMessage)
+							<div class="fixedFont"><b><a href="../symbols/ScriptApi.html#GM_log" class="symbol">GM_log</a></b>(<span class="light fixedFont">string</span>&nbsp;aMessage)
 							</div>
 							<div class="description">See <a href="http://wiki.greasespot.net/GM_log">GM wiki definition</a>.</div>
 						</td>
@@ -382,7 +382,7 @@ factory method.
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Api.html#GM_openInTab" class="symbol">GM_openInTab</a></b>(<span class="light fixedFont"><a href="../symbols/GM_BrowserUI.html" class="symbol">GM_BrowserUI</a></span>&nbsp;gmBrowser, <span class="light fixedFont">string</span>&nbsp;aUrl)
+							<div class="fixedFont"><b><a href="../symbols/ScriptApi.html#GM_openInTab" class="symbol">GM_openInTab</a></b>(<span class="light fixedFont"><a href="../symbols/GM_BrowserUI.html" class="symbol">GM_BrowserUI</a></span>&nbsp;gmBrowser, <span class="light fixedFont">string</span>&nbsp;aUrl)
 							</div>
 							<div class="description">See <a href="http://wiki.greasespot.net/GM_openInTab">GM wiki definition</a>.</div>
 						</td>
@@ -393,7 +393,7 @@ factory method.
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Api.html#GM_registerMenuCommand" class="symbol">GM_registerMenuCommand</a></b>(<span class="light fixedFont"><a href="../symbols/GM_BrowserUI.html" class="symbol">GM_BrowserUI</a></span>&nbsp;gmBrowser, <span class="light fixedFont">nsiDOMWindow</span>&nbsp;unsafeWin, <span class="light fixedFont">string</span>&nbsp;aCommandName, <span class="light fixedFont">Function</span>&nbsp;aCallback, <span class="light fixedFont">string</span>&nbsp;aAccelKey, <span class="light fixedFont">string</span>&nbsp;aAccelModifiers, <span class="light fixedFont">string</span>&nbsp;aAccessKey)
+							<div class="fixedFont"><b><a href="../symbols/ScriptApi.html#GM_registerMenuCommand" class="symbol">GM_registerMenuCommand</a></b>(<span class="light fixedFont"><a href="../symbols/GM_BrowserUI.html" class="symbol">GM_BrowserUI</a></span>&nbsp;gmBrowser, <span class="light fixedFont">nsiDOMWindow</span>&nbsp;unsafeWin, <span class="light fixedFont">string</span>&nbsp;aCommandName, <span class="light fixedFont">Function</span>&nbsp;aCallback, <span class="light fixedFont">string</span>&nbsp;aAccelKey, <span class="light fixedFont">string</span>&nbsp;aAccelModifiers, <span class="light fixedFont">string</span>&nbsp;aAccessKey)
 							</div>
 							<div class="description">See <a href="http://wiki.greasespot.net/GM_registerMenuCommand">GM wiki definition</a>.</div>
 						</td>
@@ -404,7 +404,7 @@ factory method.
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Api.html#GM_setValue" class="symbol">GM_setValue</a></b>(<span class="light fixedFont">string</span>&nbsp;aKey, <span class="light fixedFont">object</span>&nbsp;aValue)
+							<div class="fixedFont"><b><a href="../symbols/ScriptApi.html#GM_setValue" class="symbol">GM_setValue</a></b>(<span class="light fixedFont">string</span>&nbsp;aKey, <span class="light fixedFont">object</span>&nbsp;aValue)
 							</div>
 							<div class="description">See <a href="http://wiki.greasespot.net/GM_setValue">GM wiki definition</a>.</div>
 						</td>
@@ -415,7 +415,7 @@ factory method.
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Api.html#GM_xmlhttpRequest" class="symbol">GM_xmlhttpRequest</a></b>(<span class="light fixedFont">Script.Api.XMLHttpRequester</span>&nbsp;xhr, <span class="light fixedFont">Object*</span>&nbsp;aDetails)
+							<div class="fixedFont"><b><a href="../symbols/ScriptApi.html#GM_xmlhttpRequest" class="symbol">GM_xmlhttpRequest</a></b>(<span class="light fixedFont">ScriptApiXMLHttpRequest</span>&nbsp;xhr, <span class="light fixedFont">Object*</span>&nbsp;aDetails)
 							</div>
 							<div class="description">See <a href="http://wiki.greasespot.net/GM_xmlhttpRequest">GM wiki definition</a>.</div>
 						</td>
@@ -427,7 +427,7 @@ factory method.
             
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Api.html#logError" class="symbol">logError</a></b>(<span class="light fixedFont">Error</span>&nbsp;error)
+							<div class="fixedFont"><b><a href="../symbols/ScriptApi.html#logError" class="symbol">logError</a></b>(<span class="light fixedFont">Error</span>&nbsp;error)
 							</div>
 							<div class="description">Log an error to the JS console without throwing an actual error.</div>
 						</td>
@@ -439,7 +439,7 @@ factory method.
             
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Api.html#sandbox" class="symbol">sandbox</a></b>(<span class="light fixedFont">nsIDOMWindow</span>&nbsp;unsafeWin, <span class="light fixedFont"><a href="../symbols/GM_BrowserUI.html" class="symbol">GM_BrowserUI</a></span>&nbsp;gmBrowser, [<span class="light fixedFont">Firebug.Console</span>&nbsp;console])
+							<div class="fixedFont"><b><a href="../symbols/ScriptApi.html#sandbox" class="symbol">sandbox</a></b>(<span class="light fixedFont">nsIDOMWindow</span>&nbsp;unsafeWin, <span class="light fixedFont"><a href="../symbols/GM_BrowserUI.html" class="symbol">GM_BrowserUI</a></span>&nbsp;gmBrowser, [<span class="light fixedFont">Firebug.Console</span>&nbsp;console])
 							</div>
 							<div class="description">Sandbox factory method: creates a sandbox and populates it with our API.</div>
 						</td>
@@ -468,7 +468,7 @@ factory method.
 				</div>
 				
 				<div class="fixedFont">
-						<b>Script.Api</b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script)
+						<b>ScriptApi</b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script)
 				</div>
 				
 				<div class="description">
@@ -962,7 +962,7 @@ factory method.
 					<a name="GM_xmlhttpRequest"> </a>
 					<div class="fixedFont">
 					<span class="light">void</span>
-					<b>GM_xmlhttpRequest</b>(<span class="light fixedFont">Script.Api.XMLHttpRequester</span>&nbsp;xhr, <span class="light fixedFont">Object*</span>&nbsp;aDetails)
+					<b>GM_xmlhttpRequest</b>(<span class="light fixedFont">ScriptApiXMLHttpRequest</span>&nbsp;xhr, <span class="light fixedFont">Object*</span>&nbsp;aDetails)
 					
 					</div>
 					<div class="description">
@@ -979,7 +979,7 @@ factory method.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-                  <span class="light fixedFont">Script.Api.XMLHttpRequester</span>&nbsp;&nbsp;
+                  <span class="light fixedFont">ScriptApiXMLHttpRequest</span>&nbsp;&nbsp;
                   <span class="fixedFont">xhr</span>
 									
 								</dt>
@@ -1120,7 +1120,7 @@ files and update the <code>Error</code> object accordingly.
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Aug 24 2009 19:09:00 GMT+0200 (CEST)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Sep 28 2009 11:52:52 GMT+0200 (CEST)
 		</div>
 	</body>
 </html>

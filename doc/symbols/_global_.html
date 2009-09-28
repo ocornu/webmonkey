@@ -202,8 +202,6 @@ ul.inheritsList
 	
 	<li><a href="../symbols/Config.html" class="symbol">Config</a></li>
 	
-	<li><a href="../symbols/ExtensionUpdater.html" class="symbol">ExtensionUpdater</a></li>
-	
 	<li><a href="../symbols/File.html" class="symbol">File</a></li>
 	
 	<li><a href="../symbols/File.IO.html" class="symbol">File.IO</a></li>
@@ -214,17 +212,19 @@ ul.inheritsList
 	
 	<li><a href="../symbols/Script.html" class="symbol">Script</a></li>
 	
-	<li><a href="../symbols/Script.Api.html" class="symbol">Script.Api</a></li>
+	<li><a href="../symbols/ScriptApi.html" class="symbol">ScriptApi</a></li>
 	
-	<li><a href="../symbols/Script.Api.Console.html" class="symbol">Script.Api.Console</a></li>
+	<li><a href="../symbols/ScriptApiConsole.html" class="symbol">ScriptApiConsole</a></li>
 	
-	<li><a href="../symbols/Script.Api.XmlHttpRequest.html" class="symbol">Script.Api.XmlHttpRequest</a></li>
+	<li><a href="../symbols/ScriptApiXmlHttpRequest.html" class="symbol">ScriptApiXmlHttpRequest</a></li>
 	
-	<li><a href="../symbols/Script.MetaData.html" class="symbol">Script.MetaData</a></li>
+	<li><a href="../symbols/ScriptMetadata.html" class="symbol">ScriptMetadata</a></li>
 	
-	<li><a href="../symbols/Script.Require.html" class="symbol">Script.Require</a></li>
+	<li><a href="../symbols/ScriptRequire.html" class="symbol">ScriptRequire</a></li>
 	
-	<li><a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a></li>
+	<li><a href="../symbols/ScriptResource.html" class="symbol">ScriptResource</a></li>
+	
+	<li><a href="../symbols/UriSet.html" class="symbol">UriSet</a></li>
 	
 	<li><a href="../symbols/WebmonkeyService.html" class="symbol">WebmonkeyService</a></li>
 	
@@ -264,18 +264,6 @@ ul.inheritsList
 					</tr>
 				</thead>
 				<tbody>
-				
-					<tr>
-						<td class="attributes">
-			  
-            </td>
-						<td class="nameDescription">
-							<div class="fixedFont">
-							<b><a href="../symbols/_global_.html#AUTOUPDATE_DEFAULT_VALUE" class="symbol">AUTOUPDATE_DEFAULT_VALUE</a></b>
-							</div>
-							<div class="description">Greasemonkey autoupdater.</div>
-						</td>
-					</tr>
 				
 					<tr>
 						<td class="attributes">
@@ -481,18 +469,6 @@ ul.inheritsList
 							<div class="fixedFont"><b><a href="../symbols/_global_.html#getFirebugConsole" class="symbol">getFirebugConsole</a></b>(safeWin, unsafeWin, chromeWin)
 							</div>
 							<div class="description"></div>
-						</td>
-					</tr>
-				
-					<tr>
-						<td class="attributes">
-			   int
-            
-            </td>
-						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/_global_.html#GM_compareVersions" class="symbol">GM_compareVersions</a></b>(<span class="light fixedFont">string</span>&nbsp;aV1, <span class="light fixedFont">string</span>&nbsp;aV2)
-							</div>
-							<div class="description">Compares two version numbers.</div>
 						</td>
 					</tr>
 				
@@ -766,6 +742,17 @@ in FF 1.0.1.</div>
 			  void
             </td>
 						<td class="nameDescription">
+							<div class="fixedFont"><b><a href="../symbols/_global_.html#parseScriptName" class="symbol">parseScriptName</a></b>(sourceUri)
+							</div>
+							<div class="description"></div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">
+			  void
+            </td>
+						<td class="nameDescription">
 							<div class="fixedFont"><b><a href="../symbols/_global_.html#populate" class="symbol">populate</a></b>(script)
 							</div>
 							<div class="description"></div>
@@ -818,45 +805,6 @@ in FF 1.0.1.</div>
 					Field Detail
 				</div>
 				
-					<a name="AUTOUPDATE_DEFAULT_VALUE"> </a>
-					<div class="fixedFont">
-					
-					<b>AUTOUPDATE_DEFAULT_VALUE</b>
-
-					</div>
-					<div class="description">
-						Greasemonkey autoupdater.
-
-This will run in the background silently, if an update is installed,
-users will see the standard '[extensionname] has been updated,
-restart to ...' in the extension manager.
-
-ExtensionUpdater will look for the em:updateURL of the selected
-extension in the extension manager RDF, if found it will compare
-the version number of the installed extension against the version
-number listed in the RDF at the linked updateURL. If the local
-version is older, ExtensionUpdater will download and install the
-update. This process is entirely silent, and the only way a user
-can tell that their extension has been updated would be to look for
-'[extensionname] will be upgraded when firefox is restarted' in
-their extension manager. (On that note, no matter where in the
-startup sequence you call this object, Firefox will still require
-a restart after the extension is updated).
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_updater.js.html">updater.js</a>.
-						
-						
-					</div>
-
-					
-
-						
-						
-						
-						
-					<hr />
-				
 					<a name="GM_prefRoot"> </a>
 					<div class="fixedFont">
 					<span class="light"><a href="../symbols/PreferenceManager.html" class="symbol">PreferenceManager</a></span>
@@ -867,7 +815,7 @@ a restart after the extension is updated).
 						Webmonkey root preference manager.
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_prefmanager.js.html">prefmanager.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/modules/lib/prefs.jsm&gt;.
 						
 						
 					</div>
@@ -899,7 +847,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_script.js.html">script.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/modules/script/api.jsm&gt;.
 						
 						
 					</div>
@@ -925,7 +873,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_script.js.html">script.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/modules/script/api.jsm&gt;.
 						
 						
 					</div>
@@ -951,7 +899,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_accelimation.js.html">accelimation.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/accelimation.js&gt;.
 						
 						
 					</div>
@@ -1024,7 +972,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_manage.js.html">manage.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/manage.js&gt;.
 						
 						
 					</div>
@@ -1069,7 +1017,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -1107,7 +1055,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_script.js.html">script.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/modules/script/xhr.jsm&gt;.
 						
 						
 					</div>
@@ -1152,7 +1100,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_manage.js.html">manage.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/manage.js&gt;.
 						
 						
 					</div>
@@ -1190,7 +1138,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_pages-overlay.js.html">pages-overlay.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/pages-overlay.js&gt;.
 						
 						
 					</div>
@@ -1216,7 +1164,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_lib_convert2RegExp.js.html">convert2RegExp.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/modules/lib/convert2RegExp.js&gt;.
 						
 						
 					</div>
@@ -1254,7 +1202,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_newscript.js.html">newscript.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/newscript.js&gt;.
 						
 						
 					</div>
@@ -1280,7 +1228,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -1318,7 +1266,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -1356,7 +1304,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -1394,7 +1342,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_newscript.js.html">newscript.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/newscript.js&gt;.
 						
 						
 					</div>
@@ -1420,7 +1368,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -1472,7 +1420,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_components_webmonkey.js.html">webmonkey.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/components/webmonkey-service.js&gt;.
 						
 						
 					</div>
@@ -1514,62 +1462,6 @@ a restart after the extension is updated).
 						
 					<hr />
 				
-					<a name="GM_compareVersions"> </a>
-					<div class="fixedFont">
-					<span class="light">int</span>
-					<b>GM_compareVersions</b>(<span class="light fixedFont">string</span>&nbsp;aV1, <span class="light fixedFont">string</span>&nbsp;aV2)
-					
-					</div>
-					<div class="description">
-						Compares two version numbers.
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_config.js.html">config.js</a>.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-                  <span class="light fixedFont">string</span>&nbsp;&nbsp;
-                  <span class="fixedFont">aV1</span>
-									
-								</dt>
-								<dd>Version of first item in 1.2.3.4..9. format.</dd>
-							
-								<dt>
-                  <span class="light fixedFont">string</span>&nbsp;&nbsp;
-                  <span class="fixedFont">aV2</span>
-									
-								</dt>
-								<dd>Version of second item in 1.2.3.4..9. format.</dd>
-							
-							</dl>
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd>
-                  <span class="light fixedFont">int</span>&nbsp;&nbsp;
-                  1 if first argument is higher, 0 if arguments are equal,
-                -1 if second argument is higher.
-                </dd>
-							
-							</dl>
-						
-						
-						
-					<hr />
-				
 					<a name="GM_getConfig"> </a>
 					<div class="fixedFont">
 					<span class="light">void</span>
@@ -1580,7 +1472,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -1606,7 +1498,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -1632,7 +1524,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -1677,7 +1569,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -1715,7 +1607,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -1774,7 +1666,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -1819,7 +1711,7 @@ a restart after the extension is updated).
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_menucommander.js.html">menucommander.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/menucommander.js&gt;.
 						
 						
 					</div>
@@ -1846,7 +1738,7 @@ a restart after the extension is updated).
 state, rihgt-click opens in an editor.
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_browser.js.html">browser.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/browser.js&gt;.
 						
 						
 					</div>
@@ -1884,7 +1776,7 @@ state, rihgt-click opens in an editor.
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -1922,7 +1814,7 @@ state, rihgt-click opens in an editor.
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_browser.js.html">browser.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/browser.js&gt;.
 						
 						
 					</div>
@@ -1960,7 +1852,7 @@ state, rihgt-click opens in an editor.
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_browser.js.html">browser.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/browser.js&gt;.
 						
 						
 					</div>
@@ -1998,7 +1890,7 @@ state, rihgt-click opens in an editor.
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -2058,7 +1950,7 @@ state, rihgt-click opens in an editor.
 in FF 1.0.1. :(
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -2110,7 +2002,7 @@ in FF 1.0.1. :(
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_manage.js.html">manage.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/manage.js&gt;.
 						
 						
 					</div>
@@ -2136,7 +2028,7 @@ in FF 1.0.1. :(
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_manage.js.html">manage.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/manage.js&gt;.
 						
 						
 					</div>
@@ -2162,7 +2054,7 @@ in FF 1.0.1. :(
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_script.js.html">script.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/modules/script/api.jsm&gt;.
 						
 						
 					</div>
@@ -2200,7 +2092,7 @@ in FF 1.0.1. :(
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_manage.js.html">manage.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/manage.js&gt;.
 						
 						
 					</div>
@@ -2238,7 +2130,7 @@ in FF 1.0.1. :(
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_manage.js.html">manage.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/manage.js&gt;.
 						
 						
 					</div>
@@ -2265,7 +2157,7 @@ in FF 1.0.1. :(
 thingers which will be interpolated with additional parameters passed.
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -2303,7 +2195,7 @@ thingers which will be interpolated with additional parameters passed.
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -2342,7 +2234,7 @@ thingers which will be interpolated with additional parameters passed.
 any parameters, any errors, and it's exit logged automatically.
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_lib_utils.js.html">utils.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/lib/utils.js&gt;.
 						
 						
 					</div>
@@ -2387,7 +2279,7 @@ any parameters, any errors, and it's exit logged automatically.
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_pages-overlay.js.html">pages-overlay.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/pages-overlay.js&gt;.
 						
 						
 					</div>
@@ -2439,7 +2331,7 @@ any parameters, any errors, and it's exit logged automatically.
 						Standard XPCOM module registration.
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_components_webmonkey.js.html">webmonkey.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/components/webmonkey-service.js&gt;.
 						
 						
 					</div>
@@ -2484,7 +2376,7 @@ any parameters, any errors, and it's exit logged automatically.
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_pages-overlay.js.html">pages-overlay.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/pages-overlay.js&gt;.
 						
 						
 					</div>
@@ -2512,6 +2404,44 @@ any parameters, any errors, and it's exit logged automatically.
 						
 					<hr />
 				
+					<a name="parseScriptName"> </a>
+					<div class="fixedFont">
+					<span class="light">void</span>
+					<b>parseScriptName</b>(sourceUri)
+					
+					</div>
+					<div class="description">
+						
+						
+							<br />
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/modules/script/metadata.jsm&gt;.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+                  
+                  <span class="fixedFont">sourceUri</span>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+					<hr />
+				
 					<a name="populate"> </a>
 					<div class="fixedFont">
 					<span class="light">void</span>
@@ -2522,7 +2452,7 @@ any parameters, any errors, and it's exit logged automatically.
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_pages-overlay.js.html">pages-overlay.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/pages-overlay.js&gt;.
 						
 						
 					</div>
@@ -2560,7 +2490,7 @@ any parameters, any errors, and it's exit logged automatically.
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_manage.js.html">manage.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/manage.js&gt;.
 						
 						
 					</div>
@@ -2586,7 +2516,7 @@ any parameters, any errors, and it's exit logged automatically.
 						
 						
 							<br />
-							<i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_chrome_content_manage.js.html">manage.js</a>.
+							<i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/content/manage.js&gt;.
 						
 						
 					</div>
@@ -2615,7 +2545,7 @@ any parameters, any errors, and it's exit logged automatically.
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Aug 24 2009 19:09:00 GMT+0200 (CEST)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Sep 28 2009 11:52:50 GMT+0200 (CEST)
 		</div>
 	</body>
 </html>

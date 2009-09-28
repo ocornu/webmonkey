@@ -202,8 +202,6 @@ ul.inheritsList
 	
 	<li><a href="../symbols/Config.html" class="symbol">Config</a></li>
 	
-	<li><a href="../symbols/ExtensionUpdater.html" class="symbol">ExtensionUpdater</a></li>
-	
 	<li><a href="../symbols/File.html" class="symbol">File</a></li>
 	
 	<li><a href="../symbols/File.IO.html" class="symbol">File.IO</a></li>
@@ -214,17 +212,19 @@ ul.inheritsList
 	
 	<li><a href="../symbols/Script.html" class="symbol">Script</a></li>
 	
-	<li><a href="../symbols/Script.Api.html" class="symbol">Script.Api</a></li>
+	<li><a href="../symbols/ScriptApi.html" class="symbol">ScriptApi</a></li>
 	
-	<li><a href="../symbols/Script.Api.Console.html" class="symbol">Script.Api.Console</a></li>
+	<li><a href="../symbols/ScriptApiConsole.html" class="symbol">ScriptApiConsole</a></li>
 	
-	<li><a href="../symbols/Script.Api.XmlHttpRequest.html" class="symbol">Script.Api.XmlHttpRequest</a></li>
+	<li><a href="../symbols/ScriptApiXmlHttpRequest.html" class="symbol">ScriptApiXmlHttpRequest</a></li>
 	
-	<li><a href="../symbols/Script.MetaData.html" class="symbol">Script.MetaData</a></li>
+	<li><a href="../symbols/ScriptMetadata.html" class="symbol">ScriptMetadata</a></li>
 	
-	<li><a href="../symbols/Script.Require.html" class="symbol">Script.Require</a></li>
+	<li><a href="../symbols/ScriptRequire.html" class="symbol">ScriptRequire</a></li>
 	
-	<li><a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a></li>
+	<li><a href="../symbols/ScriptResource.html" class="symbol">ScriptResource</a></li>
+	
+	<li><a href="../symbols/UriSet.html" class="symbol">UriSet</a></li>
 	
 	<li><a href="../symbols/WebmonkeyService.html" class="symbol">WebmonkeyService</a></li>
 	
@@ -249,7 +249,7 @@ ul.inheritsList
          facilities to manage its presence in the filesystem.
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_script.js.html">script.js</a>.
+					<br /><i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/modules/script.jsm&gt;.
 				
 			</p>
 
@@ -304,7 +304,7 @@ ul.inheritsList
 				
 					<tr>
 						<td class="attributes">
-			   <a href="../symbols/Script.MetaData.html" class="symbol">Script.MetaData</a>
+			   <a href="../symbols/ScriptMetadata.html" class="symbol">ScriptMetadata</a>
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont">
@@ -386,6 +386,17 @@ ul.inheritsList
 							<div class="fixedFont"><b><a href="../symbols/Script.html#isRunnable" class="symbol">isRunnable</a></b>(<span class="light fixedFont">string</span>&nbsp;url)
 							</div>
 							<div class="description">Whether this script may run at a specified URL.</div>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="attributes">
+			  void
+            </td>
+						<td class="nameDescription">
+							<div class="fixedFont"><b><a href="../symbols/Script.html#notify" class="symbol">notify</a></b>(<span class="light fixedFont">string</span>&nbsp;event, <span class="light fixedFont">Object</span>&nbsp;data)
+							</div>
+							<div class="description">Notify observers of a change in this script's configuration.</div>
 						</td>
 					</tr>
 				
@@ -524,7 +535,7 @@ instead.
 				
 					<a name="meta"> </a>
 					<div class="fixedFont">
-					<span class="light"><a href="../symbols/Script.MetaData.html" class="symbol">Script.MetaData</a></span>
+					<span class="light"><a href="../symbols/ScriptMetadata.html" class="symbol">ScriptMetadata</a></span>
 					<b>meta</b>
 
 					</div>
@@ -769,6 +780,48 @@ Moves its directory from the temp folder to the scripts folder.
 						
 					<hr />
 				
+					<a name="notify"> </a>
+					<div class="fixedFont">
+					<span class="light">void</span>
+					<b>notify</b>(<span class="light fixedFont">string</span>&nbsp;event, <span class="light fixedFont">Object</span>&nbsp;data)
+					
+					</div>
+					<div class="description">
+						Notify observers of a change in this script's configuration.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+                  <span class="light fixedFont">string</span>&nbsp;&nbsp;
+                  <span class="fixedFont">event</span>
+									
+								</dt>
+								<dd>A label defining what has changed.</dd>
+							
+								<dt>
+                  <span class="light fixedFont">Object</span>&nbsp;&nbsp;
+                  <span class="fixedFont">data</span>
+									
+								</dt>
+								<dd>An associated payload.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+					<hr />
+				
 					<a name="toXml"> </a>
 					<div class="fixedFont">
 					<span class="light">nsIDOMNode</span>
@@ -987,7 +1040,7 @@ Moves its directory from the temp folder to the scripts folder.
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Aug 24 2009 19:09:00 GMT+0200 (CEST)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Sep 28 2009 11:52:52 GMT+0200 (CEST)
 		</div>
 	</body>
 </html>

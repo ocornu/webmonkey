@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - Script.Resource</title>
+		<title>JsDoc Reference - ScriptResource</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -202,8 +202,6 @@ ul.inheritsList
 	
 	<li><a href="../symbols/Config.html" class="symbol">Config</a></li>
 	
-	<li><a href="../symbols/ExtensionUpdater.html" class="symbol">ExtensionUpdater</a></li>
-	
 	<li><a href="../symbols/File.html" class="symbol">File</a></li>
 	
 	<li><a href="../symbols/File.IO.html" class="symbol">File.IO</a></li>
@@ -214,17 +212,19 @@ ul.inheritsList
 	
 	<li><a href="../symbols/Script.html" class="symbol">Script</a></li>
 	
-	<li><a href="../symbols/Script.Api.html" class="symbol">Script.Api</a></li>
+	<li><a href="../symbols/ScriptApi.html" class="symbol">ScriptApi</a></li>
 	
-	<li><a href="../symbols/Script.Api.Console.html" class="symbol">Script.Api.Console</a></li>
+	<li><a href="../symbols/ScriptApiConsole.html" class="symbol">ScriptApiConsole</a></li>
 	
-	<li><a href="../symbols/Script.Api.XmlHttpRequest.html" class="symbol">Script.Api.XmlHttpRequest</a></li>
+	<li><a href="../symbols/ScriptApiXmlHttpRequest.html" class="symbol">ScriptApiXmlHttpRequest</a></li>
 	
-	<li><a href="../symbols/Script.MetaData.html" class="symbol">Script.MetaData</a></li>
+	<li><a href="../symbols/ScriptMetadata.html" class="symbol">ScriptMetadata</a></li>
 	
-	<li><a href="../symbols/Script.Require.html" class="symbol">Script.Require</a></li>
+	<li><a href="../symbols/ScriptRequire.html" class="symbol">ScriptRequire</a></li>
 	
-	<li><a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a></li>
+	<li><a href="../symbols/ScriptResource.html" class="symbol">ScriptResource</a></li>
+	
+	<li><a href="../symbols/UriSet.html" class="symbol">UriSet</a></li>
 	
 	<li><a href="../symbols/WebmonkeyService.html" class="symbol">WebmonkeyService</a></li>
 	
@@ -237,25 +237,25 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class Script.Resource
+				Class ScriptResource
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
 			<p class="description">
 				<br />Extends
-					<a href="../symbols/Script.Require.html" class="symbol">Script.Require</a>.<br />
+					<a href="../symbols/ScriptRequire.html" class="symbol">ScriptRequire</a>.<br />
 				
 			
 				Implementation of some <code>&#64;resource</code> functionalities.
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_olivier_dev_webmonkey_src_modules_script.js.html">script.js</a>.
+					<br /><i>Defined in: </i> &lt;/home/olivier/dev/webmonkey/src/modules/script/resource.jsm&gt;.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class Script.Resource.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ScriptResource.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -268,7 +268,7 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/Script.Resource.html" class="symbol">Script.Resource</a></b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script, [<span class="light fixedFont">nsIDOMNode</span>&nbsp;node])
+								<b><a href="../symbols/ScriptResource.html" class="symbol">ScriptResource</a></b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script, [<span class="light fixedFont">nsIDOMNode</span>&nbsp;node])
 							</div>
 							<div class="description">Construct a new resource object.</div>
 						</td>
@@ -280,7 +280,7 @@ ul.inheritsList
 <!-- ============================== properties summary ===================== -->
 		
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class Script.Resource.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class ScriptResource.">
 				<caption>Field Summary</caption>
 				<thead>
 					<tr>
@@ -296,7 +296,7 @@ ul.inheritsList
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							<b><a href="../symbols/Script.Resource.html#dataContent" class="symbol">dataContent</a></b>
+							<b><a href="../symbols/ScriptResource.html#dataContent" class="symbol">dataContent</a></b>
 							</div>
 							<div class="description">File <code>data:*</code> content.</div>
 						</td>
@@ -308,7 +308,7 @@ ul.inheritsList
             </td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							<b><a href="../symbols/Script.Resource.html#textContent" class="symbol">textContent</a></b>
+							<b><a href="../symbols/ScriptResource.html#textContent" class="symbol">textContent</a></b>
 							</div>
 							<div class="description">File text content.</div>
 						</td>
@@ -320,14 +320,14 @@ ul.inheritsList
 
 			
 			<dl class="inheritsList">
-			<dt>Fields borrowed from class <a href="../symbols/Script.Require.html" class="symbol">Script.Require</a>: </dt><dd><a href="../symbols/Script.Require.html#file" class="symbol">file</a></dd>
+			<dt>Fields borrowed from class <a href="../symbols/ScriptRequire.html" class="symbol">ScriptRequire</a>: </dt><dd><a href="../symbols/ScriptRequire.html#file" class="symbol">file</a></dd>
 			</dl>
 			
 
 <!-- ============================== methods summary ======================== -->
 			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class Script.Resource.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ScriptResource.">
 				<caption>Method Summary</caption>
 				<thead>
 					<tr>
@@ -342,7 +342,7 @@ ul.inheritsList
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Resource.html#parse" class="symbol">parse</a></b>(<span class="light fixedFont">string</span>&nbsp;value, <span class="light fixedFont">nsIURI</span>&nbsp;baseUri)
+							<div class="fixedFont"><b><a href="../symbols/ScriptResource.html#parse" class="symbol">parse</a></b>(<span class="light fixedFont">string</span>&nbsp;value, <span class="light fixedFont">nsIURI</span>&nbsp;baseUri)
 							</div>
 							<div class="description"></div>
 						</td>
@@ -353,7 +353,7 @@ ul.inheritsList
 			  void
             </td>
 						<td class="nameDescription">
-							<div class="fixedFont"><b><a href="../symbols/Script.Resource.html#toXml" class="symbol">toXml</a></b>(<span class="light fixedFont">nsIDOMNode</span>&nbsp;node)
+							<div class="fixedFont"><b><a href="../symbols/ScriptResource.html#toXml" class="symbol">toXml</a></b>(<span class="light fixedFont">nsIDOMNode</span>&nbsp;node)
 							</div>
 							<div class="description"></div>
 						</td>
@@ -365,7 +365,7 @@ ul.inheritsList
 
 			
 			<dl class="inheritsList">
-			<dt>Methods borrowed from class <a href="../symbols/Script.Require.html" class="symbol">Script.Require</a>: </dt><dd><a href="../symbols/Script.Require.html#fetch" class="symbol">fetch</a></dd>
+			<dt>Methods borrowed from class <a href="../symbols/ScriptRequire.html" class="symbol">ScriptRequire</a>: </dt><dd><a href="../symbols/ScriptRequire.html#fetch" class="symbol">fetch</a></dd>
 			</dl>
 			
 
@@ -386,7 +386,7 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>Script.Resource</b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script, [<span class="light fixedFont">nsIDOMNode</span>&nbsp;node])
+						<b>ScriptResource</b>(<span class="light fixedFont"><a href="../symbols/Script.html" class="symbol">Script</a></span>&nbsp;script, [<span class="light fixedFont">nsIDOMNode</span>&nbsp;node])
 				</div>
 				
 				<div class="description">
@@ -572,7 +572,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Aug 24 2009 19:09:00 GMT+0200 (CEST)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Sep 28 2009 11:52:53 GMT+0200 (CEST)
 		</div>
 	</body>
 </html>
