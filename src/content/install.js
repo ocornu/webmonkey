@@ -8,8 +8,8 @@ var GMInstall = {
     this.gmui_ = window.arguments[0];
     this.script_ = window.arguments[1];
 
-    this.setupIncludes("includes", "includes-desc", this.script_.meta.includes);
-    this.setupIncludes("excludes", "excludes-desc", this.script_.meta.excludes);
+    this.setupIncludes("includes", "includes-desc", this.script_.meta.domain.includes);
+    this.setupIncludes("excludes", "excludes-desc", this.script_.meta.domain.excludes);
 
     this.dialog_ = document.documentElement;
     this.extraButton_ = this.dialog_.getButton("extra1");
