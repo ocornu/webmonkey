@@ -8,7 +8,7 @@ var EXPORTED_SYMBOLS = ["ScriptRequire"];
 const Cu = Components.utils;
 
 // import dependencies
-Cu.import("resource://webmonkey/lib/file.jsm");
+Cu.import("resource://webmonkey/lib/file.js");
 
 
 /**

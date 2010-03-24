@@ -6,9 +6,9 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
 
-Cu.import("resource://webmonkey/script.jsm");
-Cu.import("resource://webmonkey/lib/prefs.jsm");
-Cu.import("resource://webmonkey/lib/file.jsm");
+Cu.import("resource://webmonkey/script.js");
+Cu.import("resource://webmonkey/lib/prefs.js");
+Cu.import("resource://webmonkey/lib/file.js");
 
 const REPOSITORY_DIR = "userscripts";
 const CONFIG_FILE    = "config.xml";

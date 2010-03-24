@@ -10,7 +10,7 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 // import dependencies
-Cu.import("resource://webmonkey/lib/prefs.jsm");
+Cu.import("resource://webmonkey/lib/prefs.js");
 
 const CONSOLE = Cc["@mozilla.org/consoleservice;1"]
                   .getService(Ci.nsIConsoleService);

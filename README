@@ -67,18 +67,16 @@ _______________________________________________________________________________
   modules/          JSM core classes        resource://webmonkey
     lib/              Libraries
       convert2RegExp.js URI mask parser
-      file.jsm          File management
-      prefs.jsm         Preferences management
-      uriset.jsm        URI sets management
+      file.js           File management
+      prefs.js          Preferences management
+      uriset.js         URI sets management
     script/           Userscript internals
-      api.jsm           Sandbox API
-      console.jsm       Dummy Firebug console
-      metadata.jsm      Meta-data management
-      require.jsm       @require logic
-      resource.jsm      @resource logic
-      xhr.jsm           GM_xmlhttpRequest logic
-    config.jsm        WM runtime configuration
-    script.jsm        Userscript interface
+      api.js            Sandbox API
+      metadata.js       Meta-data management
+      require.js        @require logic
+      resource.js       @resource logic
+    config.js         WM runtime configuration
+    script.js         Userscript interface
   skin/             classic/1.0 skin        chrome://webmonkey/skin
     icon_medium.png   32x32 icon
     icon_small.png    16x16 icons

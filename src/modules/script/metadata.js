@@ -8,9 +8,9 @@ var EXPORTED_SYMBOLS = ["ScriptMetadata"];
 const Cu = Components.utils;
 
 // import dependencies
-Cu.import("resource://webmonkey/script/require.jsm");
-Cu.import("resource://webmonkey/script/resource.jsm");
-Cu.import("resource://webmonkey/lib/uriset.jsm");
+Cu.import("resource://webmonkey/script/require.js");
+Cu.import("resource://webmonkey/script/resource.js");
+Cu.import("resource://webmonkey/lib/uriset.js");
 
 
 /**

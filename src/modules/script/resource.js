@@ -10,8 +10,8 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 // import dependencies
-Cu.import("resource://webmonkey/script/require.jsm");
-Cu.import("resource://webmonkey/lib/file.jsm");
+Cu.import("resource://webmonkey/script/require.js");
+Cu.import("resource://webmonkey/lib/file.js");
 
 const SHELL   = Cc["@mozilla.org/appshell/appShellService;1"]
                    .getService(Ci.nsIAppShellService);

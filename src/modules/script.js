@@ -8,10 +8,10 @@ var EXPORTED_SYMBOLS = ["Script"];
 const Cu = Components.utils;
 
 // import dependencies
-Cu.import("resource://webmonkey/script/metadata.jsm");
-Cu.import("resource://webmonkey/script/api.jsm");
-Cu.import("resource://webmonkey/lib/file.jsm");
-Cu.import("resource://webmonkey/lib/prefs.jsm");
+Cu.import("resource://webmonkey/script/metadata.js");
+Cu.import("resource://webmonkey/script/api.js");
+Cu.import("resource://webmonkey/lib/file.js");
+Cu.import("resource://webmonkey/lib/prefs.js");
 
 
 /**

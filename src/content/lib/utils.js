@@ -1,9 +1,9 @@
 var GM_consoleService = Components.classes["@mozilla.org/consoleservice;1"]
                         .getService(Components.interfaces.nsIConsoleService);
 
-Components.utils.import("resource://webmonkey/script.jsm");
-Components.utils.import("resource://webmonkey/lib/prefs.jsm");
-Components.utils.import("resource://webmonkey/lib/file.jsm");
+Components.utils.import("resource://webmonkey/script.js");
+Components.utils.import("resource://webmonkey/lib/prefs.js");
+Components.utils.import("resource://webmonkey/lib/file.js");
 
 function GM_getConfig() {
   return Components.classes["@webmonkey.info/webmonkey-service;1"]

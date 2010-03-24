@@ -70,7 +70,7 @@ WebmonkeyService.prototype = {
    */
   observe: function(aSubject, aTopic, aData) {
     if (aTopic != "app-startup") return;
-    Cu.import("resource://webmonkey/config.jsm");
+    Cu.import("resource://webmonkey/config.js");
     var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
                  .getService(Ci.mozIJSSubScriptLoader);
     loader.loadSubScript("chrome://global/content/XPCNativeWrapper.js");
