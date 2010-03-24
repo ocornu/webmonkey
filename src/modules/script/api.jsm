@@ -83,30 +83,31 @@ ScriptApi.prototype = {
    * See <a href="http://wiki.greasespot.net/GM_getValue">GM wiki definition</a>.
    * @return {object}
    */
-  GM_getValue: function(/**string*/ aKey, /**object*/ aDefaultValue) {
-    this._apiLeakCheck("GM_getValue");
+  GM_getValue: function GM_getValue(/**string*/ aKey,
+                                    /**object*/ aDefaultValue) {
+    this._apiLeakCheck();
     return this._prefs.get(aKey, aDefaultValue);
   },
   /**
    * See <a href="http://wiki.greasespot.net/GM_setValue">GM wiki definition</a>.
    */
-  GM_setValue: function(/**string*/ aKey, /**object*/ aValue) {
-    this._apiLeakCheck("GM_setValue");
+  GM_setValue: function GM_setValue(/**string*/ aKey, /**object*/ aValue) {
+    this._apiLeakCheck();
     this._prefs.set(aKey, aValue);
   },
   /**
    * See <a href="http://wiki.greasespot.net/GM_deleteValue">GM wiki definition</a>.
    */
-  GM_deleteValue: function(/**string*/ aKey) {
-    this._apiLeakCheck("GM_deleteValue");
+  GM_deleteValue: function GM_deleteValue(/**string*/ aKey) {
+    this._apiLeakCheck();
     this._prefs.remove(aKey);
   },
   /**
    * See <a href="http://wiki.greasespot.net/GM_listValues">GM wiki definition</a>.
    * @return {string[]}
    */
-  GM_listValues: function() {
-    this._apiLeakCheck("GM_listValues");
+  GM_listValues: function GM_listValues() {
+    this._apiLeakCheck();
     return this._prefs.list();
   },
   
@@ -120,23 +121,25 @@ ScriptApi.prototype = {
   /**
    * See <a href="http://wiki.greasespot.net/GM_xmlhttpRequest">GM wiki definition</a>.
    */
-  GM_xmlhttpRequest: function(/**ScriptApiXMLHttpRequest*/ xhr,
-                              /**Object**/ aDetails) {
-    this._apiLeakCheck("GM_xmlhttpRequest");
+  GM_xmlhttpRequest: function GM_xmlhttpRequest(
+                                        /**ScriptApiXMLHttpRequest*/ xhr,
+                                        /**Object**/ aDetails) {
+    this._apiLeakCheck();
     xhr.contentStartRequest(aDetails);
   },
   
   /**
    * See <a href="http://wiki.greasespot.net/GM_registerMenuCommand">GM wiki definition</a>.
    */
-  GM_registerMenuCommand: function(/**GM_BrowserUI*/ gmBrowser,
-                                   /**nsiDOMWindow*/ unsafeWin,
-                                   /**string*/   aCommandName,
-                                   /**Function*/ aCallback,
-                                   /**string*/   aAccelKey,
-                                   /**string*/   aAccelModifiers,
-                                   /**string*/   aAccessKey) {
-    this._apiLeakCheck("GM_registerMenuCommand");
+  GM_registerMenuCommand: function GM_registerMenuCommand(
+                                        /**GM_BrowserUI*/ gmBrowser,
+                                        /**nsiDOMWindow*/ unsafeWin,
+                                        /**string*/   aCommandName,
+                                        /**Function*/ aCallback,
+                                        /**string*/   aAccelKey,
+                                        /**string*/   aAccelModifiers,
+                                        /**string*/   aAccessKey) {
+    this._apiLeakCheck();
     var commander = gmBrowser.getCommander(unsafeWin);
     commander.registerMenuCommand(aCommandName, aCallback, aAccelKey,
                                   aAccelModifiers, aAccessKey);
@@ -146,16 +149,16 @@ ScriptApi.prototype = {
    * See <a href="http://wiki.greasespot.net/GM_getResourceText">GM wiki definition</a>.
    * @return {string}
    */
-  GM_getResourceText: function(/**string*/ aName) {
-    this._apiLeakCheck("GM_getResourceText");
+  GM_getResourceText: function GM_getResourceText(/**string*/ aName) {
+    this._apiLeakCheck();
     return this._script.meta.getResource(aName).textContent;
   },
   /**
    * See <a href="http://wiki.greasespot.net/GM_getResourceURL">GM wiki definition</a>.
    * @return {string}
    */
-  GM_getResourceURL: function(/**string*/ aName) {
-    this._apiLeakCheck("GM_getResourceURL");
+  GM_getResourceURL: function GM_getResourceURL(/**string*/ aName) {
+    this._apiLeakCheck();
     return this._script.meta.getResource(aName).dataContent;
   },
 /*
@@ -163,22 +166,21 @@ ScriptApi.prototype = {
  */
   /**
    * Protect sensitive API methods from page-land leaks.<br>
-   * Examines the stack to detect page-land calls.
-   * @param apiName     The API method name we are protecting.
+   * Asserts the call-stack only-contains privileged callers (chrome, 
+   * userscript files, this file). 
    * @throws Error    If the call-stack is stained.
    */
-  _apiLeakCheck: function(/**string*/ apiName) {
+  _apiLeakCheck: function() {
     var stack = Components.stack;
     do {
-      // Valid stack frames for GM api calls are: native and js when coming from
-      // chrome:// URLs and the greasemonkey.js component's file:// URL.
       if (stack.language == 2
           && stack.filename != null
           && stack.filename.substr(0, 6) != "chrome" 
           && stack.filename != FILE 
           && this._files.indexOf(stack.filename) == -1)
-        throw this.logError(new Error("Webmonkey access violation: "+stack.filename+
-                                      " cannot call "+apiName+"()."));
+        throw this.logError(new Error(
+                "Webmonkey access violation: "+stack.filename+
+                " cannot call "+arguments.callee.caller.name+"()."));
       stack = stack.caller;
     } while (stack);
   },
